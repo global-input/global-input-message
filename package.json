@@ -1,0 +1,26 @@
+{
+  "name": "global-input-message",
+  "version": "1.0.0",
+  "description": "global input core js library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/global-input/global-input-message.git"
+  },
+  "keywords": [
+    "global",
+    "input"
+  ],
+  "author": "dilshat hewzulla",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/global-input/global-input-message/issues"
+  },
+  "homepage": "https://github.com/global-input/global-input-message#readme",
+  "dependencies": {
+    "socket.io-client": "^2.0.3"
+  }
+}

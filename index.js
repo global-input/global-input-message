@@ -141,7 +141,7 @@ const api={
 }
 
 
- export function createGlobalInputMessageConnector(){
+ export function createMessageConnector(){
    return new GlobalInputMessageConnector();
  }
  export function changeBaseURL(baseurl){

@@ -90,7 +90,7 @@ const api={
       this.socket=SocketIOClient(api.socketBaseUrl());
         this.connectedSession=this.session;
         this.socket.on(this.session, function(data){
-             console.log("received message:"+data);
+              console.log("message received:"+data);
               const message=JSON.parse(data);
               if(message.client===that.client){
                   console.log("client is the same:"+message.client);
@@ -99,7 +99,8 @@ const api={
                     onMessageReceived(message.data);
               }
         });
-        console.log("connected");
+
+        console.log("connected:"+this.session);
     }
     joinSession(session,onMessageReceived){
       this.session=session;
@@ -107,20 +108,15 @@ const api={
     }
 
    emit(data){
-
-     if(!this.isConnected()){
-         console.log("not connected yet");
-         return;
-     }
+      if(!this.isConnected()){
+           console.log("not connected yet");
+           return;
+      }
       const message={
         client:this.client,
-        session:this.session,
         data:data
-      };
-      const content=JSON.stringify(message);
-      console.log("emiting to:"+this.session+" content:"+content);
-      this.socket.emit('sendToSession', content);
-
+      }
+      this.socket.emit(this.session, JSON.stringify(message));
    }
    sendData(data){
         api.sendData(this.session,this.client,data).then(function(data){
@@ -141,6 +137,13 @@ const api={
    qrcodeURL(){
      return api.qrURL(this.session,this.client);
    }
+   genererateQrContent(){
+     const qr={se:this.session,
+               cl:this.client,
+               dt:"simple"
+             };
+    return JSON.stringify(qr);
+  }
  }
  export function createGlobalInputMessageConnector(){
    return new GlobalInputMessageConnector();

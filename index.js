@@ -149,7 +149,9 @@ const api={
              };
     return JSON.stringify(qr);
   }
-  
+}
+
+
  export function createGlobalInputMessageConnector(){
    return new GlobalInputMessageConnector();
  }

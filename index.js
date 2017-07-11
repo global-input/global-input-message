@@ -113,10 +113,14 @@ const api={
            return;
       }
       const message={
-        client:this.client,
+        session:this.session,
         data:data
-      }
-      this.socket.emit(this.session, JSON.stringify(message));
+      };
+      const content=JSON.stringify(message);
+      console.log("emiting to:"+this.session+" content:"+content);
+      this.socket.emit('sendToSession', content);
+
+
    }
    sendData(data){
         api.sendData(this.session,this.client,data).then(function(data){

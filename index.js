@@ -71,6 +71,7 @@ const api={
         this.session=createGUID();
         this.client=createGUID();
         this.socket=null;
+        this.qrAttributes=[];
     }
     isConnected(){
       return this.socket!=null;
@@ -88,7 +89,9 @@ const api={
       }
       const that=this;
       this.disconnect();
-      this.socket=SocketIOClient(api.socketBaseUrl());
+      var socketURL=api.socketBaseUrl();
+
+      this.socket=SocketIOClient(socketURL);
         this.connectedSession=this.session;
         this.socket.on(this.session, function(data){
               console.log("message received:"+data);
@@ -101,7 +104,7 @@ const api={
               }
         });
 
-        console.log("connected:"+this.session);
+        console.log("connected:"+this.session+" with:"+socketURL);
     }
     joinSession(session,onMessageReceived){
       this.session=session;
@@ -136,10 +139,17 @@ const api={
    qrcodeURL(){
      return api.qrURL(this.session,this.client);
    }
+   addQRAttribute(attr){
+     this.qrAttributes.push({
+       na:attr.name,
+       at:attr.type,
+       va:attr.value
+     })
+
+   }
    genererateQrContent(){
      const qr={se:this.session,
-               cl:this.client,
-               dt:"simple"
+               at:this.qrAttributes
              };
     return JSON.stringify(qr);
   }

@@ -108,7 +108,7 @@ const api={
       this.connect(onMessageReceived);
     }
 
-   emit(data){
+   send(data){
       if(!this.isConnected()){
            console.log("not connected yet");
            return;
@@ -120,14 +120,8 @@ const api={
       const content=JSON.stringify(message);
       console.log("emiting to:"+this.session+" content:"+content);
       this.socket.emit('sendToSession', content);
-
-
    }
-   sendData(data){
-        api.sendData(this.session,this.client,data).then(function(data){
-           console.log("data is sent");
-        });
-   }
+
 
    onBarCodeRead(barcodedata,onReceiveClientMessage){
      if(barcodedata.se){
@@ -154,4 +148,7 @@ const api={
 
  export function createGlobalInputMessageConnector(){
    return new GlobalInputMessageConnector();
+ }
+ export function changeBaseURL(baseurl){
+     api.baseURL=baseurl;
  }

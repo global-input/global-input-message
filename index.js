@@ -1,5 +1,5 @@
 import SocketIOClient from "socket.io-client";
-import QRCode from "qrcode.react";
+
 
 export function createGUID() {
  function s4() {
@@ -149,13 +149,7 @@ const api={
              };
     return JSON.stringify(qr);
   }
-  displayQR(){
-    const qrcontent=this.genererateQrContent();
-    return (
-      <QRCode value={qrcontent}/>
-    );
-  }
- }
+  
  export function createGlobalInputMessageConnector(){
    return new GlobalInputMessageConnector();
  }

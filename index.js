@@ -18,9 +18,6 @@ const api={
    serviceURL: function(){
      return this.baseURL+"/global-input";
    },
-   qrURL: function(session,client){
-       return this.serviceURL()+"/qr-code/"+session+"/"+client+"/simple";
-   },
    messageURL:function(session,client){
        return this.serviceURL()+"/messages/"+session+"/"+client;
    },
@@ -57,11 +54,8 @@ const api={
                      }
                    });
 
-   },
-   sendData:function(session,client,data){
-      const posturl=this.messageURL(session,client);
-      return this.postApi(posturl,data);
    }
+
  };
 
 
@@ -85,7 +79,7 @@ const api={
     connect(onMessageReceived){
       if(this.socket && this.connectedSession && this.connectedSession === this.qrcode.session){
         console.log("already connected to the session");
-        return;
+        return false;
       }
       const that=this;
       this.disconnect();
@@ -105,10 +99,11 @@ const api={
         });
 
         console.log("connected:"+this.session+" with:"+socketURL);
+        return true;
     }
     joinSession(session,onMessageReceived){
       this.session=session;
-      this.connect(onMessageReceived);
+      return this.connect(onMessageReceived);
     }
 
    send(data){
@@ -128,28 +123,18 @@ const api={
 
    onBarCodeRead(barcodedata,onReceiveClientMessage){
      if(barcodedata.se){
-        console.log("joing the session:"+JSON.stringify(barcodedata));
-        this.joinSession(barcodedata.se, onReceiveClientMessage);
+        return this.joinSession(barcodedata.se, onReceiveClientMessage);
      }
      else{
         console.error("session id is null:");
+        return false;
      }
+   }
 
-   }
-   qrcodeURL(){
-     return api.qrURL(this.session,this.client);
-   }
-   addQRAttribute(attr){
-     this.qrAttributes.push({
-       na:attr.name,
-       at:attr.type,
-       va:attr.value
-     })
 
-   }
-   genererateQrContent(){
+   genererateQrContent(metadata){
      const qr={se:this.session,
-               at:this.qrAttributes
+               md:metadata
              };
     return JSON.stringify(qr);
   }

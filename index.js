@@ -66,6 +66,7 @@ const api={
         this.client=createGUID();
         this.socket=null;
         this.qrAttributes=[];
+        this.encryptKey="none";
     }
     isConnected(){
       return this.socket!=null;
@@ -121,9 +122,13 @@ const api={
    }
 
 
-   onBarCodeRead(barcodedata,onReceiveClientMessage){
-     if(barcodedata.se){
-        return this.joinSession(barcodedata.se, onReceiveClientMessage);
+   processBarcodeData(barcodedata,onReceiveMessage){
+     if(barcodedata.url){
+        console.log("switching to:"+barcodedata.url);
+        switchMessageServer(barcodedata.url);
+     }
+     if(barcodedata.ses){
+        return this.joinSession(barcodedata.ses, onReceiveMessage);
      }
      else{
         console.error("session id is null:");
@@ -132,9 +137,12 @@ const api={
    }
 
 
-   genererateQrContent(metadata){
-     const qr={se:this.session,
-               md:metadata
+   buildBarcodeData(data){
+     const qr={
+               url:ap.baseURL,
+               ses:this.session,
+               enc:this.encryptKey,
+               data
              };
     return JSON.stringify(qr);
   }
@@ -144,6 +152,6 @@ const api={
  export function createMessageConnector(){
    return new GlobalInputMessageConnector();
  }
- export function changeBaseURL(baseurl){
+ export function switchMessageServer(baseurl){
      api.baseURL=baseurl;
  }

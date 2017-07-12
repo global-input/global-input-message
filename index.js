@@ -64,7 +64,6 @@ const api={
         this.session=createGUID();
         this.client=createGUID();
         this.socket=null;
-        this.qrAttributes=[];
         this.encryptKey="none";
     }
     isConnected(){
@@ -113,38 +112,39 @@ const api={
       }
       const message={
         session:this.session,
-        data:data
+        data
       };
       const content=JSON.stringify(message);
       console.log("emiting to:"+this.session+" content:"+content);
       this.socket.emit('sendToSession', content);
    }
 
-
-   processBarcodeData(barcodedata,onReceiveMessage){
-     if(barcodedata.url){
-        console.log("switching to:"+barcodedata.url);
-        switchMessageServer(barcodedata.url);
-     }
-     if(barcodedata.ses){
-        return this.joinSession(barcodedata.ses, onReceiveMessage);
-     }
-     else{
-        console.error("session id is null:");
-        return false;
-     }
-   }
-
-
-   buildBarcodeData(data){
+   buidQRCodeData(data){
      const qr={
                url:ap.baseURL,
                ses:this.session,
                enc:this.encryptKey,
                data
              };
-    return JSON.stringify(qr);
+     return JSON.stringify(qr);
   }
+
+   processQRCodeData(qrcodedata,onReceiveMessage){
+     if(barcodedata.url){
+        console.log("switching to:"+qrcodedata.url);
+        switchMessageServer(qrcodedata.url);
+     }
+     if(qrcodedata.ses){
+        return this.joinSession(qrcodedata.ses, onReceiveMessage);
+     }
+     else{
+        console.error("ses is null in qrcode data");
+        return false;
+     }
+   }
+
+
+
 }
 
 

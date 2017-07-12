@@ -130,7 +130,7 @@ const api={
   }
 
    processQRCodeData(qrcodedata,onReceiveMessage){
-     if(barcodedata.url){
+     if(qrcodedata.url){
         console.log("switching to:"+qrcodedata.url);
         switchMessageServer(qrcodedata.url);
      }

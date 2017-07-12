@@ -41,7 +41,7 @@ const api={
        console.log("sending to:"+url+" data:"+JSON.stringify(data));
       return fetch(url,{method:"POST", headers: this.apiHeader(),
                        body: JSON.stringify(data)}
-                   ).then(response => {
+                   ).then(function(response){
                      if(response.status===401){
                           return  Promise.reject("error code:"+401);
                       }

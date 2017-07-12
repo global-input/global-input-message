@@ -121,7 +121,7 @@ const api={
 
    buidQRCodeData(data){
      const qr={
-               url:ap.baseURL,
+               url:api.baseURL,
                ses:this.session,
                enc:this.encryptKey,
                data

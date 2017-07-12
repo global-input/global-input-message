@@ -25,7 +25,7 @@ const api={
                  'Content-Type':'application/json' }
    },
    getApi: function(url){
-      return fetch(url,{method:"GET", headers:this.apiHeader()}).then(response => {
+      return fetch(url,{method:"GET", headers:this.apiHeader()}).then(function(response) {
         if(response.status===401){
               throw new Error(401);
          }

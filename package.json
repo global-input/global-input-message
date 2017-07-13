@@ -1,17 +1,17 @@
 {
   "name": "global-input-message",
-  "version": "1.0.23",
+  "version": "1.0.22",
   "description": "global input core js library",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish#": "node_modules/babel-cli/bin/babel.js src --out-dir lib"
+    "prepublish": "node_modules/babel-cli/bin/babel.js src --out-dir lib"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/global-input/global-input-message.git"
   },
-  "babel#": {
+  "babel": {
     "presets": [
       "es2015"
     ]

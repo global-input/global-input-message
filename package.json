@@ -14,8 +14,14 @@
   "babel": {
     "presets": [
       "es2015",
-      "react-native"
-    ]
+      "react"
+    ],
+    "plugins": [
+    "transform-object-rest-spread",
+    "transform-class-properties",
+    "syntax-trailing-function-commas",
+    "babel-plugin-syntax-async-functions"
+  ]
   },
   "keywords": [
     "global",

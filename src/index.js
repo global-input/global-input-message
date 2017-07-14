@@ -82,7 +82,7 @@ const api={
                     session:this.session,
                     key:this.encryptKey,
                     data
-        };        
+        };
     }
     connect(options={}){
            if(options.url){
@@ -101,8 +101,12 @@ const api={
           var socketURL=api.socketBaseUrl();
           this.socket=SocketIOClient(socketURL);
           this.connectedSession=this.session;
-          this.sendRegisterMessage();
+          this.socket("register", function(data){
+                that.sendRegisterMessage();
+          });
+
           this.socket.on(this.session+"/join", function(joinMessage){
+            console.log("joinMessage is received:"+joinMessage);
               that.processJoinMessage(JSON.parse(joinMessage),options);
           });
           return true;
@@ -113,10 +117,10 @@ const api={
             session:this.session,
             client:this.client
       };
+      console.log("sending register message");
       this.socket.emit("register", JSON.stringify(registerMessage));
     }
-    processJoinMessage(joinMessage,options){
-           console.log("join message is received:"+joinMessage.client);
+    processJoinMessage(joinMessage,options){           
            joinMessage.allow=true;
             var clientRegister={
               client:joinMessage.client

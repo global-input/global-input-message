@@ -155,7 +155,7 @@ const api={
                 }
             };
 
-            if(joinResult.allow){
+            if(joinMessage.allow){
               this.connectedClients.set(joinMessage.client,clientRegister);
               this.socket.on(targetClient.session+"/input", clientRegister.inputMessageListener);
               this.socket.on(targetClient.session+"/leave",clientRegister.leavelistener);

@@ -149,8 +149,8 @@ const api={
                 console.log("leave request is received:"+leaveRequest.client);
                 const leaveClientRegister=this.connectedClients.get(leaveRequest.client);
                 if(leaveClientRegister){
-                    this.socket.removeListener(targetClient.session+"/input",leaveClientRegister.inputMessageListener);
-                    this.socket.removeListener(targetClient.session+"/leave",leaveClientRegister.leavelistener);
+                    this.socket.removeListener(this.session+"/input",leaveClientRegister.inputMessageListener);
+                    this.socket.removeListener(this.session+"/leave",leaveClientRegister.leavelistener);
                     this.connectedClients.delete(leaveRequest.client);
                 }
             };

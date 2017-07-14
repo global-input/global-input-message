@@ -158,8 +158,8 @@ const api={
 
             if(joinMessage.allow){
               that.connectedClients.set(joinMessage.client,clientRegister);
-              that.socket.on(targetClient.session+"/input", clientRegister.inputMessageListener);
-              that.socket.on(targetClient.session+"/leave",clientRegister.leavelistener);
+              that.socket.on(that.session+"/input", clientRegister.inputMessageListener);
+              that.socket.on(that.session+"/leave",clientRegister.leavelistener);
               that.socket.emit("joinMessageResponse", JSON.stringify(joinMessage));
             }
     }

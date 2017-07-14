@@ -100,7 +100,7 @@ const api={
           this.connectedSession=this.session;
           this.socket.on("register", function(data){
                 that.sendRegisterMessage();
-                that.sendJoinSessionMessage(options);                
+                that.sendJoinSessionMessage(options);
           });
 
           this.socket.on(this.session+"/join", function(joinMessage){
@@ -125,7 +125,7 @@ const api={
               session:options.session,
               client:this.client
         };
-        this.socket.emit("requestToJoin",joinMessage);
+        this.socket.emit("requestToJoin",JSON.stringify(joinMessage));
       }
     }
     processJoinMessage(joinMessage,options){

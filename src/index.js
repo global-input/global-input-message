@@ -100,7 +100,7 @@ const api={
           this.connectedSession=this.session;
           this.socket.on("register", function(data){
                 that.sendRegisterMessage();
-                that.sendJoinSessionMessage();                
+                that.sendJoinSessionMessage(options);                
           });
 
           this.socket.on(this.session+"/join", function(joinMessage){

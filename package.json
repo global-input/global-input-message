@@ -1,6 +1,6 @@
 {
   "name": "global-input-message",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "description": "global input core js library",
   "main": "lib/index.js",
   "scripts": {
@@ -11,7 +11,6 @@
     "type": "git",
     "url": "git+https://github.com/global-input/global-input-message.git"
   },
-
   "keywords": [
     "global",
     "input"

@@ -89,12 +89,9 @@ const api={
              console.log("connecting to:"+options.url);
              setMessageConnectorURL(options.url);
            }
-           if(options.session){
-              this.session=options.session;
-           }
-          if(this.socket && this.connectedSession && this.connectedSession === this.options.session){
-            console.log("already connected to the session");
-            return false;
+           if(this.socket && this.connectedSession && this.connectedSession === this.options.session){
+             console.log("already connected to the session");
+             return false;
           }
           const that=this;
           this.disconnect();
@@ -103,6 +100,7 @@ const api={
           this.connectedSession=this.session;
           this.socket.on("register", function(data){
                 that.sendRegisterMessage();
+                that.sendJoinSessionMessage();                
           });
 
           this.socket.on(this.session+"/join", function(joinMessage){
@@ -119,6 +117,16 @@ const api={
       };
       console.log("sending register message");
       this.socket.emit("register", JSON.stringify(registerMessage));
+    }
+    sendJoinSessionMessage(options){
+      if(options.session){
+        const joinMessage={
+              application:api.application,
+              session:options.session,
+              client:this.client
+        };
+        this.socket.emit("requestToJoin",joinMessage);
+      }
     }
     processJoinMessage(joinMessage,options){
            joinMessage.allow=true;

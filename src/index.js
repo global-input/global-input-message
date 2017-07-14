@@ -129,6 +129,7 @@ const api={
       }
     }
     processJoinMessage(joinMessage,options){
+         var that=this;
            joinMessage.allow=true;
             var clientRegister={
               client:joinMessage.client
@@ -147,19 +148,19 @@ const api={
             }
             clientRegister.leavelistener=function(leaveRequest){
                 console.log("leave request is received:"+leaveRequest.client);
-                const leaveClientRegister=this.connectedClients.get(leaveRequest.client);
+                const leaveClientRegister=that.connectedClients.get(leaveRequest.client);
                 if(leaveClientRegister){
-                    this.socket.removeListener(this.session+"/input",leaveClientRegister.inputMessageListener);
-                    this.socket.removeListener(this.session+"/leave",leaveClientRegister.leavelistener);
-                    this.connectedClients.delete(leaveRequest.client);
+                    that.socket.removeListener(this.session+"/input",leaveClientRegister.inputMessageListener);
+                    that.socket.removeListener(this.session+"/leave",leaveClientRegister.leavelistener);
+                    that.connectedClients.delete(leaveRequest.client);
                 }
             };
 
             if(joinMessage.allow){
-              this.connectedClients.set(joinMessage.client,clientRegister);
-              this.socket.on(targetClient.session+"/input", clientRegister.inputMessageListener);
-              this.socket.on(targetClient.session+"/leave",clientRegister.leavelistener);
-              this.socket.emit("joinMessageResponse", JSON.stringify(joinMessage));
+              that.connectedClients.set(joinMessage.client,clientRegister);
+              that.socket.on(targetClient.session+"/input", clientRegister.inputMessageListener);
+              that.socket.on(targetClient.session+"/leave",clientRegister.leavelistener);
+              that.socket.emit("joinMessageResponse", JSON.stringify(joinMessage));
             }
     }
    sendInputMessage(data){

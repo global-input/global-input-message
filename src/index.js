@@ -10,6 +10,7 @@ export function createGUID() {
    s4() + '-' + s4() + s4() + s4();
 }
 const api={
+   application:"global-input-general",
    baseURL: "https://globalinput.co.uk",
    socketBaseUrl:function(){
      return this.baseURL;
@@ -17,9 +18,7 @@ const api={
    serviceURL: function(){
      return this.baseURL+"/global-input";
    },
-   messageURL:function(session,client){
-       return this.serviceURL()+"/messages/"+session+"/"+client;
-   },
+
    apiHeader: function(){
          return {'Accept': 'application/json',
                  'Content-Type':'application/json' }
@@ -65,6 +64,7 @@ const api={
         this.client=createGUID();
         this.socket=null;
         this.encryptKey="none";
+        this.connectedClients=new Map();
     }
     isConnected(){
       return this.socket!=null;
@@ -75,73 +75,112 @@ const api={
           this.socket=null;
         }
     }
-    connect(onMessageReceived){
-      if(this.socket && this.connectedSession && this.connectedSession === this.qrcode.session){
-        console.log("already connected to the session");
-        return false;
+
+    getConnectionData(data){
+        return {
+                    url:api.baseURL,
+                    session:this.session,
+                    key:this.encryptKey,
+                    data
+        };
+    }
+    connect(options={}){
+           if(options.url){
+             console.log("connecting to:"+options.url);
+             setMessageConnectorURL(options.url);
+           }
+           if(this.socket && this.connectedSession && this.connectedSession === this.options.session){
+             console.log("already connected to the session");
+             return false;
+          }
+          const that=this;
+          this.disconnect();
+          var socketURL=api.socketBaseUrl();
+          this.socket=SocketIOClient(socketURL);
+          this.connectedSession=this.session;
+          this.socket.on("register", function(data){
+                that.sendRegisterMessage();
+                that.sendJoinSessionMessage(options);
+          });
+
+          this.socket.on(this.session+"/join", function(joinMessage){
+            console.log("joinMessage is received:"+joinMessage);
+              that.processJoinMessage(JSON.parse(joinMessage),options);
+          });
+          return true;
+    }
+    sendRegisterMessage(){
+      const registerMessage={
+            application:api.application,
+            session:this.session,
+            client:this.client
+      };
+      console.log("sending register message");
+      this.socket.emit("register", JSON.stringify(registerMessage));
+    }
+    sendJoinSessionMessage(options){
+      if(options.session){
+        const joinMessage={
+              application:api.application,
+              session:options.session,
+              client:this.client
+        };
+        this.socket.emit("requestToJoin",JSON.stringify(joinMessage));
       }
-      const that=this;
-      this.disconnect();
-      var socketURL=api.socketBaseUrl();
-
-      this.socket=SocketIOClient(socketURL);
-        this.connectedSession=this.session;
-        this.socket.on(this.session, function(data){
-              console.log("message received:"+data);
-              const message=JSON.parse(data);
-              if(message.client===that.client){
-                  console.log("client is the same:"+message.client);
-              }
-              else{
-                    onMessageReceived(message.data);
-              }
-        });
-
-        console.log("connected:"+this.session+" with:"+socketURL);
-        return true;
     }
-    joinSession(session,onMessageReceived){
-      this.session=session;
-      return this.connect(onMessageReceived);
-    }
+    processJoinMessage(joinMessage,options){
+         var that=this;
+           joinMessage.allow=true;
+            var clientRegister={
+              client:joinMessage.client
+            };
+            if(options.joinMessageProcessor){
+                  if(!options.joinMessageProcessor(joinMessage)){
+                    joinMessage.allow=false;
+                  }
+            }
 
-   send(data){
+            clientRegister.inputMessageListener=function(inputMessage){
+                  console.log("input message received:"+inputMessage);
+                  if(options.onMessageReceived){
+                      options.onMessageReceived(JSON.parse(inputMessage));
+                  }
+            }
+            clientRegister.leavelistener=function(leaveRequest){
+                console.log("leave request is received:"+leaveRequest.client);
+                const leaveClientRegister=that.connectedClients.get(leaveRequest.client);
+                if(leaveClientRegister){
+                    that.socket.removeListener(this.session+"/input",leaveClientRegister.inputMessageListener);
+                    that.socket.removeListener(this.session+"/leave",leaveClientRegister.leavelistener);
+                    that.connectedClients.delete(leaveRequest.client);
+                }
+            };
+
+            if(joinMessage.allow){
+              that.connectedClients.set(joinMessage.client,clientRegister);
+              that.socket.on(that.session+"/input", clientRegister.inputMessageListener);
+              that.socket.on(that.session+"/leave",clientRegister.leavelistener);
+              that.socket.emit("joinMessageResponse", JSON.stringify(joinMessage));
+            }
+    }
+   sendInputMessage(data){
       if(!this.isConnected()){
            console.log("not connected yet");
            return;
       }
       const message={
         session:this.session,
+        client:this.client,
         data
       };
       const content=JSON.stringify(message);
       console.log("emiting to:"+this.session+" content:"+content);
-      this.socket.emit('sendToSession', content);
+      this.socket.emit('inputMessage', content);
    }
 
-   buidQRCodeData(data){
-     const qr={
-               url:api.baseURL,
-               ses:this.session,
-               enc:this.encryptKey,
-               data
-             };
-     return JSON.stringify(qr);
-  }
 
-   processQRCodeData(qrcodedata,onReceiveMessage){
-     if(qrcodedata.url){
-        console.log("switching to:"+qrcodedata.url);
-        switchMessageServer(qrcodedata.url);
-     }
-     if(qrcodedata.ses){
-        return this.joinSession(qrcodedata.ses, onReceiveMessage);
-     }
-     else{
-        console.error("ses is null in qrcode data");
-        return false;
-     }
-   }
+
+
 
 
 }
@@ -150,6 +189,9 @@ const api={
  export function createMessageConnector(){
    return new GlobalInputMessageConnector();
  }
- export function switchMessageServer(baseurl){
+ export function setMessageConnectorURL(baseurl){
      api.baseURL=baseurl;
+ }
+ export function setMessageApplication(application){
+     api.application=application;
  }

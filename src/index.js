@@ -101,7 +101,7 @@ const api={
           var socketURL=api.socketBaseUrl();
           this.socket=SocketIOClient(socketURL);
           this.connectedSession=this.session;
-          this.socket("register", function(data){
+          this.socket.on("register", function(data){
                 that.sendRegisterMessage();
           });
 
@@ -120,7 +120,7 @@ const api={
       console.log("sending register message");
       this.socket.emit("register", JSON.stringify(registerMessage));
     }
-    processJoinMessage(joinMessage,options){           
+    processJoinMessage(joinMessage,options){
            joinMessage.allow=true;
             var clientRegister={
               client:joinMessage.client

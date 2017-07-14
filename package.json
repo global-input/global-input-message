@@ -11,11 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/global-input/global-input-message.git"
   },
-  "babel": {
-    "presets": [
-      "es2015"
-    ]
-  },
+
   "keywords": [
     "global",
     "input"

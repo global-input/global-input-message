@@ -45,7 +45,20 @@ test('receiver sender should communicate', (done) => {
         expect(message.action).toBe("join");
         expect(message.randomkey).toBeDefined();
         connectSender();
-      }
+      },
+      medata:[
+        {
+        name:"Email address",
+        value:"some value"
+       },{
+         name:"Password",
+         type:"secret"
+       },
+       {
+         name:"Login",
+         type:"action"
+       }
+    ]
   }
 
   receiver.connect(receiverOptions);

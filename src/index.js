@@ -99,6 +99,7 @@ export function createGUID() {
           });
           that.sendRegisterMessage(canRegisterMessage,options);
     }
+
     sendRegisterMessage(options){
       const registerMessage={
             sessionGroup:this.sessionGroup,
@@ -186,6 +187,9 @@ export function createGUID() {
               this.socket.on(that.session+"/leave",inputSender.leavelistener);
             }
             var joinRequestResponse=Object.assign({},joinRequestMessage,{allow});
+            if(ontions.metadata){
+                joinRequestResponse.metadata=ontions.metadata;
+            }
             var data=JSON.stringify(joinRequestResponse)
             this.log("sending the join response message:"+data);
             this.socket.emit("joinResponse",data);
@@ -204,8 +208,7 @@ export function createGUID() {
       const content=JSON.stringify(message);
       this.log("sending input message  to:"+this.targetSession+" content:"+content);
       this.socket.emit('inputMessage', content);
-   }
-
+   },
 
 
    getConnectionData(data){

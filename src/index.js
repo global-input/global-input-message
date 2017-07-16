@@ -9,62 +9,22 @@ export function createGUID() {
  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
    s4() + '-' + s4() + s4() + s4();
 }
-const api={
-   application:"global-input-general",
-   baseURL: "https://globalinput.co.uk",
-   socketBaseUrl:function(){
-     return this.baseURL;
-   },
-   serviceURL: function(){
-     return this.baseURL+"/global-input";
-   },
-
-   apiHeader: function(){
-         return {'Accept': 'application/json',
-                 'Content-Type':'application/json' }
-   },
-   getApi: function(url){
-      return fetch(url,{method:"GET", headers:this.apiHeader()}).then(function(response) {
-        if(response.status===401){
-              throw new Error(401);
-         }
-         else if(response.status!==200){
-                throw new Error(response.status);
-         }
-         else {
-              return response.json()
-        }
-      });
-   },
-   postApi: function(url,data){
-       console.log("sending to:"+url+" data:"+JSON.stringify(data));
-      return fetch(url,{method:"POST", headers: this.apiHeader(),
-                       body: JSON.stringify(data)}
-                   ).then(function(response){
-                     if(response.status===401){
-                          return  Promise.reject("error code:"+401);
-                      }
-                      else if(response.status!==200){
-                            return Promise.reject("error code:"+response.status);
-                      }
-                      else {
-                           return response.json()
-                     }
-                   });
-
-   }
-
- };
-
-
 
  class GlobalInputMessageConnector{
+    log(message){
+      console.log(this.client+":"+message);
+    }
     constructor(){
+        this.apikey="756ffa56-69ef-11e7-907b-a6006ad3dba0";
+        this.sessionGroup="359a15fa-23e7-4a10-89fa-efc12d2ee891";
         this.session=createGUID();
         this.client=createGUID();
+
         this.socket=null;
         this.encryptKey="none";
-        this.connectedClients=new Map();
+        this.connectedInputSenders=new Map();
+        this.socketURL="https://globalinput.co.uk";
+
     }
     isConnected(){
       return this.socket!=null;
@@ -74,124 +34,192 @@ const api={
           this.socket.disconnect();
           this.socket=null;
         }
+        this.joiningSession=null;
+        this.targetSession=null;
     }
-
-    getConnectionData(data){
-        return {
-                    url:api.baseURL,
-                    session:this.session,
-                    key:this.encryptKey,
-                    data
-        };
-    }
-    connect(options={}){
-           if(options.url){
-             console.log("connecting to:"+options.url);
-             setMessageConnectorURL(options.url);
-           }
-           if(this.socket && this.connectedSession && this.connectedSession === this.options.session){
-             console.log("already connected to the session");
+    _isAlreadyConnected(options){
+          if(!this.socket){
              return false;
           }
-          const that=this;
-          this.disconnect();
-          var socketURL=api.socketBaseUrl();
-          this.socket=SocketIOClient(socketURL);
-          this.connectedSession=this.session;
-          this.socket.on("register", function(data){
-                that.sendRegisterMessage();
-                that.sendJoinSessionMessage(options);
-          });
+          if(this.apikey!==options.apikey){
+              return false;
+          }
+          if(this.url!==optioons.url){
+            return false;
+          }
+          if(this.options.join){
+              if(!this.joiningSession){
+                  this.joiningSession=this.options.join.session;
+                  return false;
+              }
+              if(this.joiningSession===this.options.join.session){
+                    return true;
+              }
+              else{
+                this.joiningSession=this.options.join.session;
+                return false;
+              }
+          }
+          else{
+                return true;
+          }
 
-          this.socket.on(this.session+"/join", function(joinMessage){
-            console.log("joinMessage is received:"+joinMessage);
-              that.processJoinMessage(JSON.parse(joinMessage),options);
+    }
+
+
+
+    connect(options={}){
+          if(this._isAlreadyConnected(options)){
+                this.log("already connected to the session");
+                return;
+          }
+          this.disconnect();
+          if(options.apikey){
+              this.apikey=options.apikey;
+          }
+          if(options.url){
+            this.log("connecting to:"+options.url);
+            this.socketURL=options.url;
+          }
+          this.socket=SocketIOClient(this.socketURL);
+          const that=this;
+
+          this.socket.on("canRegister", function(data){
+                 that.log("canRegister message is received:"+data);
+                  that.canRegister(JSON.parse(data), options);
           });
           return true;
     }
-    sendRegisterMessage(){
+    canRegister(canRegisterMessage, options){
+          this.socketid=canRegisterMessage.socketid;
+          var that=this;
+          this.socket.on("canJoin", function(data){
+                  that.log("received the canJoin message:"+data);
+                  that.canJoin(JSON.parse(data),options);
+          });
+          that.sendRegisterMessage(canRegisterMessage,options);
+    }
+    sendRegisterMessage(options){
       const registerMessage={
-            application:api.application,
+            sessionGroup:this.sessionGroup,
             session:this.session,
-            client:this.client
+            apikey:this.apikey
       };
-      console.log("sending register message");
+      this.log("sending register message");
       this.socket.emit("register", JSON.stringify(registerMessage));
     }
-    sendJoinSessionMessage(options){
-      if(options.session){
-        const joinMessage={
-              application:api.application,
-              session:options.session,
-              client:this.client
+    canJoin(canJoinMessage, options){
+            this.randomkey=canJoinMessage.randomkey;
+            var that=this;
+            this.socket.on(this.session+"/join", function(joinRequestMessage){
+                that.log("joinRequestMessage is received:"+joinRequestMessage);
+                that.processJoinRequestMessage(JSON.parse(joinRequestMessage),options);
+            });
+            if(options.join){
+                this.sendJoinRequestMessage(options);
+                this.socket.on("joinResponse", function(response){
+                  that.log("joinResponse is received "+response);
+                  that.joinResponse(JSON.parse(response),options);
+                });
+
+            }
+            if(options.onConnectionComplete){
+                options.onConnectionComplete(canJoinMessage);
+            }
+    }
+    joinResponse(responseMessage, options){
+            this.log("***** join reponse reeived:"+JSON.stringify(responseMessage));
+            this.targetSession=responseMessage.session;
+            if(options.onJoinComplete){
+              options.onJoinComplete(responseMessage);
+            }
+    }
+    sendJoinRequestMessage(options){
+      if(options.join.session){
+        const joinRequestMessage={
+              sessionGroup:this.sessionGroup,
+              session:options.join.session,
+              client:this.client,
+              randomkey:this.randomkey
         };
-        this.socket.emit("requestToJoin",JSON.stringify(joinMessage));
+        const data=JSON.stringify(joinRequestMessage)
+        this.log("sending the joinRequestMessage:"+data)
+        this.socket.emit("joinSession",data);
       }
     }
-    processJoinMessage(joinMessage,options){
-         var that=this;
-           joinMessage.allow=true;
-            var clientRegister={
-              client:joinMessage.client
+    processJoinRequestMessage(joinRequestMessage,options){
+            var that=this;
+            var allow=true;
+            var inputSender={
+              client:joinRequestMessage.client
             };
-            if(options.joinMessageProcessor){
-                  if(!options.joinMessageProcessor(joinMessage)){
-                    joinMessage.allow=false;
+
+            if(options.onJoin){
+                  if(!options.canJoin(joinRequestMessage)){
+                    allow=false;
+                  }
+            }
+            inputSender.inputMessageListener=function(inputMessage){
+                  that.log("input message received:"+inputMessage);
+                  if(options.onInputMessageReceived){
+                      options.onInputMessageReceived(JSON.parse(inputMessage));
                   }
             }
 
-            clientRegister.inputMessageListener=function(inputMessage){
-                  console.log("input message received:"+inputMessage);
-                  if(options.onMessageReceived){
-                      options.onMessageReceived(JSON.parse(inputMessage));
-                  }
-            }
-            clientRegister.leavelistener=function(leaveRequest){
-                console.log("leave request is received:"+leaveRequest.client);
-                const leaveClientRegister=that.connectedClients.get(leaveRequest.client);
-                if(leaveClientRegister){
-                    that.socket.removeListener(this.session+"/input",leaveClientRegister.inputMessageListener);
-                    that.socket.removeListener(this.session+"/leave",leaveClientRegister.leavelistener);
-                    that.connectedClients.delete(leaveRequest.client);
+
+
+            inputSender.leavelistener=function(leaveRequest){
+                that.log("leave request is received:"+leaveRequest);
+                const leaveMessage=JSON.parse(leaveRequest);
+                const inputSenderToLeave=that.connectedInputSenders.get(leaveMessage.client);
+                if(inputSenderToLeave){
+                    that.socket.removeListener(this.session+"/input",inputSenderToLeave.inputMessageListener);
+                    that.socket.removeListener(this.session+"/leave",inputSenderToLeave.leavelistener);
+                    that.connectedInputSenders.delete(leaveMessage.client);
+                    that.log("sender is removed:"+that.connectedInputSenders.size);
                 }
             };
 
-            if(joinMessage.allow){
-              that.connectedClients.set(joinMessage.client,clientRegister);
-              that.socket.on(that.session+"/input", clientRegister.inputMessageListener);
-              that.socket.on(that.session+"/leave",clientRegister.leavelistener);
-              that.socket.emit("joinMessageResponse", JSON.stringify(joinMessage));
+            if(allow){
+              this.connectedInputSenders.set(joinRequestMessage.client,inputSender);
+              this.socket.on(that.session+"/input", inputSender.inputMessageListener);
+              this.socket.on(that.session+"/leave",inputSender.leavelistener);
             }
+            var joinRequestResponse=Object.assign({},joinRequestMessage,{allow});
+            var data=JSON.stringify(joinRequestResponse)
+            this.log("sending the join response message:"+data);
+            this.socket.emit("joinResponse",data);
     }
    sendInputMessage(data){
       if(!this.isConnected()){
-           console.log("not connected yet");
+           this.log("not connected yet");
            return;
       }
-      const message={
-        session:this.session,
-        client:this.client,
-        data
-      };
+      var message={
+          client:this.client,
+          targetSession:this.targetSession,
+          data
+      }
+
       const content=JSON.stringify(message);
-      console.log("emiting to:"+this.session+" content:"+content);
+      this.log("sending input message  to:"+this.targetSession+" content:"+content);
       this.socket.emit('inputMessage', content);
    }
 
 
 
-
+   getConnectionData(data){
+       return {
+                   url:api.baseURL,
+                   session:this.session,
+                   key:this.encryptKey,
+                   data
+       };
+   }
 
 
 }
 
-
  export function createMessageConnector(){
    return new GlobalInputMessageConnector();
- }
- export function setMessageConnectorURL(baseurl){
-     api.baseURL=baseurl;
- }
- export function setMessageApplication(application){
-     api.application=application;
  }

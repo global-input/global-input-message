@@ -160,10 +160,17 @@ export function createGUID() {
                     allow=false;
                   }
             }
-            inputSender.inputMessageListener=function(inputMessage){
-                  that.log("input message received:"+inputMessage);
+            inputSender.inputMessageListener=function(data){
+                  that.log("input message received:"+data);
                   if(options.onInputMessageReceived){
-                      options.onInputMessageReceived(JSON.parse(inputMessage));
+                      const inputMessage=JSON.parse(data);
+                      if(inputMessage.client===this.client){
+                        console.log("input message is coming from itself:"+data);
+                      }
+                      else{
+                          options.onInputMessageReceived(inputMessage);
+                      }
+
                   }
             }
 
@@ -178,17 +185,23 @@ export function createGUID() {
                     that.socket.removeListener(this.session+"/leave",inputSenderToLeave.leavelistener);
                     that.connectedInputSenders.delete(leaveMessage.client);
                     that.log("sender is removed:"+that.connectedInputSenders.size);
+                    if(options.onSenderLeave){
+                      options.onSenderLeave(inputSenderToLeave);
+                    }
                 }
             };
 
             if(allow){
               this.connectedInputSenders.set(joinRequestMessage.client,inputSender);
+              if(options.onSendedJoin){
+                      options.onSendedJoin(inputSender);
+              }
               this.socket.on(that.session+"/input", inputSender.inputMessageListener);
               this.socket.on(that.session+"/leave",inputSender.leavelistener);
             }
             var joinRequestResponse=Object.assign({},joinRequestMessage,{allow});
-            if(ontions.metadata){
-                joinRequestResponse.metadata=ontions.metadata;
+            if(options.metadata){
+                joinRequestResponse.metadata=options.metadata;
             }
             var data=JSON.stringify(joinRequestResponse)
             this.log("sending the join response message:"+data);
@@ -207,8 +220,23 @@ export function createGUID() {
 
       const content=JSON.stringify(message);
       this.log("sending input message  to:"+this.targetSession+" content:"+content);
-      this.socket.emit('inputMessage', content);
-   },
+      this.socket.emit(this.targetSession+'/input', content);
+   }
+   sendMetadata(metadata){
+     if(!this.isConnected()){
+          this.log("not connected yet");
+          return;
+     }
+     var message={
+         client:this.client,
+         targetSession:this.targetSession,
+         metadata
+     }
+
+     const content=JSON.stringify(message);
+     this.log("sending input message  to:"+this.targetSession+" content:"+content);
+     this.socket.emit(this.targetSession+'/metadata', content);
+   }
 
 
    getConnectionData(data){

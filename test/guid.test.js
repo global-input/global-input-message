@@ -46,7 +46,7 @@ test('receiver sender should communicate', (done) => {
         expect(message.randomkey).toBeDefined();
         connectSender();
       },
-      medata:[
+      metadata:[
         {
         name:"Email address",
         value:"some value"

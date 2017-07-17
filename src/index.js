@@ -42,9 +42,6 @@ export function createGUID() {
                 this.log("already joined to the target session");
                 return;
             }
-            else{
-              this.log("this.joiningSession::"+this.joiningSession+":::"+options.join.session)
-            }
             this.joiningSession=options.join.session;
         }
         else if(this.socket){
@@ -52,25 +49,20 @@ export function createGUID() {
             return;
         }
         this.disconnect();
-        this.log("2222");
          if(options.apikey){
               this.apikey=options.apikey;
           }
-          this.log("3333");
           if(options.url){
             this.log("connecting to:"+options.url);
             this.socketURL=options.url;
           }
-          this.log("4444");
           this.socket=SocketIOClient(this.socketURL);
           const that=this;
-          this.log("5555");
           this.socket.on("canRegister", function(data){
                  that.log("canRegister message is received:"+data);
                   that.canRegister(JSON.parse(data), options);
           });
-
-          this.log("complete the connect");
+          this.log("connected to the socket");
     }
     canRegister(canRegisterMessage, options){
           this.socketid=canRegisterMessage.socketid;

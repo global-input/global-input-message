@@ -67,6 +67,7 @@ export function createGUID() {
               }
           }
           else{
+                this.log("receiver already connected");
                 return true;
           }
 
@@ -79,22 +80,27 @@ export function createGUID() {
                 this.log("already connected to the session");
                 return;
           }
+          this.log("11111");
           this.disconnect();
+          this.log("2222");
           if(options.apikey){
               this.apikey=options.apikey;
           }
+          this.log("3333");
           if(options.url){
             this.log("connecting to:"+options.url);
             this.socketURL=options.url;
           }
+          this.log("4444");
           this.socket=SocketIOClient(this.socketURL);
           const that=this;
-
+          this.log("5555");
           this.socket.on("canRegister", function(data){
                  that.log("canRegister message is received:"+data);
                   that.canRegister(JSON.parse(data), options);
           });
-          return true;
+          
+          this.log("complete the connect");
     }
     canRegister(canRegisterMessage, options){
           this.socketid=canRegisterMessage.socketid;

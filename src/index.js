@@ -37,45 +37,12 @@ export function createGUID() {
         this.joiningSession=null;
         this.targetSession=null;
     }
-    _isAlreadyConnected(options){
-          if(!this.socket){
-              if(this.options.join){
-                this.joiningSession=this.options.join.session;
-              }
-             this.log("creating socket");
-             return false;
-          }
-          if(this.options.join){
-              if(!this.joiningSession){
-                  this.log("joining to session");
-                  this.joiningSession=this.options.join.session;
-                  return false;
-              }
-              if(this.joiningSession===this.options.join.session){
-                    this.log("already connected with the session");
-                    return true;
-              }
-              else{
-                this.log("joining to a new session");
-                this.joiningSession=this.options.join.session;
-                return false;
-              }
-          }
-          else{
-                this.log("receiver already connected");
-                return true;
-          }
-
-    }
-
-
-
     connect(options={}){
-        if(this.options.join){
-            if(this.socket && this.joiningSession===this.options.join.session){
+        if(options.join){
+            if(this.socket && this.joiningSession===options.join.session){
                 this.log("already joined to the target session");
             }
-            this.joiningSession=this.options.join.session;
+            this.joiningSession=options.join.session;
         }
         else if(this.socket){
             this.log("already connected");

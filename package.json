@@ -1,6 +1,6 @@
 {
   "name": "global-input-message",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "global input core js library",
   "main": "lib/index.js",
   "scripts": {

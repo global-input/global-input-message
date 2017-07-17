@@ -241,7 +241,7 @@ export function createGUID() {
 
    getConnectionData(data){
        return {
-                   url:api.baseURL,
+                   url:this.socketURL,
                    session:this.session,
                    key:this.encryptKey,
                    data

@@ -34,7 +34,6 @@ export function createGUID() {
           this.socket.disconnect();
           this.socket=null;
         }
-        this.joiningSession=null;
         this.targetSession=null;
     }
     connect(options={}){

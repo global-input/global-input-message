@@ -4,10 +4,24 @@ var sum=function(x,y){return (x+y)};
 test('receiver sender should communicate', (done) => {
   const receiver=createMessageConnector();
   const sender=createMessageConnector();
+
   console.log("receiver session:"+receiver.session);
   console.log("receiver client:"+receiver.client);
   console.log("sender session:"+sender.session);
   console.log("sender client:"+sender.client);
+  var metadata=[
+    {
+    name:"Email address",
+    value:"some value"
+   },{
+     name:"Password",
+     type:"secret"
+   },
+   {
+     name:"Login",
+     type:"action"
+   }
+];
   var inputData={content:"dilshat"};
  var connectSender=function(){
     var senderOptions={
@@ -18,6 +32,9 @@ test('receiver sender should communicate', (done) => {
        join:{session:receiver.session},
        onJoinComplete:function(message){
          console.log("sender Join Complete:"+JSON.stringify(message));
+           expect(message.metadata[0].name).toBe(metadata[0].name);
+           expect(message.metadata[0].value).toBe(metadata[0].value);
+           expect(message.metadata[1].name).toBe(metadata[1].name);
          console.log("sender sending the input message:"+JSON.stringify(inputData));
          sender.sendInputMessage(inputData);
 
@@ -46,19 +63,7 @@ test('receiver sender should communicate', (done) => {
         expect(message.randomkey).toBeDefined();
         connectSender();
       },
-      metadata:[
-        {
-        name:"Email address",
-        value:"some value"
-       },{
-         name:"Password",
-         type:"secret"
-       },
-       {
-         name:"Login",
-         type:"action"
-       }
-    ]
+      metadata
   }
 
   receiver.connect(receiverOptions);

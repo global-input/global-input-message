@@ -39,23 +39,29 @@ export function createGUID() {
     }
     _isAlreadyConnected(options){
           if(!this.socket){
+             this.log("creating socket");
              return false;
           }
           if(this.apikey!==options.apikey){
+             this.log("using a new apikey");
               return false;
           }
           if(this.url!==optioons.url){
+            this.log("using a new url");
             return false;
           }
           if(this.options.join){
               if(!this.joiningSession){
+                  this.log("joining to session");
                   this.joiningSession=this.options.join.session;
                   return false;
               }
               if(this.joiningSession===this.options.join.session){
+                    this.log("already connected with the session");
                     return true;
               }
               else{
+                this.log("joining to a new session");
                 this.joiningSession=this.options.join.session;
                 return false;
               }

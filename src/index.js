@@ -39,16 +39,11 @@ export function createGUID() {
     }
     _isAlreadyConnected(options){
           if(!this.socket){
+              if(this.options.join){
+                this.joiningSession=this.options.join.session;
+              }
              this.log("creating socket");
              return false;
-          }
-          if(this.apikey!==options.apikey){
-             this.log("using a new apikey");
-              return false;
-          }
-          if(this.url!==optioons.url){
-            this.log("using a new url");
-            return false;
           }
           if(this.options.join){
               if(!this.joiningSession){
@@ -76,14 +71,18 @@ export function createGUID() {
 
 
     connect(options={}){
-          if(this._isAlreadyConnected(options)){
-                this.log("already connected to the session");
-                return;
-          }
-          this.log("11111");
-          this.disconnect();
-          this.log("2222");
-          if(options.apikey){
+        if(this.options.join){
+            if(this.socket && this.joiningSession===this.options.join.session){
+                this.log("already joined to the target session");
+            }
+            this.joiningSession=this.options.join.session;
+        }
+        else if(this.socket){
+            this.log("already connected");
+        }
+        this.disconnect();
+        this.log("2222");
+         if(options.apikey){
               this.apikey=options.apikey;
           }
           this.log("3333");
@@ -99,7 +98,7 @@ export function createGUID() {
                  that.log("canRegister message is received:"+data);
                   that.canRegister(JSON.parse(data), options);
           });
-          
+
           this.log("complete the connect");
     }
     canRegister(canRegisterMessage, options){

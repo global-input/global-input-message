@@ -53,9 +53,9 @@ export function createGUID() {
               this.apikey=options.apikey;
           }
           if(options.url){
-            this.log("connecting to:"+options.url);
             this.socketURL=options.url;
           }
+          this.log("connecting to:"+this.socketURL);
           this.socket=SocketIOClient(this.socketURL);
           const that=this;
           this.socket.on("canRegister", function(data){

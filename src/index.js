@@ -41,11 +41,16 @@ export function createGUID() {
         if(options.join){
             if(this.socket && this.joiningSession===options.join.session){
                 this.log("already joined to the target session");
+                return;
+            }
+            else{
+              this.log("this.joiningSession::"+this.joiningSession+":::"+options.join.session)
             }
             this.joiningSession=options.join.session;
         }
         else if(this.socket){
             this.log("already connected");
+            return;
         }
         this.disconnect();
         this.log("2222");

@@ -19,7 +19,6 @@ export function createGUID() {
         this.sessionGroup="359a15fa-23e7-4a10-89fa-efc12d2ee891";
         this.session=createGUID();
         this.client=createGUID();
-
         this.socket=null;
         this.action="input";
         this.connectedInputSenders=new Map();
@@ -38,15 +37,15 @@ export function createGUID() {
     }
     connect(options={}){
         this.disconnect();
-        
+
          if(options.apikey){
               this.apikey=options.apikey;
           }
           if(options.url){
-            this.socketURL=options.url;
+            this.url=options.url;
           }
-          this.log("connecting to:"+this.socketURL);
-          this.socket=SocketIOClient(this.socketURL);
+          this.log("connecting to:"+this.url);
+          this.socket=SocketIOClient(this.url);
           const that=this;
           this.socket.on("registerPermission", function(data){
                  that.log("registerPermission message is received:"+data);
@@ -59,19 +58,20 @@ export function createGUID() {
                  var that=this;
                  this.socket.on("registered", function(data){
                          that.log("received the registered message:"+data);
-                         var registerMessage=JSON.parse(data);
+                         var registeredMessage=JSON.parse(data);
                          if(options.onRegistered){
                             options.onRegistered(function(){
                                 that.onRegistered(registeredMessage,options);
-                            },registerMessage,options);
+                            },registeredMessage,options);
                          }
                          else{
-                              that.onRegistered(registerMessage,options);
+                              that.onRegistered(registeredMessage,options);
                          }
                  });
                  const registerMessage={
                        sessionGroup:this.sessionGroup,
                        session:this.session,
+                       client:this.client,
                        apikey:this.apikey
                  };
                  this.log("sending register message");
@@ -110,21 +110,21 @@ export function createGUID() {
                     that.onInputPermissionResult(JSON.parse(data),options);
                     });
                     const requestInputPermissionMessage={
-                          sessionGroup:this.sessionGroup,
-                          session:options.join.session,
-                          client:this.client,
+                          sessionGroup:that.sessionGroup,
+                          session:that.session,
+                          client:that.client,
                           inputSession:options.inputSession
                     };
                     const data=JSON.stringify(requestInputPermissionMessage)
-                    this.log("sending the requestInputPermissionMessage:"+data)
-                    this.socket.emit(options.inputSession+"/inputPermision",data);
+                    this.log("sending the requestInputPermissionMessage:"+data);
+                    this.socket.emit("inputPermision",data);
             }
 
     }
 
     onInputPermission(inputPermissionMessage,options){
             var that=this;
-            const inputSender=buildInputSender(inputPermissionMessage,options);
+            const inputSender=this.buildInputSender(inputPermissionMessage,options);
             this.connectedInputSenders.set(inputPermissionMessage.client,inputSender);
             if(options.onSendedJoin){
                       options.onSendedJoin(inputSender);
@@ -218,26 +218,20 @@ export function createGUID() {
    }
 
 
-   buildCodeData(type="input",data={}){
+   buildInputCodeData(data={}){
        return Object.assign(data,{
                    url:this.url,
                    session:this.session,
-                   action:this.action,
-                   type
+                   action:"input",
        });
    }
    processCodeData(opts={},codedata){
-      if(codeData.type=='input'){
-            const options=Object.assign(opts);
-            if(codedata){
-                  options.inputSession=codeData.session;
-            }
-            if(this.codeInputSession===options.inputSession){
-              this.log("inputSession is already connected");
-            }
-            this.codeInputSession=options.inputSession;
-
-            this.connect(opts)
+      console.log("codedata:"+JSON.stringify(codedata));
+      if(codedata.action=='input'){
+            const options=Object.assign({},opts);
+            options.inputSession=codedata.session;
+            options.url=codedata.url;
+           this.connect(options);
       }
    }
 

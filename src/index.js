@@ -21,9 +21,9 @@ export function createGUID() {
         this.client=createGUID();
 
         this.socket=null;
-        this.encryptKey="none";
+        this.action="input";
         this.connectedInputSenders=new Map();
-        this.socketURL="https://globalinput.co.uk";
+        this.url="https://globalinput.co.uk";
 
     }
     isConnected(){
@@ -37,18 +37,8 @@ export function createGUID() {
         this.targetSession=null;
     }
     connect(options={}){
-        if(options.join){
-            if(this.socket && this.joiningSession===options.join.session){
-                this.log("already joined to the target session");
-                return;
-            }
-            this.joiningSession=options.join.session;
-        }
-        else if(this.socket){
-            this.log("already connected");
-            return;
-        }
         this.disconnect();
+        
          if(options.apikey){
               this.apikey=options.apikey;
           }
@@ -58,129 +48,144 @@ export function createGUID() {
           this.log("connecting to:"+this.socketURL);
           this.socket=SocketIOClient(this.socketURL);
           const that=this;
-          this.socket.on("canRegister", function(data){
-                 that.log("canRegister message is received:"+data);
-                  that.canRegister(JSON.parse(data), options);
+          this.socket.on("registerPermission", function(data){
+                 that.log("registerPermission message is received:"+data);
+                  that.onRegisterPermission(JSON.parse(data), options);
           });
-          this.log("connected to the socket");
+          this.log("connection process complete, will for permisstion to register");
     }
-    canRegister(canRegisterMessage, options){
-          this.socketid=canRegisterMessage.socketid;
-          var that=this;
-          this.socket.on("canJoin", function(data){
-                  that.log("received the canJoin message:"+data);
-                  that.canJoin(JSON.parse(data),options);
-          });
-          that.sendRegisterMessage(canRegisterMessage,options);
+    onRegisterPermission(registerPermistion, options){
+         if(registerPermistion.result==="ok"){
+                 var that=this;
+                 this.socket.on("registered", function(data){
+                         that.log("received the registered message:"+data);
+                         var registerMessage=JSON.parse(data);
+                         if(options.onRegistered){
+                            options.onRegistered(function(){
+                                that.onRegistered(registeredMessage,options);
+                            },registerMessage,options);
+                         }
+                         else{
+                              that.onRegistered(registerMessage,options);
+                         }
+                 });
+                 const registerMessage={
+                       sessionGroup:this.sessionGroup,
+                       session:this.session,
+                       apikey:this.apikey
+                 };
+                 this.log("sending register message");
+                 this.socket.emit("register", JSON.stringify(registerMessage));
+         }
+         else{
+                this.log("failed to get register permission");
+         }
+
+
     }
 
-    sendRegisterMessage(options){
-      const registerMessage={
-            sessionGroup:this.sessionGroup,
-            session:this.session,
-            apikey:this.apikey
-      };
-      this.log("sending register message");
-      this.socket.emit("register", JSON.stringify(registerMessage));
-    }
-    canJoin(canJoinMessage, options){
-            this.randomkey=canJoinMessage.randomkey;
+
+    onRegistered(registeredMessage, options){
             var that=this;
-            this.socket.on(this.session+"/join", function(joinRequestMessage){
-                that.log("joinRequestMessage is received:"+joinRequestMessage);
-                that.processJoinRequestMessage(JSON.parse(joinRequestMessage),options);
-            });
-            if(options.join){
-                this.sendJoinRequestMessage(options);
-                this.socket.on("joinResponse", function(response){
-                  that.log("joinResponse is received "+response);
-                  that.joinResponse(JSON.parse(response),options);
-                });
-
-            }
-            if(options.onConnectionComplete){
-                options.onConnectionComplete(canJoinMessage);
-            }
-    }
-    joinResponse(responseMessage, options){
-            this.log("***** join reponse reeived:"+JSON.stringify(responseMessage));
-            this.targetSession=responseMessage.session;
-            if(options.onJoinComplete){
-              options.onJoinComplete(responseMessage);
-            }
-    }
-    sendJoinRequestMessage(options){
-      if(options.join.session){
-        const joinRequestMessage={
-              sessionGroup:this.sessionGroup,
-              session:options.join.session,
-              client:this.client,
-              randomkey:this.randomkey
-        };
-        const data=JSON.stringify(joinRequestMessage)
-        this.log("sending the joinRequestMessage:"+data)
-        this.socket.emit("joinSession",data);
-      }
-    }
-    processJoinRequestMessage(joinRequestMessage,options){
-            var that=this;
-            var allow=true;
-            var inputSender={
-              client:joinRequestMessage.client
-            };
-
-            if(options.onJoin){
-                  if(!options.canJoin(joinRequestMessage)){
-                    allow=false;
-                  }
-            }
-            inputSender.inputMessageListener=function(data){
-                  that.log("input message received:"+data);
-                  if(options.onInputMessageReceived){
-                      const inputMessage=JSON.parse(data);
-                      if(inputMessage.client===this.client){
-                        console.log("input message is coming from itself:"+data);
-                      }
-                      else{
-                          options.onInputMessageReceived(inputMessage);
-                      }
-
-                  }
-            }
-
-
-
-            inputSender.leavelistener=function(leaveRequest){
-                that.log("leave request is received:"+leaveRequest);
-                const leaveMessage=JSON.parse(leaveRequest);
-                const inputSenderToLeave=that.connectedInputSenders.get(leaveMessage.client);
-                if(inputSenderToLeave){
-                    that.socket.removeListener(this.session+"/input",inputSenderToLeave.inputMessageListener);
-                    that.socket.removeListener(this.session+"/leave",inputSenderToLeave.leavelistener);
-                    that.connectedInputSenders.delete(leaveMessage.client);
-                    that.log("sender is removed:"+that.connectedInputSenders.size);
-                    if(options.onSenderLeave){
-                      options.onSenderLeave(inputSenderToLeave);
-                    }
+            this.socket.on(this.session+"/inputPermission", function(data){
+                that.log("inputPermission message is received:"+data);
+                const inputPermissionMessage=JSON.parse(data);
+                if(options.onInputPermission){
+                    options.onInputPermission(function(){
+                        inputPermissionMessage.allow=true;
+                        that.onInputPermission(inputPermissionMessage,options);
+                    },function(){
+                      inputPermissionMessage.allow=false;
+                      that.onInputPermission(inputPermissionMessage,options);
+                    },inputPermissionMessage,options);
                 }
-            };
+                else{
+                    inputPermissionMessage.allow=true;
+                    that.onInputPermission(inputPermissionMessage,options);
+                }
+            });
+            if(options.inputSession){
+                    that.socket.on(options.inputSession+"/inputPermissionResult", function(data){
+                    that.log("inputPermissionResult is received "+data);
+                    that.onInputPermissionResult(JSON.parse(data),options);
+                    });
+                    const requestInputPermissionMessage={
+                          sessionGroup:this.sessionGroup,
+                          session:options.join.session,
+                          client:this.client,
+                          inputSession:options.inputSession
+                    };
+                    const data=JSON.stringify(requestInputPermissionMessage)
+                    this.log("sending the requestInputPermissionMessage:"+data)
+                    this.socket.emit(options.inputSession+"/inputPermision",data);
+            }
 
-            if(allow){
-              this.connectedInputSenders.set(joinRequestMessage.client,inputSender);
-              if(options.onSendedJoin){
-                      options.onSendedJoin(inputSender);
-              }
-              this.socket.on(that.session+"/input", inputSender.inputMessageListener);
-              this.socket.on(that.session+"/leave",inputSender.leavelistener);
-            }
-            var joinRequestResponse=Object.assign({},joinRequestMessage,{allow});
-            if(options.metadata){
-                joinRequestResponse.metadata=options.metadata;
-            }
-            var data=JSON.stringify(joinRequestResponse)
-            this.log("sending the join response message:"+data);
-            this.socket.emit("joinResponse",data);
     }
+
+    onInputPermission(inputPermissionMessage,options){
+            var that=this;
+            const inputSender=buildInputSender(inputPermissionMessage,options);
+            this.connectedInputSenders.set(inputPermissionMessage.client,inputSender);
+            if(options.onSendedJoin){
+                      options.onSendedJoin(inputSender);
+            }
+            this.socket.on(that.session+"/input", inputSender.onInput);
+            this.socket.on(that.session+"/leave",inputSender.onLeave);
+            var inputPermissionResult=Object.assign({},inputPermissionMessage);
+            if(options.metadata){
+                    inputPermissionResult.metadata=options.metadata;
+            }
+            var data=JSON.stringify(inputPermissionResult)
+            this.log("sending the inputPermissionResult  message:"+data);
+            this.socket.emit(this.session+"/inputPermissionResult",data);
+    }
+
+    onInputPermissionResult(inputPermissionResultMessage, options){
+            this.inputSession=options.inputSession;
+            if(options.onInputPermissionResult){
+              options.onInputPermissionResult(inputPermissionResultMessage);
+            }
+    }
+
+    buildInputSender(inputPermissionMessage,options){
+      var that=this;
+      var inputSender={
+        client:inputPermissionMessage.client,
+        session:inputPermissionMessage.session,
+        onInput:function(data){
+            that.log("input message received:"+data);
+            if(options.onInput){
+                const inputMessage=JSON.parse(data);
+                if(inputMessage.client===that.client){
+                    console.log("input message is coming from itself:"+data);
+                  }
+                else{
+                    options.onInput(inputMessage);
+                  }
+              }
+         },
+         onLeave:function(data){
+             that.log("leave request is received:"+data);
+             const leaveMessage=JSON.parse(data);
+             const inputSenderToLeave=that.connectedInputSenders.get(leaveMessage.client);
+             if(inputSenderToLeave){
+                 that.socket.removeListener(this.session+"/input",inputSenderToLeave.onInput);
+                 that.socket.removeListener(this.session+"/leave",inputSenderToLeave.onLeave);
+                 that.connectedInputSenders.delete(leaveMessage.client);
+                 that.log("sender is removed:"+that.connectedInputSenders.size);
+                 if(options.onLeave){
+                     options.onLeave(inputSenderToLeave);
+                 }
+               }
+         }
+      };
+      return inputSender;
+    }
+
+
+
+
+
    sendInputMessage(data){
       if(!this.isConnected()){
            this.log("not connected yet");
@@ -188,13 +193,14 @@ export function createGUID() {
       }
       var message={
           client:this.client,
-          targetSession:this.targetSession,
+          session:this.session,
+          inputSession:this.inputSession,
           data
       }
 
       const content=JSON.stringify(message);
       this.log("sending input message  to:"+this.targetSession+" content:"+content);
-      this.socket.emit(this.targetSession+'/input', content);
+      this.socket.emit(this.inputSession+'/input', content);
    }
    sendMetadata(metadata){
      if(!this.isConnected()){
@@ -203,24 +209,38 @@ export function createGUID() {
      }
      var message={
          client:this.client,
-         targetSession:this.targetSession,
+         inputSession:this.inputSession,
          metadata
      }
-
      const content=JSON.stringify(message);
-     this.log("sending input message  to:"+this.targetSession+" content:"+content);
-     this.socket.emit(this.targetSession+'/metadata', content);
+     this.log("sending metdata message  to:"+this.inputSession+" content:"+content);
+     this.socket.emit(this.inputSession+'/metadata', content);
    }
 
 
-   getConnectionData(data){
-       return {
-                   url:this.socketURL,
+   buildCodeData(type="input",data={}){
+       return Object.assign(data,{
+                   url:this.url,
                    session:this.session,
-                   key:this.encryptKey,
-                   data
-       };
+                   action:this.action,
+                   type
+       });
    }
+   processCodeData(opts={},codedata){
+      if(codeData.type=='input'){
+            const options=Object.assign(opts);
+            if(codedata){
+                  options.inputSession=codeData.session;
+            }
+            if(this.codeInputSession===options.inputSession){
+              this.log("inputSession is already connected");
+            }
+            this.codeInputSession=options.inputSession;
+
+            this.connect(opts)
+      }
+   }
+
 
 
 }

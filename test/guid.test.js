@@ -1,10 +1,10 @@
 import {createMessageConnector} from "../src/index";
 
 var sum=function(x,y){return (x+y)};
-test('receiver sender should communicate', (done) => {
+test('receiver sender should send input message', (done) => {
   const receiver=createMessageConnector();
   const sender=createMessageConnector();
-
+  var codeData=null;
   console.log("receiver session:"+receiver.session);
   console.log("receiver client:"+receiver.client);
   console.log("sender session:"+sender.session);
@@ -30,7 +30,7 @@ test('receiver sender should communicate', (done) => {
             console.log("sender connection complete"+JSON.stringify(message));
        },
        join:{session:receiver.session},
-       onJoinComplete:function(message){
+       onRegistered:function(message){
          console.log("sender Join Complete:"+JSON.stringify(message));
            expect(message.metadata[0].name).toBe(metadata[0].name);
            expect(message.metadata[0].value).toBe(metadata[0].value);
@@ -42,31 +42,28 @@ test('receiver sender should communicate', (done) => {
        }
    }
    console.log("now connecting the sender::::");
-   sender.connect(senderOptions);
+   sender.processCodeData(senderOptions,codeData);
  }
   var receiverOptions={
       url:'http://192.168.0.5:1337',
-      onInputMessageReceived:function(message){
+      onInput:function(message){
             console.log("receiver received input message:"+JSON.stringify(message));
             expect(message.data.content).toBe(inputData.content);
             sender.disconnect();
             receiver.disconnect();
             done();
       },
-      canJoin:function(message){
-          console.log(" The reeiver received onJoin:"+JSON.stringify(message));
-          return false;
+      onInputPermission:function(done){
+          done();
       },
-      onConnectionComplete:function(message){
-        console.log("receiver connection  complete:"+JSON.stringify(message));
-        expect(message.action).toBe("join");
-        expect(message.randomkey).toBeDefined();
-        connectSender();
+      onRegistered:function(done){
+          connectSender();
       },
       metadata
   }
-
   receiver.connect(receiverOptions);
+  codeData=receiver.buildCodeData();
+
 
 
 

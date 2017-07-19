@@ -9,7 +9,10 @@ export function createGUID() {
  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
    s4() + '-' + s4() + s4() + s4();
 }
-
+function randomPasswordGenerator(){
+  var randPassword = Array(10).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz").map(function(x) { return x[Math.floor(Math.random() * x.length)] }).join('');
+  return randPassword;
+}
 function createAESKey(){
   return createGUID();
 }
@@ -22,7 +25,7 @@ function createAESKey(){
         this.sessionGroup="359a15fa-23e7-4a10-89fa-efc12d2ee891";
         this.session=createGUID();
         this.client=createGUID();
-        this.aes=createGUID();
+        this.aes=randomPasswordGenerator();
         this.socket=null;
         this.action="input";
 

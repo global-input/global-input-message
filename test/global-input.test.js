@@ -55,5 +55,6 @@ test('receiver sender should send input message', (done) => {
       metadata
   }
   receiver.connect(receiverOptions);
+  console.log("password generated:"+receiver.aes);
 
 });

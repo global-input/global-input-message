@@ -1,5 +1,5 @@
 import SocketIOClient from "socket.io-client";
-
+import {encrypt,decrypt} from "./aes";
 export function createGUID() {
  function s4() {
    return Math.floor((1 + Math.random()) * 0x10000)
@@ -10,6 +10,9 @@ export function createGUID() {
    s4() + '-' + s4() + s4() + s4();
 }
 
+function createAESKey(){
+  return createGUID();
+}
  class GlobalInputMessageConnector{
     log(message){
       console.log(this.client+":"+message);
@@ -19,8 +22,10 @@ export function createGUID() {
         this.sessionGroup="359a15fa-23e7-4a10-89fa-efc12d2ee891";
         this.session=createGUID();
         this.client=createGUID();
+        this.aes=createGUID();
         this.socket=null;
         this.action="input";
+
         this.connectedInputSenders=new Map();
         this.url="https://globalinput.co.uk";
 
@@ -142,6 +147,7 @@ export function createGUID() {
 
     onInputPermissionResult(inputPermissionResultMessage, options){
             this.inputSession=options.inputSession;
+            this.inputAES=options.aes;
             if(options.onInputPermissionResult){
               options.onInputPermissionResult(inputPermissionResultMessage);
             }
@@ -157,12 +163,20 @@ export function createGUID() {
             if(options.onInput){
                 const inputMessage=JSON.parse(data);
                 if(inputMessage.client===that.client){
-                    console.log("input message is coming from itself:"+data);
+                    that.log("input message is coming from itself:"+data);
                   }
                 else{
+
+                    if(that.aes && inputMessage.data){
+                          var dataDecrypted=decrypt(inputMessage.data,that.aes);
+                          that.log("decrypted:"+dataDecrypted);
+                          inputMessage.data=JSON.parse(dataDecrypted);
+                    }
                     options.onInput(inputMessage);
                   }
+
               }
+
          },
          onLeave:function(data){
              that.log("leave request is received:"+data);
@@ -191,16 +205,26 @@ export function createGUID() {
            this.log("not connected yet");
            return;
       }
+
       var message={
           client:this.client,
           session:this.session,
           inputSession:this.inputSession,
           data
       }
+      if(this.inputAES){
+          const contentToEncrypt=JSON.stringify(message.data);
+          this.log("content to be encrypted:"+contentToEncrypt);
+          const contentEcrypted=encrypt(contentToEncrypt,this.inputAES);
+          this.log("content encrypted:"+contentEcrypted);
+          message.data=contentEcrypted;
+      }
 
-      const content=JSON.stringify(message);
-      this.log("sending input message  to:"+this.targetSession+" content:"+content);
-      this.socket.emit(this.inputSession+'/input', content);
+       const content=JSON.stringify(message);
+       this.log("sending input message  to:"+this.inputSession+" content:"+content);
+       this.socket.emit(this.inputSession+'/input', content);
+
+
    }
    sendMetadata(metadata){
      if(!this.isConnected()){
@@ -223,6 +247,7 @@ export function createGUID() {
                    url:this.url,
                    session:this.session,
                    action:"input",
+                   aes:this.aes
        });
    }
    processCodeData(opts={},codedata){
@@ -231,7 +256,8 @@ export function createGUID() {
             const options=Object.assign({},opts);
             options.inputSession=codedata.session;
             options.url=codedata.url;
-           this.connect(options);
+            options.aes=codedata.aes;
+            this.connect(options);
       }
    }
 

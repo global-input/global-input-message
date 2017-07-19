@@ -34,10 +34,10 @@ test('receiver sender should send input message', (done) => {
         }
       };
       sender.processCodeData(senderOptions,receiver.buildInputCodeData());
-    
+
   };
   var receiverOptions={
-      url:'http://192.168.0.48:1337',
+      url:'http://192.168.0.5:1337',
       onInput:function(message){
             console.log("receiver received input message:"+JSON.stringify(message));
             expect(message.data.content).toBe(inputData.content);
@@ -55,12 +55,5 @@ test('receiver sender should send input message', (done) => {
       metadata
   }
   receiver.connect(receiverOptions);
-
-
-
-
-
-
-
 
 });

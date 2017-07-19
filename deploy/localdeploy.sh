@@ -1,2 +1,5 @@
-cp lib/index.js ../global-input-web/node_modules/global-input-message/
-cp lib/index.js ../globalInputMobile/node_modules/global-input-message/
+
+mkdir ../global-input-web/src/global-input-message
+cp src/index.js ../global-input-web/src/global-input-message/
+
+#cp src/index.js ../globalInputMobile/node_modules/global-input-message/

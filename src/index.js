@@ -155,7 +155,12 @@ import {encrypt,decrypt} from "./aes";
             this.inputSession=options.inputSession;
             this.inputAES=options.aes;
             if(this.inputAES && inputPermissionResultMessage.metadata && typeof inputPermissionResultMessage.metadata ==="string"){
-                  inputPermissionResultMessage.metadata=JSON.parse(decrypt(inputPermissionResultMessage.metadata,this.inputAES));
+                   const descryptedMetadata=decrypt(inputPermissionResultMessage.metadata,this.inputAES);
+                   this.log("decrypted metadata:"+descryptedMetadata);
+                  inputPermissionResultMessage.metadata=JSON.parse(descryptedMetadata);
+            }
+            else{
+                  this.log("received metadata is not encrypted");
             }
 
 
@@ -180,8 +185,11 @@ import {encrypt,decrypt} from "./aes";
 
                     if(that.aes && inputMessage.data && typeof inputMessage.data ==="string"){
                           var dataDecrypted=decrypt(inputMessage.data,that.aes);
-                          that.log("decrypted:"+dataDecrypted);
+                          that.log("decrypted inputdata :"+dataDecrypted);
                           inputMessage.data=JSON.parse(dataDecrypted);
+                    }
+                    else{
+                      that.log("received input data is not encrypted");
                     }
 
                     options.onInput(inputMessage);

@@ -1,31 +1,31 @@
 import SocketIOClient from "socket.io-client";
 import {encrypt,decrypt} from "./aes";
-export function createGUID() {
- function s4() {
-   return Math.floor((1 + Math.random()) * 0x10000)
-     .toString(16)
-     .substring(1);
- }
- return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-   s4() + '-' + s4() + s4() + s4();
-}
-function randomPasswordGenerator(){
-  var randPassword = Array(10).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz").map(function(x) { return x[Math.floor(Math.random() * x.length)] }).join('');
-  return randPassword;
-}
-function createAESKey(){
-  return createGUID();
-}
+
+
+
  class GlobalInputMessageConnector{
     log(message){
       console.log(this.client+":"+message);
     }
+    randomPasswordGenerator(){
+      var randPassword = Array(10).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz").map(function(x) { return x[Math.floor(Math.random() * x.length)] }).join('');
+      return randPassword;
+    }
+    createGUID() {
+     function s4() {
+       return Math.floor((1 + Math.random()) * 0x10000)
+         .toString(16)
+         .substring(1);
+     }
+     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+       s4() + '-' + s4() + s4() + s4();
+    }
     constructor(){
         this.apikey="756ffa56-69ef-11e7-907b-a6006ad3dba0";
         this.sessionGroup="359a15fa-23e7-4a10-89fa-efc12d2ee891";
-        this.session=createGUID();
-        this.client=createGUID();
-        this.aes=randomPasswordGenerator();
+        this.session=this.createGUID();
+        this.client=this.createGUID();
+        this.aes=this.randomPasswordGenerator();
         this.socket=null;
         this.action="input";
 

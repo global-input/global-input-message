@@ -33,7 +33,7 @@ test('receiver sender should send input message', (done) => {
           expect(message.metadata[1].name).toBe(metadata[1].name);
           console.log("sender sending the input message:"+JSON.stringify(inputData));
           sender.sendInputMessage(inputData);
-          
+
         }
       };
       sender.processCodeData(senderOptions,receiver.buildInputCodeData());

@@ -154,9 +154,11 @@ function createAESKey(){
     onInputPermissionResult(inputPermissionResultMessage, options){
             this.inputSession=options.inputSession;
             this.inputAES=options.aes;
-            if(this.inputAES && inputPermissionResultMessage.metadata){
+            if(this.inputAES && inputPermissionResultMessage.metadata && typeof inputPermissionResultMessage.metadata ==="string"){
                   inputPermissionResultMessage.metadata=JSON.parse(decrypt(inputPermissionResultMessage.metadata,this.inputAES));
             }
+
+
             if(options.onInputPermissionResult){
               options.onInputPermissionResult(inputPermissionResultMessage);
             }
@@ -176,11 +178,12 @@ function createAESKey(){
                   }
                 else{
 
-                    if(that.aes && inputMessage.data){
+                    if(that.aes && inputMessage.data && typeof inputMessage.data ==="string"){
                           var dataDecrypted=decrypt(inputMessage.data,that.aes);
                           that.log("decrypted:"+dataDecrypted);
                           inputMessage.data=JSON.parse(dataDecrypted);
                     }
+
                     options.onInput(inputMessage);
                   }
 

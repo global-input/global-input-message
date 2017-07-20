@@ -27,16 +27,16 @@ test('receiver sender should send input message', (done) => {
       var senderOptions={
         onInputPermissionResult: function(message){
           console.log("***:"+JSON.stringify(message));
-
           expect(message.metadata[0].name).toBe(metadata[0].name);
           expect(message.metadata[0].value).toBe(metadata[0].value);
           expect(message.metadata[1].name).toBe(metadata[1].name);
           console.log("sender sending the input message:"+JSON.stringify(inputData));
           sender.sendInputMessage(inputData);
-
         }
       };
-      sender.processCodeData(senderOptions,receiver.buildInputCodeData());
+      var codedata=receiver.buildInputCodeData();
+      console.log("code data*****:"+codedata);
+      sender.processCodeData(senderOptions,codedata);
 
   };
   var receiverOptions={
@@ -58,6 +58,6 @@ test('receiver sender should send input message', (done) => {
       metadata
   }
   receiver.connect(receiverOptions);
-  console.log("password generated:"+receiver.aes);
+
 
 });

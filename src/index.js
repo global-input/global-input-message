@@ -7,32 +7,24 @@ import {encrypt,decrypt} from "./aes";
     log(message){
       console.log(this.client+":"+message);
     }
-    randomPasswordGenerator(){
-      var randPassword = Array(10).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz").map(function(x) { return x[Math.floor(Math.random() * x.length)] }).join('');
+    generatateRandomString(length=10){
+      var randPassword = Array(length).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz").map(function(x) { return x[Math.floor(Math.random() * x.length)] }).join('');
       return randPassword;
     }
-    createGUID() {
-     function s4() {
-       return Math.floor((1 + Math.random()) * 0x10000)
-         .toString(16)
-         .substring(1);
-     }
-     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-       s4() + '-' + s4() + s4() + s4();
-    }
-    constructor(){
-        this.apikey="756ffa56-69ef-11e7-907b-a6006ad3dba0";
-        this.sessionGroup="359a15fa-23e7-4a10-89fa-efc12d2ee891";
-        this.session=this.createGUID();
-        this.client=this.createGUID();
-        this.aes=this.randomPasswordGenerator();
-        this.socket=null;
-        this.action="input";
 
+    constructor(){
+        this.apikey="k7jc3QcMPKEXGW5UC";
+        this.sessionGroup="1CNbWCFpsbmRQuKdd";
+        this.codeAES="LNJGw0x5lqnXpnVY8";
+        this.session=this.generatateRandomString(17);
+        this.client=this.generatateRandomString(17);
+        this.aes=this.generatateRandomString(17);
+        this.socket=null;
         this.connectedInputSenders=new Map();
         this.url="https://globalinput.co.uk";
-
+        this.actor="receiver";
     }
+
     isConnected(){
       return this.socket!=null;
     }
@@ -43,14 +35,27 @@ import {encrypt,decrypt} from "./aes";
         }
         this.targetSession=null;
     }
+    setCodeAES(codeAES){
+      this.codeAES=codeAES;
+    }
     connect(options={}){
         this.disconnect();
 
          if(options.apikey){
               this.apikey=options.apikey;
-          }
+         }
+         if(options.sessionGroup){
+           this.sessionGroup=options.sessionGroup;
+         }
+         if(options.client){
+           this.client=options.client;
+         }
+
           if(options.url){
             this.url=options.url;
+          }
+          if(options.actor){
+            this.actor=options.actor;
           }
           this.log("connecting to:"+this.url);
           this.socket=SocketIOClient(this.url);
@@ -112,8 +117,8 @@ import {encrypt,decrypt} from "./aes";
                     that.onInputPermission(inputPermissionMessage,options);
                 }
             });
-            if(options.inputSession){
-                    that.socket.on(options.inputSession+"/inputPermissionResult", function(data){
+            if(options.connectSession){
+                    that.socket.on(options.connectSession+"/inputPermissionResult", function(data){
                     that.log("inputPermissionResult is received "+data);
                     that.onInputPermissionResult(JSON.parse(data),options);
                     });
@@ -121,7 +126,7 @@ import {encrypt,decrypt} from "./aes";
                           sessionGroup:that.sessionGroup,
                           session:that.session,
                           client:that.client,
-                          inputSession:options.inputSession
+                          connectSession:options.connectSession
                     };
                     const data=JSON.stringify(requestInputPermissionMessage)
                     this.log("sending the requestInputPermissionMessage:"+data);
@@ -152,7 +157,7 @@ import {encrypt,decrypt} from "./aes";
     }
 
     onInputPermissionResult(inputPermissionResultMessage, options){
-            this.inputSession=options.inputSession;
+            this.connectSession=options.connectSession;
             this.inputAES=options.aes;
             if(this.inputAES && inputPermissionResultMessage.metadata && typeof inputPermissionResultMessage.metadata ==="string"){
                    const descryptedMetadata=decrypt(inputPermissionResultMessage.metadata,this.inputAES);
@@ -229,7 +234,7 @@ import {encrypt,decrypt} from "./aes";
       var message={
           client:this.client,
           session:this.session,
-          inputSession:this.inputSession,
+          connectSession:this.connectSession,
           data
       }
       if(this.inputAES){
@@ -241,8 +246,8 @@ import {encrypt,decrypt} from "./aes";
       }
 
        const content=JSON.stringify(message);
-       this.log("sending input message  to:"+this.inputSession+" content:"+content);
-       this.socket.emit(this.inputSession+'/input', content);
+       this.log("sending input message  to:"+this.connectSession+" content:"+content);
+       this.socket.emit(this.connectSession+'/input', content);
 
 
    }
@@ -253,37 +258,80 @@ import {encrypt,decrypt} from "./aes";
      }
      var message={
          client:this.client,
-         inputSession:this.inputSession,
+         connectSession:this.connectSession,
          metadata
      }
      const content=JSON.stringify(message);
-     this.log("sending metdata message  to:"+this.inputSession+" content:"+content);
-     this.socket.emit(this.inputSession+'/metadata', content);
+     this.log("sending metdata message  to:"+this.connectSession+" content:"+content);
+     this.socket.emit(this.connectSession+'/metadata', content);
    }
 
 
    buildInputCodeData(data={}){
-       return Object.assign(data,{
+       var codedata=Object.assign(data,{
                    url:this.url,
                    session:this.session,
                    action:"input",
                    aes:this.aes
        });
+       return encrypt(JSON.stringify(codedata),this.codeAES);
    }
-   processCodeData(opts={},codedata){
-      console.log("codedata:"+JSON.stringify(codedata));
+   buildAPIKeyCodeData(data={}){
+     var codedata=Object.assign(data,{
+                 apikey:this.apikey,
+                 action:"settings"
+     });
+   }
+   buildSessionGroupCodeData(data={}){
+     var codedata=Object.assign(data,{
+                 sessionGroup:this.sessionGroup,
+                 action:"settings"
+     });
+   }
+   buildCodeAESCodeData(data={}){
+     var codedata=Object.assign(data,{
+                 codeAES:this.codeAES,
+                 action:"settings"
+     });
+   }
+
+   processCodeData(opts={},encryptedcodedata){
+      const codedatastring=decrypt(encryptedcodedata,this.codeAES);
+      if(!codedatastring){
+        console.log("unable to descrypt the codedata:"+encryptedcodedata);
+        return;
+      }
+      console.log("codedata:"+codedatastring);
+      var codedata=JSON.parse(codedatastring);
       if(codedata.action=='input'){
             const options=Object.assign({},opts);
-            options.inputSession=codedata.session;
+            options.connectSession=codedata.session;
             options.url=codedata.url;
             options.aes=codedata.aes;
+            options.actor="input";
             this.connect(options);
       }
+      if(codedata.action=='settings'){
+            this.processSettings(opts,codedata);
+      }
+   }
+   processSettings(opts,codedata){
+        if(codedata.apikey){
+           this.apikey=codedata.apikey;
+        }
+        if(codedata.sessionGroup){
+          this.sessionGroup=codedata.sessionGroup;
+        }
+        if(codedata.codeAES){
+          this.codeAES=codedata.codeAES;
+        }
+        if(opts.onSettings){
+          opts.onSettings(codedata);
+        }
    }
 
-
-
 }
+
 
  export function createMessageConnector(){
    return new GlobalInputMessageConnector();

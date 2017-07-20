@@ -26,11 +26,14 @@ test('receiver sender should send input message', (done) => {
   var connectSender=function(){
       var senderOptions={
         onInputPermissionResult: function(message){
+          console.log("***:"+JSON.stringify(message));
+
           expect(message.metadata[0].name).toBe(metadata[0].name);
           expect(message.metadata[0].value).toBe(metadata[0].value);
           expect(message.metadata[1].name).toBe(metadata[1].name);
           console.log("sender sending the input message:"+JSON.stringify(inputData));
           sender.sendInputMessage(inputData);
+          
         }
       };
       sender.processCodeData(senderOptions,receiver.buildInputCodeData());

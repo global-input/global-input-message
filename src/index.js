@@ -142,8 +142,8 @@ function createAESKey(){
             var inputPermissionResult=Object.assign({},inputPermissionMessage);
             if(options.metadata){
                     inputPermissionResult.metadata=options.metadata;
-                    if(this.inputAES){
-                        inputPermissionResult.metadata=encrypt(JSON.stringify(options.metadata),this.inputAES);
+                    if(this.aes){
+                        inputPermissionResult.metadata=encrypt(JSON.stringify(options.metadata),this.aes);
                     }
             }
             var data=JSON.stringify(inputPermissionResult)
@@ -155,7 +155,7 @@ function createAESKey(){
             this.inputSession=options.inputSession;
             this.inputAES=options.aes;
             if(this.inputAES && inputPermissionResultMessage.metadata){
-                  inputPermissionResultMessage.metadata=decrypt(inputPermissionResultMessage.metadata,that.this.inputAES);
+                  inputPermissionResultMessage.metadata=JSON.parse(decrypt(inputPermissionResultMessage.metadata,this.inputAES));
             }
             if(options.onInputPermissionResult){
               options.onInputPermissionResult(inputPermissionResultMessage);

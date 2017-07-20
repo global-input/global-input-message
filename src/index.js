@@ -1,28 +1,31 @@
 import SocketIOClient from "socket.io-client";
 import {encrypt,decrypt} from "./aes";
-export function createGUID() {
- function s4() {
-   return Math.floor((1 + Math.random()) * 0x10000)
-     .toString(16)
-     .substring(1);
- }
- return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-   s4() + '-' + s4() + s4() + s4();
-}
 
-function createAESKey(){
-  return createGUID();
-}
+
+
  class GlobalInputMessageConnector{
     log(message){
       console.log(this.client+":"+message);
     }
+    randomPasswordGenerator(){
+      var randPassword = Array(10).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz").map(function(x) { return x[Math.floor(Math.random() * x.length)] }).join('');
+      return randPassword;
+    }
+    createGUID() {
+     function s4() {
+       return Math.floor((1 + Math.random()) * 0x10000)
+         .toString(16)
+         .substring(1);
+     }
+     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+       s4() + '-' + s4() + s4() + s4();
+    }
     constructor(){
         this.apikey="756ffa56-69ef-11e7-907b-a6006ad3dba0";
         this.sessionGroup="359a15fa-23e7-4a10-89fa-efc12d2ee891";
-        this.session=createGUID();
-        this.client=createGUID();
-        this.aes=createGUID();
+        this.session=this.createGUID();
+        this.client=this.createGUID();
+        this.aes=this.randomPasswordGenerator();
         this.socket=null;
         this.action="input";
 
@@ -139,6 +142,9 @@ function createAESKey(){
             var inputPermissionResult=Object.assign({},inputPermissionMessage);
             if(options.metadata){
                     inputPermissionResult.metadata=options.metadata;
+                    if(this.aes){
+                        inputPermissionResult.metadata=encrypt(JSON.stringify(options.metadata),this.aes);
+                    }
             }
             var data=JSON.stringify(inputPermissionResult)
             this.log("sending the inputPermissionResult  message:"+data);
@@ -148,6 +154,11 @@ function createAESKey(){
     onInputPermissionResult(inputPermissionResultMessage, options){
             this.inputSession=options.inputSession;
             this.inputAES=options.aes;
+            if(this.inputAES && inputPermissionResultMessage.metadata && typeof inputPermissionResultMessage.metadata ==="string"){
+                  inputPermissionResultMessage.metadata=JSON.parse(decrypt(inputPermissionResultMessage.metadata,this.inputAES));
+            }
+
+
             if(options.onInputPermissionResult){
               options.onInputPermissionResult(inputPermissionResultMessage);
             }
@@ -167,11 +178,12 @@ function createAESKey(){
                   }
                 else{
 
-                    if(that.aes && inputMessage.data){
+                    if(that.aes && inputMessage.data && typeof inputMessage.data ==="string"){
                           var dataDecrypted=decrypt(inputMessage.data,that.aes);
                           that.log("decrypted:"+dataDecrypted);
                           inputMessage.data=JSON.parse(dataDecrypted);
                     }
+
                     options.onInput(inputMessage);
                   }
 

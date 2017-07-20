@@ -281,18 +281,21 @@ import {encrypt,decrypt} from "./aes";
                  apikey:this.apikey,
                  action:"settings"
      });
+     return encrypt(JSON.stringify(codedata),this.codeAES);
    }
    buildSessionGroupCodeData(data={}){
      var codedata=Object.assign(data,{
                  sessionGroup:this.sessionGroup,
                  action:"settings"
      });
+     return encrypt(JSON.stringify(codedata),this.codeAES);
    }
-   buildCodeAESCodeData(data={}){
+   buildCodeAESCodeData(data={}, commonAES){
      var codedata=Object.assign(data,{
                  codeAES:this.codeAES,
                  action:"settings"
      });
+     return encrypt(JSON.stringify(codedata),commonAES);
    }
 
    processCodeData(opts={},encryptedcodedata){

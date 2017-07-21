@@ -320,34 +320,56 @@ import {encrypt,decrypt} from "./aes";
      if(!encryptedcodedata){
        return encryptedcodedata;
      }
-     
+
      var type=encryptedcodedata.substring(0,1);
      var codepart=encryptedcodedata.substring(1);
      var codestring=null;
      if(type==="C"){
-         codedatastring=decrypt(codepart,"LNJGw0x5lqnXpnVY8");
+          console.log("It is a code secret");
+          try{
+            codedatastring=decrypt(codepart,"LNJGw0x5lqnXpnVY8");
+          }
+          catch(error){
+            console.error(error+" while decrupting the codedata");
+            return;
+          }
      }
      else if(type==="D" || type ==="F"){
         codedatastring=codepart;
+        console.log("it is not encrypted:"+codedatastring);
      }
      else{
-        codedatastring=decrypt(codepart,this.codeAES);
+       console.log("decrypting with codeAES:"+codepart);
+       try{
+              codedatastring=decrypt(codepart,this.codeAES);
+            }
+       catch(error){
+         console.error(error+" failed to decrupted:"+codepart+" with:"+this.codeAES);
+       }
      }
       if(!codedatastring){
-        console.log("unable to descrypt the codedata:"+encryptedcodedata);
+        console.error("unable to descrypt the codedata:"+encryptedcodedata);
         return;
       }
       console.log("codedata:"+codedatastring);
-      var codedata=JSON.parse(codedatastring);
+      var codedata=null;
+      try{
+            codedata=JSON.parse(codedatastring);
+        }
+        catch(error){
+          console.error(error+" parse json is failed:"+codedatastring);
+        }
       if(codedata.action=='input' && (type ==="G"||type=="D")){
             const options=Object.assign({},opts);
             options.connectSession=codedata.session;
             options.url=codedata.url;
             options.aes=codedata.aes;
             options.actor="input";
+            console.log("calling the connect from processCodeData");
             this.connect(options);
       }
       if(codedata.action=='settings' && (type==="S" || type==="F" || type==="C")){
+            console.log("calling the processSettings from processCodeData");
             this.processSettings(opts,codedata);
       }
    }

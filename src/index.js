@@ -268,45 +268,78 @@ import {encrypt,decrypt} from "./aes";
 
 
    buildInputCodeData(data={}){
-       var codedata=Object.assign(data,{
+       var codedata=Object.assign({},data,{
                    url:this.url,
                    session:this.session,
                    action:"input",
                    aes:this.aes
        });
-       return encrypt(JSON.stringify(codedata),this.codeAES);
+       if(this.codeAES){
+          return "G"+encrypt(JSON.stringify(codedata),this.codeAES);
+       }
+       else{
+          return "D"+JSON.stringify(codedata);
+       }
+
    }
    buildAPIKeyCodeData(data={}){
-     var codedata=Object.assign(data,{
+     var codedata=Object.assign({},data,{
                  apikey:this.apikey,
                  action:"settings"
      });
-     return encrypt(JSON.stringify(codedata),this.codeAES);
+     if(this.codeAES){
+            return "S"+encrypt(JSON.stringify(codedata),this.codeAES);
+     }
+     else{
+            return "F"+JSON.stringify(codedata);
+     }
+
    }
    buildSessionGroupCodeData(data={}){
-     var codedata=Object.assign(data,{
+     var codedata=Object.assign({},data,{
                  sessionGroup:this.sessionGroup,
                  action:"settings"
      });
-     return encrypt(JSON.stringify(codedata),this.codeAES);
+     if(this.codeAES){
+        return "S"+encrypt(JSON.stringify(codedata),this.codeAES);
+     }
+     else{
+         return "F"+JSON.stringify(codedata),this.codeAES;
+     }
+
    }
-   buildCodeAESCodeData(data={}, commonAES){
-     var codedata=Object.assign(data,{
+   buildCodeAESCodeData(data={}){
+     var codedata=Object.assign({},data,{
                  codeAES:this.codeAES,
                  action:"settings"
      });
-     return encrypt(JSON.stringify(codedata),commonAES);
+     return "C"+encrypt(JSON.stringify(codedata),"LNJGw0x5lqnXpnVY8");
    }
 
    processCodeData(opts={},encryptedcodedata){
-      const codedatastring=decrypt(encryptedcodedata,this.codeAES);
+     if(!encryptedcodedata){
+       return encryptedcodedata;
+     }
+     
+     var type=encryptedcodedata.substring(0,1);
+     var codepart=encryptedcodedata.substring(1);
+     var codestring=null;
+     if(type==="C"){
+         codedatastring=decrypt(codepart,"LNJGw0x5lqnXpnVY8");
+     }
+     else if(type==="D" || type ==="F"){
+        codedatastring=codepart;
+     }
+     else{
+        codedatastring=decrypt(codepart,this.codeAES);
+     }
       if(!codedatastring){
         console.log("unable to descrypt the codedata:"+encryptedcodedata);
         return;
       }
       console.log("codedata:"+codedatastring);
       var codedata=JSON.parse(codedatastring);
-      if(codedata.action=='input'){
+      if(codedata.action=='input' && (type ==="G"||type=="D")){
             const options=Object.assign({},opts);
             options.connectSession=codedata.session;
             options.url=codedata.url;
@@ -314,7 +347,7 @@ import {encrypt,decrypt} from "./aes";
             options.actor="input";
             this.connect(options);
       }
-      if(codedata.action=='settings'){
+      if(codedata.action=='settings' && (type==="S" || type==="F" || type==="C")){
             this.processSettings(opts,codedata);
       }
    }

@@ -4,16 +4,22 @@ import {createMessageConnector} from "../src/index";
 test("apikey se test", function(done){
 
   const connector=createMessageConnector();
+
    var apikey="thisisapikey";
 
-   connector.processSettings=function(opts,codedata){
-      expect(codedata.apikey).toBe(apikey);
+   var options={
+     onSettingsCodeData:function(codedata,next){
+
+      next();
+      expect(connector.apikey).toBe(apikey);
       done();
+     }
    }
    connector.apikey=apikey;
    var encryptedapikey=connector.buildAPIKeyCodeData();
+   connector.apikey="dummy";
    console.log("encryptedapikey:{"+encryptedapikey+"}");
-   connector.processCodeData({},encryptedapikey);
+   connector.processCodeData(options,encryptedapikey);
 
 });
 

@@ -275,10 +275,10 @@ import {encrypt,decrypt} from "./aes";
                    aes:this.aes
        });
        if(this.codeAES){
-          return "G"+encrypt("J"+JSON.stringify(codedata),this.codeAES);
+          return "A"+encrypt("J"+JSON.stringify(codedata),this.codeAES);
        }
        else{
-          return "DJ"+JSON.stringify(codedata);
+          return "NJ"+JSON.stringify(codedata);
        }
 
    }
@@ -288,10 +288,10 @@ import {encrypt,decrypt} from "./aes";
                  action:"settings"
      });
      if(this.codeAES){
-            return "S"+encrypt("J"+JSON.stringify(codedata),this.codeAES);
+            return "A"+encrypt("J"+JSON.stringify(codedata),this.codeAES);
      }
      else{
-            return "FJ"+JSON.stringify(codedata);
+            return "NJ"+JSON.stringify(codedata);
      }
 
    }
@@ -301,10 +301,10 @@ import {encrypt,decrypt} from "./aes";
                  action:"settings"
      });
      if(this.codeAES){
-        return "S"+encrypt("J"+JSON.stringify(codedata),this.codeAES);
+        return "A"+encrypt("J"+JSON.stringify(codedata),this.codeAES);
      }
      else{
-         return "FJ"+JSON.stringify(codedata),this.codeAES;
+         return "NJ"+JSON.stringify(codedata),this.codeAES;
      }
 
    }
@@ -318,78 +318,96 @@ import {encrypt,decrypt} from "./aes";
 
    processCodeData(opts={},encryptedcodedata){
      if(!encryptedcodedata){
-       return encryptedcodedata;
+       console.log("empty codedata");
+       return;
      }
-
-     var type=encryptedcodedata.substring(0,1);
-     var codepart=encryptedcodedata.substring(1);
-     var codestring=null;
-     if(type==="C"){
+     var encryptionType=encryptedcodedata.substring(0,1);
+     var encryptedContent=encryptedcodedata.substring(1);
+     var decryptedContent=null;
+     if(encryptionType==="C"){
           console.log("It is a code secret");
           try{
-            codedatastring=decrypt(codepart,"LNJGw0x5lqnXpnVY8");
+            decryptedContent=decrypt(encryptedContent,"LNJGw0x5lqnXpnVY8");
           }
           catch(error){
             console.error(error+" while decrupting the codedata");
             return;
           }
      }
-     else if(type==="D" || type ==="F"){
-        codedatastring=codepart;
-        console.log("it is not encrypted:"+codedatastring);
-     }
-     else{
-       console.log("decrypting with codeAES:"+codepart);
+     else if(encryptionType==="A"){
+       console.log("decrypting with codeAES:"+encryptedContent);
        try{
-              codedatastring=decrypt(codepart,this.codeAES);
+              decryptedContent=decrypt(encryptedContent,this.codeAES);
             }
        catch(error){
          console.error(error+" failed to decrupted:"+codepart+" with:"+this.codeAES);
        }
      }
-      if(!codedatastring){
-        console.error("unable to descrypt the codedata:"+encryptedcodedata);
+     else if(encryptionType==="N"){
+        decryptedContent=encryptedContent;
+        console.log("it is not encrypted:"+decryptedContent);
+     }
+     else{
+       console.log("unrecognized format");
+       return;
+     }
+
+      if(!decryptedContent){
+        console.error("unable to descrypt the codedata:"+encryptedContent);
         return;
       }
-      console.log("codedata:"+codedatastring);
-      if(!codedatastring.startsWith("J")){
-          console.log("unrecognized format");
-          return;
-      }
-      codedatastring=codedatastring.substring(1);
+      var dataFormat=decryptedContent.substring(0,1);
+      var dataContent=decryptedContent.substring(1);
       var codedata=null;
-      try{
-            codedata=JSON.parse(codedatastring);
-        }
-        catch(error){
-          console.error(error+" parse json is failed:"+codedatastring);
-        }
-      if(codedata.action=='input' && (type ==="G"||type=="D")){
-            const options=Object.assign({},opts);
-            options.connectSession=codedata.session;
-            options.url=codedata.url;
-            options.aes=codedata.aes;
-            options.actor="input";
-            console.log("calling the connect from processCodeData");
-            this.connect(options);
+
+      if(dataFormat==="J"){
+          try{
+                codedata=JSON.parse(dataContent);
+            }
+            catch(error){
+              console.error(error+" parse json is failed:"+codedatastring);
+              return;
+            }
       }
-      if(codedata.action=='settings' && (type==="S" || type==="F" || type==="C")){
-            console.log("calling the processSettings from processCodeData");
+      else{
+        console.log("decrypted content is not recognized:"+decryptedContent);
+        return;
+      }
+      if(codedata.action=='input'){
+            console.log("calling the onInputCodeData");
             var that=this;
             if(opts.onSettings){
-              opts.onSettings(codedata, function(){
-                    that.processSettings(opts,codedata);
+              opts.onInputCodeData(codedata, function(){
+                    that.onInputCodeData(opts,codedata);
               });
             }
             else{
-              this.processSettings(opts,codedata);
+              this.onInputCodeData(opts,codedata);
             }
-
-
-
+      }
+      if(codedata.action=='settings'){
+            console.log("calling the onSettingsCodeData");
+            var that=this;
+            if(opts.onSettingsCodeData){
+              opts.onSettingsCodeData(codedata, function(){
+                    that.onSettingsCodeData(opts,codedata);
+              });
+            }
+            else{
+              this.onSettingsCodeData(opts,codedata);
+            }
       }
    }
-   processSettings(opts,codedata){
+   onInputCodeData(opts, codedata){
+     const options=Object.assign({},opts);
+     options.connectSession=codedata.session;
+     options.url=codedata.url;
+     options.aes=codedata.aes;
+     options.actor="input";
+     console.log("calling the connect from processCodeData");
+     this.connect(options);
+   }
+   onSettingsCodeData(opts,codedata){
 
         if(codedata.apikey){
            this.apikey=codedata.apikey;

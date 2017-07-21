@@ -275,10 +275,10 @@ import {encrypt,decrypt} from "./aes";
                    aes:this.aes
        });
        if(this.codeAES){
-          return "G"+encrypt(JSON.stringify(codedata),this.codeAES);
+          return "G"+encrypt("J"+JSON.stringify(codedata),this.codeAES);
        }
        else{
-          return "D"+JSON.stringify(codedata);
+          return "DJ"+JSON.stringify(codedata);
        }
 
    }
@@ -288,10 +288,10 @@ import {encrypt,decrypt} from "./aes";
                  action:"settings"
      });
      if(this.codeAES){
-            return "S"+encrypt(JSON.stringify(codedata),this.codeAES);
+            return "S"+encrypt("J"+JSON.stringify(codedata),this.codeAES);
      }
      else{
-            return "F"+JSON.stringify(codedata);
+            return "FJ"+JSON.stringify(codedata);
      }
 
    }
@@ -301,10 +301,10 @@ import {encrypt,decrypt} from "./aes";
                  action:"settings"
      });
      if(this.codeAES){
-        return "S"+encrypt(JSON.stringify(codedata),this.codeAES);
+        return "S"+encrypt("J"+JSON.stringify(codedata),this.codeAES);
      }
      else{
-         return "F"+JSON.stringify(codedata),this.codeAES;
+         return "FJ"+JSON.stringify(codedata),this.codeAES;
      }
 
    }
@@ -313,7 +313,7 @@ import {encrypt,decrypt} from "./aes";
                  codeAES:this.codeAES,
                  action:"settings"
      });
-     return "C"+encrypt(JSON.stringify(codedata),"LNJGw0x5lqnXpnVY8");
+     return "C"+encrypt("J"+JSON.stringify(codedata),"LNJGw0x5lqnXpnVY8");
    }
 
    processCodeData(opts={},encryptedcodedata){
@@ -352,6 +352,11 @@ import {encrypt,decrypt} from "./aes";
         return;
       }
       console.log("codedata:"+codedatastring);
+      if(!codedatastring.startsWith("J")){
+          console.log("unrecognized format");
+          return;
+      }
+      codedatastring=codedatastring.substring(1);
       var codedata=null;
       try{
             codedata=JSON.parse(codedatastring);

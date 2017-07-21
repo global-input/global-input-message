@@ -375,10 +375,22 @@ import {encrypt,decrypt} from "./aes";
       }
       if(codedata.action=='settings' && (type==="S" || type==="F" || type==="C")){
             console.log("calling the processSettings from processCodeData");
-            this.processSettings(opts,codedata);
+            var that=this;
+            if(opts.onSettings){
+              opts.onSettings(codedata, function(){
+                    that.processSettings(opts,codedata);
+              });
+            }
+            else{
+              this.processSettings(opts,codedata);
+            }
+
+
+
       }
    }
    processSettings(opts,codedata){
+
         if(codedata.apikey){
            this.apikey=codedata.apikey;
         }
@@ -388,9 +400,7 @@ import {encrypt,decrypt} from "./aes";
         if(codedata.codeAES){
           this.codeAES=codedata.codeAES;
         }
-        if(opts.onSettings){
-          opts.onSettings(codedata);
-        }
+
    }
 
 }

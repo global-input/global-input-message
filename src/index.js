@@ -340,7 +340,7 @@ import {encrypt,decrypt} from "./aes";
               decryptedContent=decrypt(encryptedContent,this.codeAES);
             }
        catch(error){
-         console.error(error+" failed to decrupted:"+codepart+" with:"+this.codeAES);
+         console.error(error+" failed to decrypted:"+encryptedContent+" with:"+this.codeAES);
        }
      }
      else if(encryptionType==="N"){

@@ -1,8 +1,8 @@
 export function encrypt(content, password){
-    return CryptoJS.AES.encrypt(content, password).toString();
+    return escape(CryptoJS.AES.encrypt(content, password).toString());
 }
 export function decrypt(content, password){
-  return CryptoJS.AES.decrypt(content, password).toString(CryptoJS.enc.Utf8);
+  return CryptoJS.AES.decrypt(unescape(content), password).toString(CryptoJS.enc.Utf8);
 }
 
 

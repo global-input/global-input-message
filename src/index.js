@@ -374,9 +374,10 @@ import {encrypt,decrypt} from "./aes";
         return;
       }
       if(codedata.action=='input'){
-            console.log("calling the onInputCodeData");
+            console.log("codedata action is input");
             var that=this;
-            if(opts.onSettings){
+            if(opts.onInputCodeData){
+              console.lof("opts.onInputCodeData is to be called");
               opts.onInputCodeData(codedata, function(){
                     that.onInputCodeData(opts,codedata);
               });

@@ -274,6 +274,7 @@ import {encrypt,decrypt} from "./aes";
                    action:"input",
                    aes:this.aes
        });
+        console.log("the input data being used for codedata:"+JSON.stringify(codedata));       
        if(this.codeAES){
           return "A"+encrypt("J"+JSON.stringify(codedata),this.codeAES);
        }

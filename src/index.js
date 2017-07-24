@@ -274,7 +274,7 @@ import {encrypt,decrypt} from "./aes";
                    action:"input",
                    aes:this.aes
        });
-        console.log("the input data being used for codedata:"+JSON.stringify(codedata));       
+        console.log("the input data being used for codedata:"+JSON.stringify(codedata));
        if(this.codeAES){
           return "A"+encrypt("J"+JSON.stringify(codedata),this.codeAES);
        }
@@ -422,6 +422,29 @@ import {encrypt,decrypt} from "./aes";
         }
 
    }
+
+   sendGlobalInputFieldData(globalInputdata,index, value){
+      if(!globalInputdata){
+           console.log("ignored:"+index+":"+value+" because globalInputdata is empty");
+           return globalInputdata;
+      }
+       var globalInputdata=globalInputdata.slice(0);
+       console.log("setting index:"+index+"value:"+value);
+       globalInputdata[index].value=value;
+        var message={
+            id:this.connector.generatateRandomString(10),
+            value,
+            index
+          };
+      this.sendInputMessage(message);
+      return globalInputdata;
+  }
+  onReiceveGlobalInputFieldData(inputMessage, metadata){
+      console.log("received the input message:"+inputMessage);
+      if(metadata){
+            metadata[inputMessage.data.index].onInput(inputMessage.data.value);
+      }
+  }
 
 }
 

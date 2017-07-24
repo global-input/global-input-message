@@ -2,8 +2,15 @@ import {createMessageConnector} from "../src/index";
 
 var sum=function(x,y){return (x+y)};
 test('receiver sender should send input message', (done) => {
+
   const receiver=createMessageConnector();
   const sender=createMessageConnector();
+
+  receiver.client="recever";
+  sender.client="sender";
+
+
+
   var codedata=null;
   console.log("receiver session:"+receiver.session);
   console.log("receiver client:"+receiver.client);

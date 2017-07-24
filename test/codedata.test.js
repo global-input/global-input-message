@@ -1,20 +1,18 @@
 
 import {createMessageConnector} from "../src/index";
 
-test("apikey se test", function(done){
+test("apikey test", function(done){
 
   const connector=createMessageConnector();
 
    var apikey="thisisapikey";
 
    var options={
-     onSettingsCodeData:function(codedata,next){
-
-      next();
-      expect(connector.apikey).toBe(apikey);
+      onSettingsCodeData:function(opts,codedata){
+      expect(codedata.apikey).toBe(apikey);
       done();
      }
-   }
+   };
    connector.apikey=apikey;
    var encryptedapikey=connector.buildAPIKeyCodeData();
    connector.apikey="dummy";
@@ -28,16 +26,16 @@ test("apikey se test", function(done){
 test("input test for code", function(done){
  var url="https://dilshat";
   const connector=createMessageConnector();
- connector.url=url;
-
-   connector.connect=function(opts){
-      console.log("connect:"+JSON.stringify(opts));
-      expect(opts.url).toBe(url);
-      done();
-   };
-
+  connector.url=url;
    var encrypteddata=connector.buildInputCodeData();
+
    console.log("encrypte connection:{"+encrypteddata+"}");
-   connector.processCodeData({},encrypteddata);
+   connector.processCodeData({
+     onInputCodeData:function(opts, codedata){
+       console.log("connect:"+JSON.stringify(opts));
+       expect(opts.url).toBe(url);
+       done();
+     }
+   },encrypteddata);
 
 });

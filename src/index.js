@@ -376,28 +376,14 @@ import {encrypt,decrypt} from "./aes";
       }
       if(codedata.action=='input'){
             console.log("codedata action is input");
-            var that=this;
-            if(opts.onInputCodeData){
-              console.log("opts.onInputCodeData is to be called");
-              opts.onInputCodeData(codedata, function(){
-                    that.onInputCodeData(opts,codedata);
-              });
-            }
-            else{
-              this.onInputCodeData(opts,codedata);
-            }
+            this.onInputCodeData(opts,codedata);
       }
-      if(codedata.action=='settings'){
+      else if(codedata.action=='settings'){
             console.log("calling the onSettingsCodeData");
-            var that=this;
             if(opts.onSettingsCodeData){
-              opts.onSettingsCodeData(codedata, function(){
-                    that.onSettingsCodeData(opts,codedata);
-              });
+                opts.onSettingsCodeData(opts,codedata);
             }
-            else{
-              this.onSettingsCodeData(opts,codedata);
-            }
+
       }
    }
    onInputCodeData(opts, codedata){
@@ -407,21 +393,12 @@ import {encrypt,decrypt} from "./aes";
      options.aes=codedata.aes;
      options.actor="input";
      console.log("calling the connect from processCodeData");
-     this.connect(options);
+     if(opts.onInputCodeData){
+       console.log("opts.onInputCodeData is to be called");
+       opts.onInputCodeData(options, codedata);
+     }
    }
-   onSettingsCodeData(opts,codedata){
-
-        if(codedata.apikey){
-           this.apikey=codedata.apikey;
-        }
-        if(codedata.sessionGroup){
-          this.sessionGroup=codedata.sessionGroup;
-        }
-        if(codedata.codeAES){
-          this.codeAES=codedata.codeAES;
-        }
-
-   }
+   
 
    sendGlobalInputFieldData(globalInputdata,index, value){
       if(!globalInputdata){

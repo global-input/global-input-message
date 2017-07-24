@@ -266,7 +266,14 @@ import {encrypt,decrypt} from "./aes";
      this.socket.emit(this.connectSession+'/metadata', content);
    }
 
-
+   buildOptionsFromInputCodedata(codedata){
+        return {
+          connectSession:codedata.session,
+          url:codedata.url,
+          aes:codedata.aes,
+          actor:"input"
+        }
+   }
    buildInputCodeData(data={}){
        var codedata=Object.assign({},data,{
                    url:this.url,
@@ -317,7 +324,7 @@ import {encrypt,decrypt} from "./aes";
      return "C"+encrypt("J"+JSON.stringify(codedata),"LNJGw0x5lqnXpnVY8");
    }
 
-   processCodeData(opts={},encryptedcodedata){
+   processCodeData(encryptedcodedata, options){
      if(!encryptedcodedata){
        console.log("empty codedata");
        return;
@@ -376,29 +383,20 @@ import {encrypt,decrypt} from "./aes";
       }
       if(codedata.action=='input'){
             console.log("codedata action is input");
-            this.onInputCodeData(opts,codedata);
+            if(options.onInputCodeData){
+                options.onInputCodeData(codedata);
+            }
       }
       else if(codedata.action=='settings'){
             console.log("calling the onSettingsCodeData");
-            if(opts.onSettingsCodeData){
-                opts.onSettingsCodeData(opts,codedata);
+            if(options.onSettingsCodeData){
+                options.onSettingsCodeData(codedata);
             }
-
       }
    }
-   onInputCodeData(opts, codedata){
-     const options=Object.assign({},opts);
-     options.connectSession=codedata.session;
-     options.url=codedata.url;
-     options.aes=codedata.aes;
-     options.actor="input";
-     console.log("calling the connect from processCodeData");
-     if(opts.onInputCodeData){
-       console.log("opts.onInputCodeData is to be called");
-       opts.onInputCodeData(options, codedata);
-     }
-   }
-   
+
+
+
 
    sendGlobalInputFieldData(globalInputdata,index, value){
       if(!globalInputdata){

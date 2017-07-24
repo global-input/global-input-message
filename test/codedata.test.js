@@ -8,7 +8,7 @@ test("apikey test", function(done){
    var apikey="thisisapikey";
 
    var options={
-      onSettingsCodeData:function(opts,codedata){
+      onSettingsCodeData:function(codedata){
       expect(codedata.apikey).toBe(apikey);
       done();
      }
@@ -17,7 +17,7 @@ test("apikey test", function(done){
    var encryptedapikey=connector.buildAPIKeyCodeData();
    connector.apikey="dummy";
    console.log("encryptedapikey:{"+encryptedapikey+"}");
-   connector.processCodeData(options,encryptedapikey);
+   connector.processCodeData(encryptedapikey,options);
 
 });
 
@@ -30,12 +30,13 @@ test("input test for code", function(done){
    var encrypteddata=connector.buildInputCodeData();
 
    console.log("encrypte connection:{"+encrypteddata+"}");
-   connector.processCodeData({
-     onInputCodeData:function(opts, codedata){
-       console.log("connect:"+JSON.stringify(opts));
-       expect(opts.url).toBe(url);
+   var options={
+     onInputCodeData:function(codedata){
+       console.log("iput codedata:"+JSON.stringify(codedata));
+       expect(codedata.url).toBe(url);
        done();
      }
-   },encrypteddata);
+   };
+   connector.processCodeData(encrypteddata,options);
 
 });

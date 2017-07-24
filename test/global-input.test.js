@@ -30,23 +30,30 @@ test('receiver sender should send input message', (done) => {
    }
   ];
   var inputData={content:"dilshat"};
+
+  var senderConnectOptions={
+    onInputPermissionResult: function(message){
+      console.log("***:"+JSON.stringify(message));
+      expect(message.metadata[0].name).toBe(metadata[0].name);
+      expect(message.metadata[0].value).toBe(metadata[0].value);
+      expect(message.metadata[1].name).toBe(metadata[1].name);
+      console.log("sender sending the input message:"+JSON.stringify(inputData));
+      sender.sendInputMessage(inputData);
+    }
+  };
+
+  var senderCodeOptions={
+    onInputCodeData:function(codedata){
+      var options=sender.buildOptionsFromInputCodedata(codedata);
+      var opts=Object.assign(options,senderConnectOptions);
+      sender.connect(opts);
+    }
+  };
+
   var connectSender=function(){
-      var senderOptions={
-        onInputPermissionResult: function(message){
-          console.log("***:"+JSON.stringify(message));
-          expect(message.metadata[0].name).toBe(metadata[0].name);
-          expect(message.metadata[0].value).toBe(metadata[0].value);
-          expect(message.metadata[1].name).toBe(metadata[1].name);
-          console.log("sender sending the input message:"+JSON.stringify(inputData));
-          sender.sendInputMessage(inputData);
-        },
-        onInputCodeData:function(opts,codedata){
-          sender.connect(opts);
-        }
-      };
       var codedata=receiver.buildInputCodeData();
       console.log("code data*****:"+codedata);
-      sender.processCodeData(senderOptions,codedata);
+      sender.processCodeData(codedata,senderCodeOptions);
 
   };
   var receiverOptions={
@@ -58,11 +65,11 @@ test('receiver sender should send input message', (done) => {
             receiver.disconnect();
             done();
       },
-      onInputPermission:function(done){
-          done();
+      onInputPermission:function(next){
+          next();
       },
-      onRegistered:function(done){
-          done();
+      onRegistered:function(next){
+          next();
           connectSender();
       },
       metadata

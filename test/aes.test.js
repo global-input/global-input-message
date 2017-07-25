@@ -1,4 +1,4 @@
-import {decrypt,encrypt} from "../src/aes";
+import {decrypt,encrypt} from "../src";
 
 test("encrypt and decrypt should work", function(){
   var content="dilshat hewzulla";

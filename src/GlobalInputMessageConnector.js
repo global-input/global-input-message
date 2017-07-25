@@ -1,24 +1,19 @@
 import SocketIOClient from "socket.io-client";
-import {encrypt,decrypt} from "./aes";
-
+import {encrypt,decrypt,generatateRandomString} from "./util";
+import {codedataUtil} from "./codedataUtil";
 
 
  export default class GlobalInputMessageConnector{
     log(message){
       console.log(this.client+":"+message);
     }
-    generatateRandomString(length=10){
-      var randPassword = Array(length).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz").map(function(x) { return x[Math.floor(Math.random() * x.length)] }).join('');
-      return randPassword;
-    }
-
     constructor(){
         this.apikey="k7jc3QcMPKEXGW5UC";
         this.sessionGroup="1CNbWCFpsbmRQuKdd";
         this.codeAES="LNJGw0x5lqnXpnVY8";
-        this.session=this.generatateRandomString(17);
-        this.client=this.generatateRandomString(17);
-        this.aes=this.generatateRandomString(17);
+        this.session=generatateRandomString(17);
+        this.client=generatateRandomString(17);
+        this.aes=generatateRandomString(17);
         this.socket=null;
         this.connectedInputSenders=new Map();
         this.url="https://globalinput.co.uk";
@@ -267,138 +262,6 @@ import {encrypt,decrypt} from "./aes";
    }
 
 
-   buildOptionsFromInputCodedata(codedata){
-        return {
-          connectSession:codedata.session,
-          url:codedata.url,
-          aes:codedata.aes,
-          actor:"input"
-        }
-   }
-   buildInputCodeData(data={}){
-       var codedata=Object.assign({},data,{
-                   url:this.url,
-                   session:this.session,
-                   action:"input",
-                   aes:this.aes
-       });
-        console.log("the input data being used for codedata:"+JSON.stringify(codedata));
-       if(this.codeAES){
-          return "A"+encrypt("J"+JSON.stringify(codedata),this.codeAES);
-       }
-       else{
-          return "NJ"+JSON.stringify(codedata);
-       }
-
-   }
-   buildAPIKeyCodeData(data={}){
-     var codedata=Object.assign({},data,{
-                 apikey:this.apikey,
-                 action:"settings"
-     });
-     if(this.codeAES){
-            return "A"+encrypt("J"+JSON.stringify(codedata),this.codeAES);
-     }
-     else{
-            return "NJ"+JSON.stringify(codedata);
-     }
-
-   }
-   buildSessionGroupCodeData(data={}){
-     var codedata=Object.assign({},data,{
-                 sessionGroup:this.sessionGroup,
-                 action:"settings"
-     });
-     if(this.codeAES){
-        return "A"+encrypt("J"+JSON.stringify(codedata),this.codeAES);
-     }
-     else{
-         return "NJ"+JSON.stringify(codedata),this.codeAES;
-     }
-
-   }
-   buildCodeAESCodeData(data={}){
-     var codedata=Object.assign({},data,{
-                 codeAES:this.codeAES,
-                 action:"settings"
-     });
-     return "C"+encrypt("J"+JSON.stringify(codedata),"LNJGw0x5lqnXpnVY8");
-   }
-
-   processCodeData(encryptedcodedata, options){
-     if(!encryptedcodedata){
-       console.log("empty codedata");
-       return;
-     }
-     var encryptionType=encryptedcodedata.substring(0,1);
-     var encryptedContent=encryptedcodedata.substring(1);
-     var decryptedContent=null;
-     if(encryptionType==="C"){
-          console.log("It is a code secret");
-          try{
-            decryptedContent=decrypt(encryptedContent,"LNJGw0x5lqnXpnVY8");
-          }
-          catch(error){
-            console.error(error+" while decrupting the codedata");
-            return;
-          }
-     }
-     else if(encryptionType==="A"){
-       console.log("decrypting with codeAES:"+encryptedContent);
-       try{
-              decryptedContent=decrypt(encryptedContent,this.codeAES);
-            }
-       catch(error){
-         console.error(error+" failed to decrypted:"+encryptedContent+" with:"+this.codeAES);
-       }
-     }
-     else if(encryptionType==="N"){
-        decryptedContent=encryptedContent;
-        console.log("it is not encrypted:"+decryptedContent);
-     }
-     else{
-       console.log("unrecognized format");
-       return;
-     }
-
-      if(!decryptedContent){
-        console.error("unable to descrypt the codedata:"+encryptedContent);
-        return;
-      }
-      var dataFormat=decryptedContent.substring(0,1);
-      var dataContent=decryptedContent.substring(1);
-      var codedata=null;
-
-      if(dataFormat==="J"){
-          try{
-                codedata=JSON.parse(dataContent);
-            }
-            catch(error){
-              console.error(error+" parse json is failed:"+codedatastring);
-              return;
-            }
-      }
-      else{
-        console.log("decrypted content is not recognized:"+decryptedContent);
-        return;
-      }
-      if(codedata.action=='input'){
-            console.log("codedata action is input");
-            if(options.onInputCodeData){
-                options.onInputCodeData(codedata);
-            }
-      }
-      else if(codedata.action=='settings'){
-            console.log("calling the onSettingsCodeData");
-            if(options.onSettingsCodeData){
-                options.onSettingsCodeData(codedata);
-            }
-      }
-   }
-
-
-
-
    sendGlobalInputFieldData(globalInputdata,index, value){
       if(!globalInputdata){
            console.log("ignored:"+index+":"+value+" because globalInputdata is empty");
@@ -411,7 +274,7 @@ import {encrypt,decrypt} from "./aes";
        var globalInputdata=globalInputdata.slice(0);
        console.log("setting index:"+index+"value:"+value);
        globalInputdata[index].value=value;
-        var message={
+       var message={
             id:this.connector.generatateRandomString(10),
             value,
             index
@@ -424,6 +287,25 @@ import {encrypt,decrypt} from "./aes";
       if(metadata){
             metadata[inputMessage.data.index].onInput(inputMessage.data.value);
       }
+  }
+
+  buildOptionsFromInputCodedata(codedata){
+        return codedataUtil.buildOptionsFromInputCodedata(this,codedata);
+  }
+  buildInputCodeData(data={}){
+        return codedataUtil.buildInputCodeData(this,data);
+  }
+  buildAPIKeyCodeData(data={}){
+        return codedataUtil.buildAPIKeyCodeData(this,data);
+  }
+  buildSessionGroupCodeData(data={}){
+      return codedataUtil.buildSessionGroupCodeData(this,data);
+  }
+  buildCodeAESCodeData(data={}){
+      return codedataUtil.buildCodeAESCodeData(this,data)
+  }
+  processCodeData(encryptedcodedata, options){
+      return codedataUtil.processCodeData(this,encryptedcodedata,options);
   }
 
 }

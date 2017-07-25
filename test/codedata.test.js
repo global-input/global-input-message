@@ -1,5 +1,5 @@
 
-import {createMessageConnector} from "../src/index";
+import {createMessageConnector} from "../src";
 
 test("apikey test", function(done){
 

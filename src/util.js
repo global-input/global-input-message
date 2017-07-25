@@ -1,3 +1,7 @@
+export function generatateRandomString(length=10){
+  var randPassword = Array(length).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz").map(function(x) { return x[Math.floor(Math.random() * x.length)] }).join('');
+  return randPassword;
+}
 export function encrypt(content, password){
     return escape(CryptoJS.AES.encrypt(content, password).toString());
 }

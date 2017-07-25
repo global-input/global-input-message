@@ -1,6 +1,5 @@
-import {createMessageConnector} from "../src/index";
+import {createMessageConnector} from "../src";
 
-var sum=function(x,y){return (x+y)};
 test('receiver sender should send input message', (done) => {
 
   const receiver=createMessageConnector();

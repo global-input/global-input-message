@@ -105,6 +105,7 @@ import {encrypt,decrypt} from "./util";
         console.error("unable to descrypt the codedata:"+encryptedContent);
         return;
       }
+      console.log("decrypted codedata:"+decryptedContent);
       var dataFormat=decryptedContent.substring(0,1);
       var dataContent=decryptedContent.substring(1);
       var codedata=null;

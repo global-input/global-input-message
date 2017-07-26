@@ -75,6 +75,9 @@ import {encrypt,decrypt} from "./util";
        if(error){
          errorMessage=error+" "+message
        }
+       else{
+         errorMessage=message;
+       }
        console.error(errorMessage);
        if(options.onError){
           options(errorMessage);

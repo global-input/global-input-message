@@ -267,7 +267,7 @@ import {codedataUtil} from "./codedataUtil";
            console.log("ignored:"+index+":"+value+" because globalInputdata is empty");
            return globalInputdata;
       }
-      if(globalInputdata.length>=index){
+      if(globalInputdata.length<=index){
         console.error("reeived the data index is bigger that that of metadata");
         return globalInputdata;
       }

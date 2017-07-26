@@ -251,6 +251,10 @@ import {codedataUtil} from "./codedataUtil";
           this.log("not connected yet");
           return;
      }
+     if(metadata && this.aes){
+         metadata=encrypt(JSON.stringify(metadata),this.aes);
+     }
+
      var message={
          client:this.client,
          connectSession:this.connectSession,
@@ -290,12 +294,12 @@ import {codedataUtil} from "./codedataUtil";
                 metadata.fields[inputMessage.data.index].onInput(inputMessage.data.value);
           }
           else{
-            console.error("the index of the data in the input message is bigger than the elements in the medata");
+            console.error("the index of the data in the input message is bigger than the fields in the medata");
             return;
           }
       }
       else {
-          consoler.error("the medata should have elements data");
+          consoler.error("the medata should have fields data");
       }
   }
 

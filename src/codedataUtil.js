@@ -5,13 +5,20 @@ import {encrypt,decrypt} from "./util";
 
  export const codedataUtil={
 
-   buildOptionsFromInputCodedata:function(connector,codedata){
-        return {
+   buildOptionsFromInputCodedata:function(connector,codedata, options){
+        var buildOptions={
           connectSession:codedata.session,
           url:codedata.url,
           aes:codedata.aes,
           actor:"input"
         }
+        if(!options){
+            return buildOptions;
+        }
+        else{
+            Object.assign(buildOptions,options);
+        }
+
    },
    buildInputCodeData:function(connector,data={}){
        var codedata=Object.assign({},data,{
@@ -35,6 +42,7 @@ import {encrypt,decrypt} from "./util";
                  action:"settings"
      });
      if(connector.codeAES){
+
             return "A"+encrypt("J"+JSON.stringify(codedata),connector.codeAES);
      }
      else{

@@ -289,8 +289,8 @@ import {codedataUtil} from "./codedataUtil";
       }
   }
 
-  buildOptionsFromInputCodedata(codedata){
-        return codedataUtil.buildOptionsFromInputCodedata(this,codedata);
+  buildOptionsFromInputCodedata(codedata, options){
+        return codedataUtil.buildOptionsFromInputCodedata(this,codedata,options);
   }
   buildInputCodeData(data={}){
         return codedataUtil.buildInputCodeData(this,data);

@@ -16,7 +16,7 @@ import {encrypt,decrypt} from "./util";
             return buildOptions;
         }
         else{
-            Object.assign(buildOptions,options);
+            return Object.assign(buildOptions,options);
         }
 
    },

@@ -275,7 +275,7 @@ import {codedataUtil} from "./codedataUtil";
        console.log("setting index:"+index+"value:"+value);
        globalInputdata[index].value=value;
        var message={
-            id:this.connector.generatateRandomString(10),
+            id:generatateRandomString(10),
             value,
             index
           };

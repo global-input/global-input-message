@@ -80,7 +80,7 @@ import {encrypt,decrypt} from "./util";
        }
 
        if(options.onError){
-          options(errorMessage);
+          options.onError(errorMessage);
        }
        else{
          console.error(errorMessage);

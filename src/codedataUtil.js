@@ -70,7 +70,18 @@ import {encrypt,decrypt} from "./util";
      });
      return "C"+encrypt("J"+JSON.stringify(codedata),"LNJGw0x5lqnXpnVY8");
    },
+   onError(options,message, error){
+       var errorMessage=null;
+       if(error){
+         errorMessage=error+" "+message
+       }
+       console.error(errorMessage);
+       if(options.onError){
+          options(errorMessage);
+       }
 
+
+   },
    processCodeData(connector,encryptedcodedata, options){
      if(!encryptedcodedata){
        console.log("empty codedata");
@@ -87,7 +98,7 @@ import {encrypt,decrypt} from "./util";
             decryptedContent=decrypt(encryptedContent,"LNJGw0x5lqnXpnVY8");
           }
           catch(error){
-            console.error(error+" while decrupting the codedata");
+            this.onError(options,"while decrypting the codedata with common key",error);
             return;
           }
      }
@@ -97,7 +108,8 @@ import {encrypt,decrypt} from "./util";
               decryptedContent=decrypt(encryptedContent,connector.codeAES);
             }
        catch(error){
-         console.error(error+" failed to decrypted:"+encryptedContent+" with:"+connector.codeAES);
+         this.onError(options,"failed to decrypt:"+encryptedContent+" with:"+connector.codeAES,error);
+         return;
        }
      }
      else if(encryptionType==="N"){
@@ -105,12 +117,13 @@ import {encrypt,decrypt} from "./util";
         console.log("it is not encrypted:"+decryptedContent);
      }
      else{
-       console.log("unrecognized format");
+
+       this.onError(options,"unrecognized format:encryptionType="+encryptionType+" encryptedcodedata=["+encryptedcodedata+"]");
        return;
      }
 
       if(!decryptedContent){
-        console.error("unable to descrypt the codedata:"+encryptedContent);
+        this.onError(options,"failed to decrypt encryptedcodedata=["+encryptedcodedata+"]");
         return;
       }
       console.log("decrypted codedata:"+decryptedContent);
@@ -123,13 +136,13 @@ import {encrypt,decrypt} from "./util";
                 codedata=JSON.parse(dataContent);
             }
             catch(error){
-              console.error(error+" parse json is failed:"+codedatastring);
+              this.onError(options,"codedata is not in the correct json dataContent=["+dataContent+"]",error);
               return;
             }
       }
       else{
-        console.log("decrypted content is not recognized:"+decryptedContent);
-        return;
+          this.onError(options,"decrypted content is not in the recognized format:dataFormat:"+dataFormat+" dataContent:"+dataContent);
+          return;
       }
       if(codedata.action=='input'){
             console.log("codedata action is input");

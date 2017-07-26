@@ -285,9 +285,9 @@ import {codedataUtil} from "./codedataUtil";
   onReiceveGlobalInputFieldData(inputMessage, metadata){
       console.log("received the input message:"+inputMessage);
       console.log("received the input message:"+inputMessage);
-      if(metadata.elements){
-          if(inputMessage.data.index<metadata.elements.length){
-                metadata.elements[inputMessage.data.index].onInput(inputMessage.data.value);
+      if(metadata.fields){
+          if(inputMessage.data.index<metadata.fields.length){
+                metadata.fields[inputMessage.data.index].onInput(inputMessage.data.value);
           }
           else{
             console.error("the index of the data in the input message is bigger than the elements in the medata");

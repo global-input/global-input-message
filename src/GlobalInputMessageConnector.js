@@ -134,8 +134,8 @@ import {codedataUtil} from "./codedataUtil";
             var that=this;
             const inputSender=this.buildInputSender(inputPermissionMessage,options);
             this.connectedInputSenders.set(inputPermissionMessage.client,inputSender);
-            if(options.onJoin){
-                      options.onJoin(inputSender);
+            if(options.onSenderConnected){
+                      options.onSenderConnected(inputSender);
             }
             this.socket.on(that.session+"/input", inputSender.onInput);
             this.socket.on(that.session+"/leave",inputSender.onLeave);
@@ -207,8 +207,8 @@ import {codedataUtil} from "./codedataUtil";
                  that.socket.removeListener(this.session+"/leave",inputSenderToLeave.onLeave);
                  that.connectedInputSenders.delete(leaveMessage.client);
                  that.log("sender is removed:"+that.connectedInputSenders.size);
-                 if(options.onLeave){
-                     options.onLeave(inputSenderToLeave);
+                 if(options.onSenderLeave){
+                     options.onSenderLeave(inputSenderToLeave);
                  }
                }
          }

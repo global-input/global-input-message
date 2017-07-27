@@ -15,7 +15,7 @@ import {codedataUtil} from "./codedataUtil";
         this.client=generatateRandomString(17);
         this.aes=generatateRandomString(17);
         this.socket=null;
-        this.connectedDevices=new Map();
+        this.connectedSenders=[];
         this.url="https://globalinput.co.uk";
     }
 
@@ -129,9 +129,10 @@ import {codedataUtil} from "./codedataUtil";
     onInputPermission(inputPermissionMessage,options){
             var that=this;
             const inputSender=this.buildInputSender(inputPermissionMessage,options);
-            this.connectedDevices.set(inputPermissionMessage.client,inputSender);
+
+            this.connectedSenders.push(inputSender);
             if(options.onSenderConnected){
-                      options.onSenderConnected(inputSender, this.connectedDevices);
+                      options.onSenderConnected(inputSender, this.connectedSenders);
             }
             this.socket.on(that.session+"/input", inputSender.onInput);
             this.socket.on(that.session+"/leave",inputSender.onLeave);
@@ -197,16 +198,19 @@ import {codedataUtil} from "./codedataUtil";
          onLeave:function(data){
              that.log("leave request is received:"+data);
              const leaveMessage=JSON.parse(data);
-             const inputSenderToLeave=that.connectedDevices.get(leaveMessage.client);
-             if(inputSenderToLeave){
-                 that.socket.removeListener(this.session+"/input",inputSenderToLeave.onInput);
-                 that.socket.removeListener(this.session+"/leave",inputSenderToLeave.onLeave);
-                 that.connectedDevices.delete(leaveMessage.client);
-                 that.log("sender is removed:"+that.connectedDevices.size);
-                 if(options.onSenderDisconnected){
-                     options.onSenderDisconnected(inputSenderToLeave, that.connectedDevices);
-                 }
+             const matchedSenders=that.connectedSenders.filter(s =>s.client===leaveMessage.client);
+             if(matchedSenders.length>0){
+               const inputSenderToLeave=matchedSenders[0];
+               that.socket.removeListener(that.session+"/input",inputSenderToLeave.onInput);
+               that.socket.removeListener(that.session+"/leave",inputSenderToLeave.onLeave);
+               that.connectedSenders=that.connectedSenders.filter(s =>s.client!==leaveMessage.client);
+               that.log("sender is removed:"+that.connectedSenders.size);
+               if(options.onSenderDisconnected){
+                       options.onSenderDisconnected(inputSenderToLeave, that.connectedSenders);
                }
+
+             }
+
          }
       };
       return inputSender;

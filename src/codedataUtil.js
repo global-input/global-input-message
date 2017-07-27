@@ -9,8 +9,7 @@ import {encrypt,decrypt} from "./util";
         var buildOptions={
           connectSession:codedata.session,
           url:codedata.url,
-          aes:codedata.aes,
-          actor:"input"
+          aes:codedata.aes
         }
         if(!options){
             return buildOptions;

@@ -134,8 +134,8 @@ import {codedataUtil} from "./codedataUtil";
             var that=this;
             const inputSender=this.buildInputSender(inputPermissionMessage,options);
             this.connectedInputSenders.set(inputPermissionMessage.client,inputSender);
-            if(options.onSendedJoin){
-                      options.onSendedJoin(inputSender);
+            if(options.onJoin){
+                      options.onJoin(inputSender);
             }
             this.socket.on(that.session+"/input", inputSender.onInput);
             this.socket.on(that.session+"/leave",inputSender.onLeave);

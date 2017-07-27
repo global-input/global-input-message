@@ -47,7 +47,7 @@ import {codedataUtil} from "./codedataUtil";
 
           if(options.url){
             this.url=options.url;
-          }          
+          }
           this.log("connecting to:"+this.url);
           this.socket=SocketIOClient(this.url);
           const that=this;
@@ -131,7 +131,7 @@ import {codedataUtil} from "./codedataUtil";
             const inputSender=this.buildInputSender(inputPermissionMessage,options);
             this.connectedDevices.set(inputPermissionMessage.client,inputSender);
             if(options.onSenderConnected){
-                      options.onSenderConnected(inputSender);
+                      options.onSenderConnected(inputSender, this.connectedDevices);
             }
             this.socket.on(that.session+"/input", inputSender.onInput);
             this.socket.on(that.session+"/leave",inputSender.onLeave);
@@ -204,7 +204,7 @@ import {codedataUtil} from "./codedataUtil";
                  that.connectedDevices.delete(leaveMessage.client);
                  that.log("sender is removed:"+that.connectedDevices.size);
                  if(options.onSenderDisconnected){
-                     options.onSenderDisconnected(inputSenderToLeave);
+                     options.onSenderDisconnected(inputSenderToLeave, that.connectedDevices);
                  }
                }
          }

@@ -207,8 +207,8 @@ import {codedataUtil} from "./codedataUtil";
                  that.socket.removeListener(this.session+"/leave",inputSenderToLeave.onLeave);
                  that.connectedInputSenders.delete(leaveMessage.client);
                  that.log("sender is removed:"+that.connectedInputSenders.size);
-                 if(options.onSenderLeave){
-                     options.onSenderLeave(inputSenderToLeave);
+                 if(options.onSenderDisconnected){
+                     options.onSenderDisconnected(inputSenderToLeave);
                  }
                }
          }

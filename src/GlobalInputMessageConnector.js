@@ -104,20 +104,8 @@ import {codedataUtil} from "./codedataUtil";
             var that=this;
             this.socket.on(this.session+"/inputPermission", function(data){
                 that.log("inputPermission message is received:"+data);
-                const inputPermissionMessage=JSON.parse(data);
-                if(options.onInputPermission){
-                    options.onInputPermission(function(){
-                        inputPermissionMessage.allow=true;
-                        that.onInputPermission(inputPermissionMessage,options);
-                    },function(){
-                      inputPermissionMessage.allow=false;
-                      that.onInputPermission(inputPermissionMessage,options);
-                    },inputPermissionMessage,options);
-                }
-                else{
-                    inputPermissionMessage.allow=true;
-                    that.onInputPermission(inputPermissionMessage,options);
-                }
+
+                that.processInputPermission(JSON.parse(data), options);
             });
             if(options.connectSession){
                     that.socket.on(options.connectSession+"/inputPermissionResult", function(data){
@@ -130,38 +118,104 @@ import {codedataUtil} from "./codedataUtil";
                           client:that.client,
                           connectSession:options.connectSession
                     };
+                    requestInputPermissionMessage.data={
+                        client:that.client,
+                        time:(new Date()).getTime()
+                    };
+                    requestInputPermissionMessage.data=JSON.stringify(requestInputPermissionMessage.data);
+                    if(options.aes){
+                           requestInputPermissionMessage.data=encrypt(requestInputPermissionMessage.data,options.aes);
+                    }
+
+
                     const data=JSON.stringify(requestInputPermissionMessage)
                     this.log("sending the requestInputPermissionMessage:"+data);
                     this.socket.emit("inputPermision",data);
             }
 
     }
-
-    onInputPermission(inputPermissionMessage,options){
-            var that=this;
-
-            const inputSender=this.buildInputSender(inputPermissionMessage,options);
-            var existingSameSenders=this.connectedSenders.filter(s=>s.client===inputPermissionMessage.client);
-            if(existingSameSenders.length>0){
-                console.log("the client is already connected");
-                return;
+    processInputPermission(inputPermissionMessage,options){
+            if(!inputPermissionMessage.data){
+              this.sendInputPermissionDeniedMessage(inputPermissionMessage,"data is missing in the permision request");
+              return;
+          }
+          try{
+                inputPermissionMessage.data=decrypt(inputPermissionMessage.data,this.aes);
             }
-            this.connectedSenders.push(inputSender);
-            if(options.onSenderConnected){
+            catch(error){
+              this.log(error+" while decrypting the data in the permission request:"+inputPermissionMessage.data);
+              this.sendInputPermissionDeniedMessage(inputPermissionResult,"failed to decrypt");
+              return;
+            }
+          if(!inputPermissionMessage.data){
+            this.log(" failed to decrypt the data in the permission request");
+            this.sendInputPermissionDeniedMessage(inputPermissionMessage,"failed to decrypt");
+            return;
+          }
+          try{
+                inputPermissionMessage.data=JSON.parse(inputPermissionMessage.data);
+          }
+          catch(error){
+              this.log(error+" while parsing the json data in the permisson request");
+              this.sendInputPermissionDeniedMessage(inputPermissionMessage,"data format error in the permisson request");
+              return;
+          }          
+          if(inputPermissionMessage.data.client!==inputPermissionMessage.client){
+            this.log("***the client id mis match in the permission");
+            this.sendInputPermissionDeniedMessage(inputPermissionMessage,"client id mismatch");
+            return;
+          }
+          var that=this;
+          if(options.onInputPermission){
+              options.onInputPermission(function(){
+                  that.grantInputPermission(inputPermissionMessage,options);
+              },function(){
+                that.sendInputPermissionDeniedMessage(inputPermissionResult,"application denied to give permission");
+              },inputPermissionMessage,options);
+          }
+          else{
+              this.grantInputPermission(inputPermissionMessage,options);
+          }
+
+    }
+
+
+    grantInputPermission(inputPermissionMessage,options){
+      var existingSameSenders=this.connectedSenders.filter(s=>s.client===inputPermissionMessage.client);
+      if(existingSameSenders.length>0){
+          this.log("the client is already connected");
+          return;
+      }
+      const inputSender=this.buildInputSender(inputPermissionMessage,options);
+      this.connectedSenders.push(inputSender);
+      if(options.onSenderConnected){
                       options.onSenderConnected(inputSender, this.connectedSenders);
-            }
-            this.socket.on(that.session+"/input", inputSender.onInput);
-            this.socket.on(that.session+"/leave",inputSender.onLeave);
-            var inputPermissionResult=Object.assign({},inputPermissionMessage);
-            if(options.metadata){
-                    inputPermissionResult.metadata=options.metadata;
-                    if(this.aes){
-                        inputPermissionResult.metadata=encrypt(JSON.stringify(options.metadata),this.aes);
-                    }
-            }
-            var data=JSON.stringify(inputPermissionResult)
-            this.log("sending the inputPermissionResult  message:"+data);
-            this.socket.emit(this.session+"/inputPermissionResult",data);
+      }
+      this.socket.on(this.session+"/input", inputSender.onInput);
+      this.socket.on(this.session+"/leave",inputSender.onLeave);
+      this.sendInputPermissionGrantedMessage(inputPermissionMessage, options);
+    }
+    sendInputPermissionGrantedMessage(inputPermissionMessage,options){
+
+      var inputPermissionResult=Object.assign({},inputPermissionMessage);
+      if(options.metadata){
+              inputPermissionResult.metadata=options.metadata;
+              if(this.aes){
+                  inputPermissionResult.metadata=encrypt(JSON.stringify(options.metadata),this.aes);
+              }
+      }
+      inputPermissionResult.allow=true;
+      this.sendInputPermissionResult(inputPermissionResult);
+    }
+    sendInputPermissionDeniedMessage(inputPermissionMessage,reason){
+      inputPermissionMessage.allow=false;
+      inputPermissionMessage.reason=reason;
+      this.sendInputPermissionResult(inputPermissionMessage);
+    }
+    sendInputPermissionResult(inputPermissionResult){
+      var data=JSON.stringify(inputPermissionResult);
+      this.log("sending the inputPermissionResult  message:"+data);
+      this.socket.emit(this.session+"/inputPermissionResult",data);
     }
 
     onInputPermissionResult(inputPermissionResultMessage, options){
@@ -222,7 +276,7 @@ import {codedataUtil} from "./codedataUtil";
                               inputMessage.data=JSON.parse(dataDecrypted);
                           }
                           catch(error){
-                            that.logError(error+"failed to parse the decrupted input content:"+dataDecrypted)
+                            that.logError(error+"failed to parse the decrypted input content:"+dataDecrypted)
                           }
 
                     }

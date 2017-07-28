@@ -32,12 +32,18 @@ test('receiver sender should send input message', (done) => {
 
   var senderConnectOptions={
     onInputPermissionResult: function(message){
-      console.log("***:"+JSON.stringify(message));
-      expect(message.metadata[0].name).toBe(metadata[0].name);
-      expect(message.metadata[0].value).toBe(metadata[0].value);
-      expect(message.metadata[1].name).toBe(metadata[1].name);
-      console.log("sender sending the input message:"+JSON.stringify(inputData));
-      sender.sendInputMessage(inputData);
+      if(message.allow){
+        console.log("***:"+JSON.stringify(message));
+       expect(message.metadata[0].name).toBe(metadata[0].name);
+       expect(message.metadata[0].value).toBe(metadata[0].value);
+       expect(message.metadata[1].name).toBe(metadata[1].name);
+        console.log("sender sending the input message:"+JSON.stringify(inputData));
+        sender.sendInputMessage(inputData);
+      }
+      else{
+        console.log(" permission denied:"+message.reason);
+      }
+
     }
   };
 
@@ -45,6 +51,7 @@ test('receiver sender should send input message', (done) => {
     onInputCodeData:function(codedata){
       var options=sender.buildOptionsFromInputCodedata(codedata);
       var opts=Object.assign(options,senderConnectOptions);
+      console.log("********** sender connection options:"+JSON.stringify(opts));
       sender.connect(opts);
     }
   };

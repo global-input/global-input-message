@@ -140,7 +140,7 @@ import {codedataUtil} from "./codedataUtil";
             const inputSender=this.buildInputSender(inputPermissionMessage,options);
             var existingSameSenders=this.connectedSenders.filter(s=>s.client===inputPermissionMessage.client);
             if(existingSameSenders.length>0){
-                console.log("the same client send the permission twice");
+                console.log("the client is already connected");
                 return;
             }
             this.connectedSenders.push(inputSender);

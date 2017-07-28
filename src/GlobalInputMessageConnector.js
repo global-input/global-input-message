@@ -63,14 +63,22 @@ import {codedataUtil} from "./codedataUtil";
                  this.socket.on("registered", function(data){
                          that.log("received the registered message:"+data);
                          var registeredMessage=JSON.parse(data);
-                         if(options.onRegistered){
-                            options.onRegistered(function(){
-                                that.onRegistered(registeredMessage,options);
-                            },registeredMessage,options);
+                         if(registeredMessage.result==="ok"){
+                               if(options.onRegistered){
+                                  options.onRegistered(function(){
+                                      that.onRegistered(registeredMessage,options);
+                                  },registeredMessage,options);
+                               }
+                               else{
+                                    that.onRegistered(registeredMessage,options);
+                               }
                          }
                          else{
-                              that.onRegistered(registeredMessage,options);
+                           if(options.onRegisterFailed){
+                             options.onRegisterFailed();
+                           }
                          }
+
                  });
                  const registerMessage={
                        sessionGroup:this.sessionGroup,
@@ -164,6 +172,13 @@ import {codedataUtil} from "./codedataUtil";
             if(options.onInputPermissionResult){
               options.onInputPermissionResult(inputPermissionResultMessage);
             }
+            var receveiverDisconnected=function(){
+                 console.log("the received disconnected");
+                 if(options.onReceiverDisconnected){
+                   options.onReceiverDisconnected();
+                 }
+            }
+            this.socket.on(options.connectSession+"/leave",receveiverDisconnected);
     }
 
     buildInputSender(inputPermissionMessage,options){

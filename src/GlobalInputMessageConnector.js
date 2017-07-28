@@ -7,6 +7,9 @@ import {codedataUtil} from "./codedataUtil";
     log(message){
       console.log(this.client+":"+message);
     }
+    logError(message){
+      console.error(this.client+":"+message);
+    }
     constructor(){
         this.apikey="k7jc3QcMPKEXGW5UC";
         this.sessionGroup="1CNbWCFpsbmRQuKdd";
@@ -201,9 +204,27 @@ import {codedataUtil} from "./codedataUtil";
                 else{
 
                     if(that.aes && inputMessage.data && typeof inputMessage.data ==="string"){
-                          var dataDecrypted=decrypt(inputMessage.data,that.aes);
-                          that.log("decrypted inputdata :"+dataDecrypted);
-                          inputMessage.data=JSON.parse(dataDecrypted);
+                          var dataDecrypted=null;
+                          try{
+                            dataDecrypted=decrypt(inputMessage.data,that.aes);
+                          }
+                          catch(error){
+                              that.logError(error+", failed to decrypt the input content with:"+that.aes);
+                              return;
+                          }
+                          if(!dataDecrypted){
+                            that.logError("failed to decrypt the content with:"+that.aes);
+                            return;
+                          }
+
+                          that.log("decrypted inputdata is:"+dataDecrypted);
+                          try{
+                              inputMessage.data=JSON.parse(dataDecrypted);
+                          }
+                          catch(error){
+                            that.logError(error+"failed to parse the decrupted input content:"+dataDecrypted)
+                          }
+
                     }
                     else{
                       that.log("received input data is not encrypted");

@@ -159,7 +159,7 @@ import {codedataUtil} from "./codedataUtil";
               this.log(error+" while parsing the json data in the permisson request");
               this.sendInputPermissionDeniedMessage(inputPermissionMessage,"data format error in the permisson request");
               return;
-          }          
+          }
           if(inputPermissionMessage.data.client!==inputPermissionMessage.client){
             this.log("***the client id mis match in the permission");
             this.sendInputPermissionDeniedMessage(inputPermissionMessage,"client id mismatch");
@@ -235,12 +235,15 @@ import {codedataUtil} from "./codedataUtil";
               options.onInputPermissionResult(inputPermissionResultMessage);
             }
             var receveiverDisconnected=function(){
-                 console.log("the received disconnected");
+                 console.log("the receiver disconnected");
                  if(options.onReceiverDisconnected){
                    options.onReceiverDisconnected();
                  }
             }
-            this.socket.on(options.connectSession+"/leave",receveiverDisconnected);
+            if(this.socket){
+                this.socket.on(options.connectSession+"/leave",receveiverDisconnected);
+            }
+
     }
 
     buildInputSender(inputPermissionMessage,options){

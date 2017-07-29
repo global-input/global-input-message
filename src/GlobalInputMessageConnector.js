@@ -379,23 +379,22 @@ import {codedataUtil} from "./codedataUtil";
        this.log("sending input message  to:"+session+" content:"+content);
        this.socket.emit(session+'/input', content);
    }
-
-
-   sendGlobalInputFieldData(globalInputdata,index, value){
-      if(!globalInputdata){
-           console.log("ignored:"+index+":"+value+" because globalInputdata is empty");
-           return globalInputdata;
-      }
-      if(globalInputdata.length<=index){
-        console.error("receied the data index is bigger that that of metadata");
-        return globalInputdata;
-      }
-       var globalInputdata=globalInputdata.slice(0);
-       console.log("setting index:"+index+"value:"+value);
-       globalInputdata[index].value=value;
-      this.sendInputMessage(value, index);
+   changeGlobalInputFieldData(globalInputdata,index, value){
+     if(!globalInputdata){
+          console.log("ignored:"+index+":"+value+" because globalInputdata is empty");
+          return globalInputdata;
+     }
+     if(globalInputdata.length<=index){
+       console.error("receied the data index is bigger that that of metadata");
+       return globalInputdata;
+     }
+      var globalInputdata=globalInputdata.slice(0);
+      console.log("setting index:"+index+"value:"+value);
+      globalInputdata[index].value=value;
       return globalInputdata;
-  }
+
+   }
+
   onReiceveGlobalInputFieldData(inputMessage, metadata){
       console.log("received the input message:"+inputMessage);
       console.log("received the input message:"+inputMessage);

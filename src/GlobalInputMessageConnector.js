@@ -242,6 +242,8 @@ import {codedataUtil} from "./codedataUtil";
             }
             if(this.socket){
                 this.socket.on(options.connectSession+"/leave",receveiverDisconnected);
+                var inputSender=this.buildInputSender(inputPermissionResultMessage,options);
+                this.socket.on(options.connectSession+"/input",inputSender.onInput);
             }
 
     }
@@ -259,11 +261,14 @@ import {codedataUtil} from "./codedataUtil";
                     that.log("input message is coming from itself:"+data);
                   }
                 else{
-
-                    if(that.aes && inputMessage.data && typeof inputMessage.data ==="string"){
+                    var aes=that.aes;
+                    if(that.inputAES){
+                      aes=that.inputAES;
+                    }
+                    if(inputMessage.data){
                           var dataDecrypted=null;
                           try{
-                            dataDecrypted=decrypt(inputMessage.data,that.aes);
+                            dataDecrypted=decrypt(inputMessage.data,aes);
                           }
                           catch(error){
                               that.logError(error+", failed to decrypt the input content with:"+that.aes);
@@ -318,31 +323,36 @@ import {codedataUtil} from "./codedataUtil";
 
 
 
-   sendInputMessage(data){
+   sendInputMessage(value, index){
       if(!this.isConnected()){
            this.log("not connected yet");
            return;
       }
-
-      var message={
-          client:this.client,
-          session:this.session,
-          connectSession:this.connectSession,
-          data
-      }
-      if(this.inputAES){
-          const contentToEncrypt=JSON.stringify(message.data);
-          this.log("content to be encrypted:"+contentToEncrypt);
-          const contentEcrypted=encrypt(contentToEncrypt,this.inputAES);
-          this.log("content encrypted:"+contentEcrypted);
-          message.data=contentEcrypted;
-      }
-
+      var data={
+          id:generatateRandomString(10),
+          value,
+          index
+        };
+        var aes=this.aes;
+        if(this.inputAES){
+            aes=this.inputAES;
+        }
+        const contentToEncrypt=JSON.stringify(data);
+        this.log("content to be encrypted:"+contentToEncrypt);
+        const contentEcrypted=encrypt(contentToEncrypt,aes);
+        this.log("content encrypted:"+contentEcrypted);
+        data=contentEcrypted;
+        var message={
+            client:this.client,
+            data
+        }
        const content=JSON.stringify(message);
-       this.log("sending input message  to:"+this.connectSession+" content:"+content);
-       this.socket.emit(this.connectSession+'/input', content);
-
-
+       var session=this.session;
+       if(this.connectSession){
+         session=this.connectSession;
+       }
+       this.log("sending input message  to:"+session+" content:"+content);
+       this.socket.emit(session+'/input', content);
    }
    sendMetadata(metadata){
      if(!this.isConnected()){
@@ -376,12 +386,7 @@ import {codedataUtil} from "./codedataUtil";
        var globalInputdata=globalInputdata.slice(0);
        console.log("setting index:"+index+"value:"+value);
        globalInputdata[index].value=value;
-       var message={
-            id:generatateRandomString(10),
-            value,
-            index
-          };
-      this.sendInputMessage(message);
+      this.sendInputMessage(value, index);
       return globalInputdata;
   }
   onReiceveGlobalInputFieldData(inputMessage, metadata){

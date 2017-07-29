@@ -38,7 +38,7 @@ test('receiver sender should send input message', (done) => {
        expect(message.metadata[0].value).toBe(metadata[0].value);
        expect(message.metadata[1].name).toBe(metadata[1].name);
         console.log("sender sending the input message:"+JSON.stringify(inputData));
-        sender.sendInputMessage(inputData);
+        sender.sendInputMessage(inputData, 0);
       }
       else{
         console.log(" permission denied:"+message.reason);
@@ -66,7 +66,7 @@ test('receiver sender should send input message', (done) => {
       url:'http://192.168.0.5:1337',
       onInput:function(message){
             console.log("receiver received input message:"+JSON.stringify(message));
-            expect(message.data.content).toBe(inputData.content);
+            expect(message.data.value.content).toBe(inputData.content);
             sender.disconnect();
             receiver.disconnect();
             done();

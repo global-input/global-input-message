@@ -260,11 +260,19 @@ import {codedataUtil} from "./codedataUtil";
           }
     }
     sendOutputMessage(outputMessage){
-      var messagedata=JSON.stringify(outputMessage);
-      var encryptedMessage=encrypt(messagedata, this.aes);
-      this.socket.emit(this.session+"/output",encryptedMessage);
+      if(!this.isConnected()){
+           this.log("not connected yet");
+           return;
+      }
+      var encryptedMessagedata=encrypt(JSON.stringify(outputMessage), this.aes);
+      var outputMessage={
+          client:this.client,
+          data:encryptedMessagedata
+      }
+      var messageToSent=JSON.stringify(outputMessage)
+      this.log("sending output message  to:"+this.session+" :"+messageToSent);
+      this.socket.emit(this.session+"/output",messageToSent);
     }
-
     buildInputSender(inputPermissionMessage,options){
       var that=this;
       var inputSender={
@@ -371,24 +379,6 @@ import {codedataUtil} from "./codedataUtil";
        this.log("sending input message  to:"+session+" content:"+content);
        this.socket.emit(session+'/input', content);
    }
-   sendMetadata(metadata){
-     if(!this.isConnected()){
-          this.log("not connected yet");
-          return;
-     }
-     if(metadata && this.aes){
-         metadata=encrypt(JSON.stringify(metadata),this.aes);
-     }
-
-     var message={
-         client:this.client,
-         connectSession:this.connectSession,
-         metadata
-     }
-     const content=JSON.stringify(message);
-     this.log("sending metdata message  to:"+this.connectSession+" content:"+content);
-     this.socket.emit(this.connectSession+'/metadata', content);
-   }
 
 
    sendGlobalInputFieldData(globalInputdata,index, value){
@@ -397,7 +387,7 @@ import {codedataUtil} from "./codedataUtil";
            return globalInputdata;
       }
       if(globalInputdata.length<=index){
-        console.error("reeived the data index is bigger that that of metadata");
+        console.error("receied the data index is bigger that that of metadata");
         return globalInputdata;
       }
        var globalInputdata=globalInputdata.slice(0);

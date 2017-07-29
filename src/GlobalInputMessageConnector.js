@@ -230,22 +230,39 @@ import {codedataUtil} from "./codedataUtil";
                   this.log("received metadata is not encrypted");
             }
 
-
-            if(options.onInputPermissionResult){
-              options.onInputPermissionResult(inputPermissionResultMessage);
-            }
-            var receveiverDisconnected=function(){
-                 console.log("the receiver disconnected");
-                 if(options.onReceiverDisconnected){
-                   options.onReceiverDisconnected();
-                 }
-            }
             if(this.socket){
+                var receveiverDisconnected=function(){
+                     console.log("the receiver disconnected");
+                     if(options.onReceiverDisconnected){
+                       options.onReceiverDisconnected();
+                     }
+                }
                 this.socket.on(options.connectSession+"/leave",receveiverDisconnected);
                 var inputSender=this.buildInputSender(inputPermissionResultMessage,options);
                 this.socket.on(options.connectSession+"/input",inputSender.onInput);
+                var that=this;
+                this.socket.on(options.connectSession+"/output",function(outputmessage){
+                  that.onOutputMessageReceived(outputmessage,options);
+                });
+            }
+            if(options.onInputPermissionResult){
+              options.onInputPermissionResult(inputPermissionResultMessage);
             }
 
+    }
+    onOutputMessageReceived(messagedata, options){
+          if(options.onOutputMessageReceived && options.inputAES){
+              var outputMessageString=decrypt(messagedata.data,options.inputAES);
+              if(!outputMessageString){
+                thus.logError("error in descrupting the output message:"+messagedata);
+              }
+              options.onOutputMessageReceived(JSON.parse(outputMessageString));
+          }
+    }
+    sendOutputMessage(outputMessage){
+      var messagedata=JSON.stringify(outputMessage);
+      var encryptedMessage=encrypt(messagedata, this.aes);
+      this.socket.emit(this.session+"/output",encryptedMessage);
     }
 
     buildInputSender(inputPermissionMessage,options){

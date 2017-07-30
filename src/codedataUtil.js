@@ -49,9 +49,9 @@ import {encrypt,decrypt} from "./util";
      }
 
    },
-   buildSessionGroupCodeData(connector,data={}){
+   buildSecurityGroupCodeData(connector,data={}){
      var codedata=Object.assign({},data,{
-                 sessionGroup:connector.sessionGroup,
+                 securityGroup:connector.securityGroup,
                  action:"settings"
      });
      if(connector.codeAES){

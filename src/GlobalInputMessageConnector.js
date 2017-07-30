@@ -166,14 +166,17 @@ import {codedataUtil} from "./codedataUtil";
             return;
           }
           var that=this;
+
           if(options.onInputPermission){
               options.onInputPermission(function(){
+                  delete inputPermissionMessage.data;
                   that.grantInputPermission(inputPermissionMessage,options);
               },function(){
                 that.sendInputPermissionDeniedMessage(inputPermissionResult,"application denied to give permission");
               },inputPermissionMessage,options);
           }
           else{
+              delete inputPermissionMessage.data;
               this.grantInputPermission(inputPermissionMessage,options);
           }
 
@@ -196,7 +199,7 @@ import {codedataUtil} from "./codedataUtil";
       this.sendInputPermissionGrantedMessage(inputPermissionMessage, options);
     }
     sendInputPermissionGrantedMessage(inputPermissionMessage,options){
-
+      this.log("*****sendInputPermissionGrantedMessagen options:"+JSON.stringify(options));
       var inputPermissionResult=Object.assign({},inputPermissionMessage);
       if(options.initData){
               inputPermissionResult.initData=options.initData;

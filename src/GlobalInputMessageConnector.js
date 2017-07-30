@@ -198,10 +198,10 @@ import {codedataUtil} from "./codedataUtil";
     sendInputPermissionGrantedMessage(inputPermissionMessage,options){
 
       var inputPermissionResult=Object.assign({},inputPermissionMessage);
-      if(options.metadata){
-              inputPermissionResult.metadata=options.metadata;
+      if(options.initData){
+              inputPermissionResult.initData=options.initData;
               if(this.aes){
-                  inputPermissionResult.metadata=encrypt(JSON.stringify(options.metadata),this.aes);
+                  inputPermissionResult.initData=encrypt(JSON.stringify(options.initData),this.aes);
               }
       }
       inputPermissionResult.allow=true;
@@ -221,13 +221,13 @@ import {codedataUtil} from "./codedataUtil";
     onInputPermissionResult(inputPermissionResultMessage, options){
             this.connectSession=options.connectSession;
             this.inputAES=options.aes;
-            if(this.inputAES && inputPermissionResultMessage.metadata && typeof inputPermissionResultMessage.metadata ==="string"){
-                   const descryptedMetadata=decrypt(inputPermissionResultMessage.metadata,this.inputAES);
-                   this.log("decrypted metadata:"+descryptedMetadata);
-                  inputPermissionResultMessage.metadata=JSON.parse(descryptedMetadata);
+            if(this.inputAES && inputPermissionResultMessage.initData && typeof inputPermissionResultMessage.initData ==="string"){
+                   const descryptedInitData=decrypt(inputPermissionResultMessage.initData,this.inputAES);
+                   this.log("decrypted initData:"+descryptedInitData);
+                  inputPermissionResultMessage.initData=JSON.parse(descryptedInitData);
             }
             else{
-                  this.log("received metadata is not encrypted");
+                  this.log("received initData is not encrypted");
             }
 
             if(this.socket){
@@ -385,7 +385,7 @@ import {codedataUtil} from "./codedataUtil";
           return globalInputdata;
      }
      if(globalInputdata.length<=index){
-       console.error("receied the data index is bigger that that of metadata");
+       console.error("receied the data index is bigger that that of initData");
        return globalInputdata;
      }
       var globalInputdata=globalInputdata.slice(0);
@@ -395,22 +395,7 @@ import {codedataUtil} from "./codedataUtil";
 
    }
 
-  onReiceveGlobalInputFieldData(inputMessage, metadata){
-      console.log("received the input message:"+inputMessage);
-      console.log("received the input message:"+inputMessage);
-      if(metadata.fields){
-          if(inputMessage.data.index<metadata.fields.length){
-                metadata.fields[inputMessage.data.index].onInput(inputMessage.data.value);
-          }
-          else{
-            console.error("the index of the data in the input message is bigger than the fields in the medata");
-            return;
-          }
-      }
-      else {
-          consoler.error("the medata should have fields data");
-      }
-  }
+
 
   buildOptionsFromInputCodedata(codedata, options){
         return codedataUtil.buildOptionsFromInputCodedata(this,codedata,options);

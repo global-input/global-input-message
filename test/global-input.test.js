@@ -1,7 +1,7 @@
 import {createMessageConnector} from "../src";
 
 test('receiver sender should send input message', (done) => {
-  
+
   const receiver=createMessageConnector();
   const sender=createMessageConnector();
 
@@ -15,28 +15,32 @@ test('receiver sender should send input message', (done) => {
   console.log("receiver client:"+receiver.client);
   console.log("sender session:"+sender.session);
   console.log("sender client:"+sender.client);
-  var metadata=[
-    {
-    name:"Email address",
-    value:"some value"
-   },{
-     name:"Password",
-     type:"secret"
-   },
-   {
-     name:"Login",
-     type:"action"
-   }
-  ];
+  var initData={
+    action:"input-form",
+    form:{
+           title:"Login",
+              fields:[{
+            name:"Email address",
+            value:"some value"
+            },{
+             name:"Password",
+             type:"secret"
+            },{
+             name:"Login",
+             type:"action"
+           }]
+      }
+}
+ ;
   var inputData={content:"dilshat"};
 
   var senderConnectOptions={
     onInputPermissionResult: function(message){
       if(message.allow){
         console.log("***:"+JSON.stringify(message));
-       expect(message.metadata[0].name).toBe(metadata[0].name);
-       expect(message.metadata[0].value).toBe(metadata[0].value);
-       expect(message.metadata[1].name).toBe(metadata[1].name);
+       expect(message.initData.form.fields[0].name).toBe(initData.form.fields[0].name);
+       expect(message.initData.form.fields[0].value).toBe(initData.form.fields[0].value);
+       expect(message.initData.form.fields[1].name).toBe(initData.form.fields[1].name);
         console.log("sender sending the input message:"+JSON.stringify(inputData));
         sender.sendInputMessage(inputData, 0);
       }
@@ -78,7 +82,7 @@ test('receiver sender should send input message', (done) => {
           next();
           connectSender();
       },
-      metadata
+      initData
   }
   receiver.connect(receiverOptions);
 

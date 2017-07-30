@@ -186,9 +186,12 @@ import {codedataUtil} from "./codedataUtil";
     grantInputPermission(inputPermissionMessage,options){
       var existingSameSenders=this.connectedSenders.filter(s=>s.client===inputPermissionMessage.client);
       if(existingSameSenders.length>0){
+          existingSameSenders.forEach(s=>{
+              s.disconnectSender(s);
+          });
           this.log("the client is already connected");
-          this.sendInputPermissionDeniedMessage(inputPermissionMessage,"Already connected, please disconnect first");
-          return;
+          //this.sendInputPermissionDeniedMessage(inputPermissionMessage,"Already connected, please disconnect first");
+          //return;
       }
       const inputSender=this.buildInputSender(inputPermissionMessage,options);
       this.connectedSenders.push(inputSender);
@@ -333,17 +336,20 @@ import {codedataUtil} from "./codedataUtil";
              const matchedSenders=that.connectedSenders.filter(s =>s.client===leaveMessage.client);
              if(matchedSenders.length>0){
                const inputSenderToLeave=matchedSenders[0];
-               that.socket.removeListener(that.session+"/input",inputSenderToLeave.onInput);
-               that.socket.removeListener(that.session+"/leave",inputSenderToLeave.onLeave);
-               that.connectedSenders=that.connectedSenders.filter(s =>s.client!==leaveMessage.client);
+               this.disconnectSender(inputSenderToLeave);
                that.log("sender is removed:"+that.connectedSenders.size);
                if(options.onSenderDisconnected){
                        options.onSenderDisconnected(inputSenderToLeave, that.connectedSenders);
                }
 
              }
-
+         },
+         disconnectSender(inputSender){
+           that.socket.removeListener(that.session+"/input",inputSender.onInput);
+           that.socket.removeListener(that.session+"/leave",inputSender.onLeave);
+           that.connectedSenders=that.connectedSenders.filter(s =>s.client!==inputSender.client);
          }
+
       };
       return inputSender;
     }

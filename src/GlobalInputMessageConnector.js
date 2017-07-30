@@ -12,7 +12,7 @@ import {codedataUtil} from "./codedataUtil";
     }
     constructor(){
         this.apikey="k7jc3QcMPKEXGW5UC";
-        this.sessionGroup="1CNbWCFpsbmRQuKdd";
+        this.securityGroup="1CNbWCFpsbmRQuKdd";
         this.codeAES="LNJGw0x5lqnXpnVY8";
         this.session=generatateRandomString(17);
         this.client=generatateRandomString(17);
@@ -41,8 +41,8 @@ import {codedataUtil} from "./codedataUtil";
          if(options.apikey){
               this.apikey=options.apikey;
          }
-         if(options.sessionGroup){
-           this.sessionGroup=options.sessionGroup;
+         if(options.securityGroup){
+           this.securityGroup=options.securityGroup;
          }
          if(options.client){
            this.client=options.client;
@@ -84,7 +84,7 @@ import {codedataUtil} from "./codedataUtil";
 
                  });
                  const registerMessage={
-                       sessionGroup:this.sessionGroup,
+                       securityGroup:this.securityGroup,
                        session:this.session,
                        client:this.client,
                        apikey:this.apikey
@@ -113,7 +113,7 @@ import {codedataUtil} from "./codedataUtil";
                     that.onInputPermissionResult(JSON.parse(data),options);
                     });
                     const requestInputPermissionMessage={
-                          sessionGroup:that.sessionGroup,
+                          securityGroup:that.securityGroup,
                           session:that.session,
                           client:that.client,
                           connectSession:options.connectSession
@@ -421,8 +421,8 @@ import {codedataUtil} from "./codedataUtil";
   buildAPIKeyCodeData(data={}){
         return codedataUtil.buildAPIKeyCodeData(this,data);
   }
-  buildSessionGroupCodeData(data={}){
-      return codedataUtil.buildSessionGroupCodeData(this,data);
+  buildSecurityGroupCodeData(data={}){
+      return codedataUtil.buildSecurityGroupCodeData(this,data);
   }
   buildCodeAESCodeData(data={}){
       return codedataUtil.buildCodeAESCodeData(this,data)

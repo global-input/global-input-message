@@ -187,6 +187,7 @@ import {codedataUtil} from "./codedataUtil";
       var existingSameSenders=this.connectedSenders.filter(s=>s.client===inputPermissionMessage.client);
       if(existingSameSenders.length>0){
           this.log("the client is already connected");
+          this.sendInputPermissionDeniedMessage(inputPermissionMessage,"Already connected, please disconnect first");
           return;
       }
       const inputSender=this.buildInputSender(inputPermissionMessage,options);

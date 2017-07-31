@@ -336,7 +336,7 @@ import {codedataUtil} from "./codedataUtil";
              const matchedSenders=that.connectedSenders.filter(s =>s.client===leaveMessage.client);
              if(matchedSenders.length>0){
                const inputSenderToLeave=matchedSenders[0];
-               this.disconnectSender(inputSenderToLeave);
+               inputSenderToLeave.disconnectSender(inputSenderToLeave);
                that.log("sender is removed:"+that.connectedSenders.size);
                if(options.onSenderDisconnected){
                        options.onSenderDisconnected(inputSenderToLeave, that.connectedSenders);

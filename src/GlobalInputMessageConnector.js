@@ -51,6 +51,7 @@ import {codedataUtil} from "./codedataUtil";
           if(options.url){
             this.url=options.url;
           }
+          console.log("Copyright © 2017-2022 by Dilshat Hewzulla");
           this.log("connecting to:"+this.url);
           this.socket=SocketIOClient(this.url);
           const that=this;

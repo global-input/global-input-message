@@ -215,17 +215,19 @@ import {codedataUtil} from "./codedataUtil";
       var inputPermissionResult=Object.assign({},inputPermissionMessage);
       if(options.initData){
               inputPermissionResult.initData=options.initData;
-              if(inputPermissionResult.initData.form && inputPermissionResult.initData.form.fields && inputPermissionResult.initData.form.fields.length>0){
-                  inputPermissionResult.initData.form.fields=inputPermissionResult.initData.form.fields.map(function(m){
-                      var el=Object.assign({},m);
-                      if(el.operations){
-                          delete el.operations
-                      }
-                      return el;
-                  });
-              }
+              // if(inputPermissionResult.initData.form && inputPermissionResult.initData.form.fields && inputPermissionResult.initData.form.fields.length>0){
+              //     inputPermissionResult.initData.form.fields=inputPermissionResult.initData.form.fields.map(function(m){
+              //         var el=Object.assign({},m);
+              //         if(el.operations){
+              //             delete el.operations
+              //         }
+              //         return el;
+              //     });
+              // }
+              var inputPermissionResultInString=JSON.stringify(inputPermissionResult.initData);
+              this.log("**going to send the input permisson result:"+inputPermissionResultInString);
               if(this.aes){
-                  inputPermissionResult.initData=encrypt(JSON.stringify(inputPermissionResult.initData),this.aes);
+                  inputPermissionResult.initData=encrypt(inputPermissionResultInString,this.aes);
               }
       }
       inputPermissionResult.allow=true;

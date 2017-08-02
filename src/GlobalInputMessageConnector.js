@@ -353,7 +353,7 @@ import {codedataUtil} from "./codedataUtil";
             }
 
          },
-         _onInput:function(inputMessage,options){
+         _onInput(inputMessage,options){
                      console.log("default processing the input message");
                      if(typeof inputMessage.data =="undefined"){
                        console.log("data field is missing in the input message");

@@ -7,8 +7,14 @@ import {codedataUtil} from "./codedataUtil";
     log(message){
       console.log(this.client+":"+message);
     }
-    logError(message){
-      console.error(this.client+":"+message);
+    logError(message, error){
+      if(error){
+          console.error(this.client+":"+message);
+      }
+      else{
+          console.error(this.client+":"+message+":"+error);
+      }
+
     }
     constructor(){
         this.apikey="k7jc3QcMPKEXGW5UC";
@@ -208,8 +214,17 @@ import {codedataUtil} from "./codedataUtil";
       var inputPermissionResult=Object.assign({},inputPermissionMessage);
       if(options.initData){
               inputPermissionResult.initData=options.initData;
+              if(inputPermissionResult.initData.form && inputPermissionResult.initData.form.fields && inputPermissionResult.initData.form.fields.length>0){
+                  inputPermissionResult.initData.form.fields=inputPermissionResult.initData.form.fields.map(function(m){
+                      var el=Object.assign({},m);
+                      if(el.operations){
+                          delete el.operations
+                      }
+                      return el;
+                  });
+              }
               if(this.aes){
-                  inputPermissionResult.initData=encrypt(JSON.stringify(options.initData),this.aes);
+                  inputPermissionResult.initData=encrypt(JSON.stringify(inputPermissionResult.initData),this.aes);
               }
       }
       inputPermissionResult.allow=true;
@@ -288,48 +303,80 @@ import {codedataUtil} from "./codedataUtil";
         session:inputPermissionMessage.session,
         onInput:function(data){
             that.log("input message received:"+data);
-            if(options.onInput){
+            try{
                 const inputMessage=JSON.parse(data);
                 if(inputMessage.client===that.client){
                     that.log("input message is coming from itself:"+data);
-                  }
+                    return;
+                }
+                var aes=that.aes;
+                if(that.inputAES){
+                  aes=that.inputAES;
+                }
+                if(inputMessage.data){
+                      var dataDecrypted=null;
+                      try{
+                        dataDecrypted=decrypt(inputMessage.data,aes);
+                      }
+                      catch(error){
+                          that.logError(error+", failed to decrypt the input content with:"+that.aes);
+                          return;
+                      }
+                      if(!dataDecrypted){
+                        that.logError("failed to decrypt the content with:"+that.aes);
+                        return;
+                      }
+
+                      that.log("decrypted inputdata is:"+dataDecrypted);
+                      try{
+                          inputMessage.data=JSON.parse(dataDecrypted);
+                      }
+                      catch(error){
+                        that.logError(error+"failed to parse the decrypted input content:"+dataDecrypted)
+                      }
+                }
                 else{
-                    var aes=that.aes;
-                    if(that.inputAES){
-                      aes=that.inputAES;
-                    }
-                    if(inputMessage.data){
-                          var dataDecrypted=null;
-                          try{
-                            dataDecrypted=decrypt(inputMessage.data,aes);
-                          }
-                          catch(error){
-                              that.logError(error+", failed to decrypt the input content with:"+that.aes);
-                              return;
-                          }
-                          if(!dataDecrypted){
-                            that.logError("failed to decrypt the content with:"+that.aes);
-                            return;
-                          }
+                  that.log("received input data is not encrypted");
+                }
+                if(options.onInput){
+                      options.onInput(inputMessage);
+                      return;
+                }
+                else{
+                    this._onInput(inputMessage);
+                }
 
-                          that.log("decrypted inputdata is:"+dataDecrypted);
-                          try{
-                              inputMessage.data=JSON.parse(dataDecrypted);
-                          }
-                          catch(error){
-                            that.logError(error+"failed to parse the decrypted input content:"+dataDecrypted)
-                          }
+            }
+            catch(error){
+              that.logError("error when processing the input message.",error);
+            }
 
-                    }
-                    else{
-                      that.log("received input data is not encrypted");
-                    }
-
-                    options.onInput(inputMessage);
-                  }
-
-              }
-
+         },
+         _onInput:function(inputMessage){
+                     console.log("default processing the input message");
+                     if(typeof inputMessage.data =="undefined"){
+                       console.log("data field is missing in the input message");
+                       return;
+                     }
+                     if(typeof inputMessage.data.index =="undefined"){
+                       console.log("index should be set in the data field of the input message");
+                       return;
+                     }
+                     var initData=options.initData
+                     if((!initData.form) || (!initData.form.fields)){
+                       console.log("field is missing in the initData");
+                       return;
+                     }
+                     if(initData.form.fields.length<=inputMessage.data.index){
+                         console.log("index data is too big in the input message");
+                         return;
+                     }
+                     if(initData.form.fields[inputMessage.data.index].operations &&   initData.form.fields[inputMessage.data.index].operations.onInput){
+                         initData.form.fields[inputMessage.data.index].operations.onInput(inputMessage.data.value);
+                     }
+                     else{
+                       console.log("onInput operations is not defined in the initData index:"+inputMessage.data.index);
+                     }
          },
          onLeave:function(data){
              that.log("leave request is received:"+data);

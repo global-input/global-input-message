@@ -9,10 +9,11 @@ import {codedataUtil} from "./codedataUtil";
     }
     logError(message, error){
       if(error){
-          console.error(this.client+":"+message);
+          console.error(this.client+":"+message+":"+error);
+          
       }
       else{
-          console.error(this.client+":"+message+":"+error);
+          console.error(this.client+":"+message);
       }
 
     }

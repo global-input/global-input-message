@@ -353,32 +353,6 @@ import {codedataUtil} from "./codedataUtil";
             }
 
          },
-         _onInput(inputMessage,options){
-                     console.log("default processing the input message");
-                     if(typeof inputMessage.data =="undefined"){
-                       console.log("data field is missing in the input message");
-                       return;
-                     }
-                     if(typeof inputMessage.data.index =="undefined"){
-                       console.log("index should be set in the data field of the input message");
-                       return;
-                     }
-                     var initData=options.initData
-                     if((!initData.form) || (!initData.form.fields)){
-                       console.log("field is missing in the initData");
-                       return;
-                     }
-                     if(initData.form.fields.length<=inputMessage.data.index){
-                         console.log("index data is too big in the input message");
-                         return;
-                     }
-                     if(initData.form.fields[inputMessage.data.index].operations &&   initData.form.fields[inputMessage.data.index].operations.onInput){
-                         initData.form.fields[inputMessage.data.index].operations.onInput(inputMessage.data.value);
-                     }
-                     else{
-                       console.log("onInput operations is not defined in the initData index:"+inputMessage.data.index);
-                     }
-         },
          onLeave:function(data){
              that.log("leave request is received:"+data);
              const leaveMessage=JSON.parse(data);
@@ -402,7 +376,32 @@ import {codedataUtil} from "./codedataUtil";
       };
       return inputSender;
     }
-
+    _onInput(inputMessage,options){
+                console.log("default processing the input message");
+                if(typeof inputMessage.data =="undefined"){
+                  console.log("data field is missing in the input message");
+                  return;
+                }
+                if(typeof inputMessage.data.index =="undefined"){
+                  console.log("index should be set in the data field of the input message");
+                  return;
+                }
+                var initData=options.initData
+                if((!initData.form) || (!initData.form.fields)){
+                  console.log("field is missing in the initData");
+                  return;
+                }
+                if(initData.form.fields.length<=inputMessage.data.index){
+                    console.log("index data is too big in the input message");
+                    return;
+                }
+                if(initData.form.fields[inputMessage.data.index].operations &&   initData.form.fields[inputMessage.data.index].operations.onInput){
+                    initData.form.fields[inputMessage.data.index].operations.onInput(inputMessage.data.value);
+                }
+                else{
+                  console.log("onInput operations is not defined in the initData index:"+inputMessage.data.index);
+                }
+    },
 
 
 

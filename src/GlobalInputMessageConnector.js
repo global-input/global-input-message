@@ -401,7 +401,7 @@ import {codedataUtil} from "./codedataUtil";
                 else{
                   console.log("onInput operations is not defined in the initData index:"+inputMessage.data.index);
                 }
-    },
+    }
 
 
 

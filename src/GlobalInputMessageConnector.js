@@ -197,9 +197,7 @@ import {codedataUtil} from "./codedataUtil";
           existingSameSenders.forEach(s=>{
               s.disconnectSender(s);
           });
-          this.log("the client is already connected");
-          //this.sendInputPermissionDeniedMessage(inputPermissionMessage,"Already connected, please disconnect first");
-          //return;
+          this.log("the client is  connected previously");        
       }
       const inputSender=this.buildInputSender(inputPermissionMessage,options);
       this.connectedSenders.push(inputSender);
@@ -211,21 +209,10 @@ import {codedataUtil} from "./codedataUtil";
       this.sendInputPermissionGrantedMessage(inputPermissionMessage, options);
     }
     sendInputPermissionGrantedMessage(inputPermissionMessage,options){
-      this.log("*****sendInputPermissionGrantedMessagen options:"+JSON.stringify(options));
       var inputPermissionResult=Object.assign({},inputPermissionMessage);
       if(options.initData){
               inputPermissionResult.initData=options.initData;
-              // if(inputPermissionResult.initData.form && inputPermissionResult.initData.form.fields && inputPermissionResult.initData.form.fields.length>0){
-              //     inputPermissionResult.initData.form.fields=inputPermissionResult.initData.form.fields.map(function(m){
-              //         var el=Object.assign({},m);
-              //         if(el.operations){
-              //             delete el.operations
-              //         }
-              //         return el;
-              //     });
-              // }
               var inputPermissionResultInString=JSON.stringify(inputPermissionResult.initData);
-              this.log("**going to send the input permisson result:"+inputPermissionResultInString);
               if(this.aes){
                   inputPermissionResult.initData=encrypt(inputPermissionResultInString,this.aes);
               }
@@ -240,7 +227,6 @@ import {codedataUtil} from "./codedataUtil";
     }
     sendInputPermissionResult(inputPermissionResult){
       var data=JSON.stringify(inputPermissionResult);
-      this.log("sending the inputPermissionResult  message:"+data);
       this.socket.emit(this.session+"/inputPermissionResult",data);
     }
 
@@ -436,7 +422,6 @@ import {codedataUtil} from "./codedataUtil";
        if(this.connectSession){
          session=this.connectSession;
        }
-       this.log("sending input message  to:"+session+" content:"+content);
        this.socket.emit(session+'/input', content);
    }
    changeGlobalInputFieldData(globalInputdata,index, value){

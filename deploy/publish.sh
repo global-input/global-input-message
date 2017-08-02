@@ -40,7 +40,7 @@ eval $comandtoexecute
 comandtoexecute='sed -i -e "s/'$oldstring'/'$newstring'/g" ../globalInputMobile/package.json'
 eval $comandtoexecute
 
-sleep 1
+sleep 3
 
 cd ../global-input-web/
 yarn install

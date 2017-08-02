@@ -10,7 +10,7 @@ import {codedataUtil} from "./codedataUtil";
     logError(message, error){
       if(error){
           console.error(this.client+":"+message+":"+error);
-          
+          console.error(error.stack);
       }
       else{
           console.error(this.client+":"+message);
@@ -344,7 +344,7 @@ import {codedataUtil} from "./codedataUtil";
                       return;
                 }
                 else{
-                    this._onInput(inputMessage);
+                    that._onInput(inputMessage,options);
                 }
 
             }
@@ -353,7 +353,7 @@ import {codedataUtil} from "./codedataUtil";
             }
 
          },
-         _onInput:function(inputMessage){
+         _onInput:function(inputMessage,options){
                      console.log("default processing the input message");
                      if(typeof inputMessage.data =="undefined"){
                        console.log("data field is missing in the input message");

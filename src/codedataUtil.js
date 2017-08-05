@@ -26,8 +26,6 @@ import {encrypt,decrypt} from "./util";
                    action:"input",
                    aes:connector.aes
        });
-
-        console.log("the input data being used for codedata:"+JSON.stringify(codedata));
        if(connector.codeAES){
           return "A"+encrypt("J"+JSON.stringify(codedata),connector.codeAES);
        }
@@ -98,7 +96,6 @@ import {encrypt,decrypt} from "./util";
      var encryptedContent=encryptedcodedata.substring(1);
      var decryptedContent=null;
      if(encryptionType==="C"){
-          console.log("It is a code secret");
           try{
             decryptedContent=decrypt(encryptedContent,"LNJGw0x5lqnXpnVY8");
           }
@@ -108,7 +105,6 @@ import {encrypt,decrypt} from "./util";
           }
      }
      else if(encryptionType==="A"){
-       console.log("decrypting with codeAES:"+encryptedContent);
        try{
               decryptedContent=decrypt(encryptedContent,connector.codeAES);
             }
@@ -119,7 +115,6 @@ import {encrypt,decrypt} from "./util";
      }
      else if(encryptionType==="N"){
         decryptedContent=encryptedContent;
-        console.log("it is not encrypted:"+decryptedContent);
      }
      else{
 
@@ -131,7 +126,6 @@ import {encrypt,decrypt} from "./util";
         this.onError(options,"failed to decrypt encryptedcodedata=["+encryptedcodedata+"]");
         return;
       }
-      console.log("decrypted codedata:"+decryptedContent);
       var dataFormat=decryptedContent.substring(0,1);
       var dataContent=decryptedContent.substring(1);
       var codedata=null;
@@ -150,13 +144,11 @@ import {encrypt,decrypt} from "./util";
           return;
       }
       if(codedata.action=='input'){
-            console.log("codedata action is input");
             if(options.onInputCodeData){
                 options.onInputCodeData(codedata);
             }
       }
       else if(codedata.action=='settings'){
-            console.log("calling the onSettingsCodeData");
             if(options.onSettingsCodeData){
                 options.onSettingsCodeData(codedata);
             }

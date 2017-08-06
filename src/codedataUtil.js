@@ -71,9 +71,9 @@ import {encrypt,decrypt} from "./util";
        if(options.onError){
           options.onError(message);
        }
-       console.error(message);
+       console.warn(message);
        if(error){
-         console.error(error);
+         console.warn(error);
        }
    },
    processCodeData(connector,encryptedcodedata, options){
@@ -126,7 +126,7 @@ import {encrypt,decrypt} from "./util";
             }
             catch(error){
               this.onError(options," incorrect format decrypted",error);
-              console.error(" not a json:"+dataContent);
+              console.warn(" not a json:"+dataContent);
               return;
             }
       }

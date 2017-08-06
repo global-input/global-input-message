@@ -6,11 +6,11 @@ import {codedataUtil} from "./codedataUtil";
  export default class GlobalInputMessageConnector{
     logError(message, error){
       if(error){
-          console.error(this.client+":"+message+":"+error);
-          console.error(error.stack);
+          console.warn(this.client+":"+message+":"+error);
+          console.warn(error.stack);
       }
       else{
-          console.error(this.client+":"+message);
+          console.warn(this.client+":"+message);
       }
 
     }
@@ -419,7 +419,7 @@ import {codedataUtil} from "./codedataUtil";
           return globalInputdata;
      }
      if(globalInputdata.length<=index){
-       console.error("receied the data index is bigger that that of initData");
+       console.warn("receied the data index is bigger that that of initData");
        return globalInputdata;
      }
       var globalInputdata=globalInputdata.slice(0);

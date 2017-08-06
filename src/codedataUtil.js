@@ -68,22 +68,13 @@ import {encrypt,decrypt} from "./util";
      return "C"+encrypt("J"+JSON.stringify(codedata),"LNJGw0x5lqnXpnVY8");
    },
    onError(options,message, error){
-       var errorMessage=null;
-       if(error){
-         errorMessage=error+" "+message
-       }
-       else{
-         errorMessage=message;
-       }
-
        if(options.onError){
-          options.onError(errorMessage);
+          options.onError(message);
        }
-       else{
-         console.error(errorMessage);
+       console.error(message);
+       if(error){
+         console.error(error);
        }
-
-
    },
    processCodeData(connector,encryptedcodedata, options){
      if(!encryptedcodedata){
@@ -100,7 +91,7 @@ import {encrypt,decrypt} from "./util";
             decryptedContent=decrypt(encryptedContent,"LNJGw0x5lqnXpnVY8");
           }
           catch(error){
-            this.onError(options,"while decrypting the codedata with common key",error);
+            this.onError(options,"May not ne a global Input code (C) ",error);
             return;
           }
      }
@@ -109,7 +100,7 @@ import {encrypt,decrypt} from "./util";
               decryptedContent=decrypt(encryptedContent,connector.codeAES);
             }
        catch(error){
-         this.onError(options,"failed to decrypt:"+encryptedContent+" with:"+connector.codeAES,error);
+         this.onError(options,"May not be glbal input code (A)",error);
          return;
        }
      }
@@ -117,13 +108,12 @@ import {encrypt,decrypt} from "./util";
         decryptedContent=encryptedContent;
      }
      else{
-
-       this.onError(options,"unrecognized format:encryptionType="+encryptionType+" encryptedcodedata=["+encryptedcodedata+"]");
+       this.onError(options,"Not a Global Input code (N)  ");
        return;
      }
 
       if(!decryptedContent){
-        this.onError(options,"failed to decrypt encryptedcodedata=["+encryptedcodedata+"]");
+        this.onError(options,"Not a global Input code (E)");
         return;
       }
       var dataFormat=decryptedContent.substring(0,1);
@@ -135,12 +125,14 @@ import {encrypt,decrypt} from "./util";
                 codedata=JSON.parse(dataContent);
             }
             catch(error){
-              this.onError(options,"codedata is not in the correct json dataContent=["+dataContent+"]",error);
+              this.onError(options," incorrect format decrypted",error);
+              console.error(" not a json:"+dataContent);
               return;
             }
       }
       else{
-          this.onError(options,"decrypted content is not in the recognized format:dataFormat:"+dataFormat+" dataContent:"+dataContent);
+          this.onError(options,"unrecognized format decrypted");
+          console.log("the code:"+dataContent)
           return;
       }
       if(codedata.action=='input'){

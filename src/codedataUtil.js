@@ -9,7 +9,8 @@ import {encrypt,decrypt} from "./util";
         var buildOptions={
           connectSession:codedata.session,
           url:codedata.url,
-          aes:codedata.aes
+          aes:codedata.aes,
+          apikey:codedata.apikey
         }
         if(!options){
             return buildOptions;
@@ -23,6 +24,7 @@ import {encrypt,decrypt} from "./util";
        var codedata=Object.assign({},data,{
                    url:connector.url,
                    session:connector.session,
+                   apikey:connector.apikey,
                    action:"input",
                    aes:connector.aes
        });

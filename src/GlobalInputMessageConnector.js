@@ -1,5 +1,5 @@
 import SocketIOClient from "socket.io-client";
-import {encrypt,decrypt,generatateRandomString} from "./util";
+import {encrypt,decrypt,generatateRandomString,basicGetURL} from "./util";
 import {codedataUtil} from "./codedataUtil";
 
 
@@ -55,14 +55,32 @@ import {codedataUtil} from "./codedataUtil";
           if(options.url){
             this.url=options.url;
           }
-          console.log("Copyright © 2017-2022 by Dilshat Hewzulla");
+          if(options.connectSession){
+            this._connectToSocket(options);
+          }
+          else{
+            var url=this.url+"/global-input/request-socket-url?apikey="+this.apikey;
+            console.log("socket url request from:"+url);
+            var that=this;
+            basicGetURL(url,function(application){
+                console.log("socket server url granted:"+application.url);
+                that.url=application.url;
+                that._connectToSocket(options);
+            }, function(){
+                console.warn("failed to get the socket server url");
+            });
+          }
 
+
+
+    }
+    _connectToSocket(options){
+          console.log("Copyright © 2017-2022 by Dilshat Hewzulla");
           this.socket=SocketIOClient(this.url);
           const that=this;
           this.socket.on("registerPermission", function(data){
                   that.onRegisterPermission(JSON.parse(data), options);
           });
-
     }
     onRegisterPermission(registerPermistion, options){
          if(registerPermistion.result==="ok"){

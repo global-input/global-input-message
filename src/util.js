@@ -8,7 +8,32 @@ export function encrypt(content, password){
 export function decrypt(content, password){
   return CryptoJS.AES.decrypt(unescape(content), password).toString(CryptoJS.enc.Utf8);
 }
+export function basicGetURL(url, onSuccess, onError){
+      var request = new XMLHttpRequest();
+      request.ontimeout = (e) => {
+            console.warn("requesting socket server url timeout");
+            onError();
+      };
+      request.onreadystatechange = (e) => {
+            if(e){
+              onError();
+              
+            }
+            if (request.readyState !== 4) {
+              return;
+            }
+            if (request.status === 200) {
+                  onSuccess(JSON.parse(request.responseText));
 
+            } else {
+                      onError();
+            }
+    };
+
+    request.open('GET', url,true);
+
+    request.send();
+}
 
 /*
 CryptoJS v3.1.2

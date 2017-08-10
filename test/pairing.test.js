@@ -55,6 +55,7 @@ test('receiver sender should pairing', (done) => {
       console.log("********* onInputCodeData*****:"+JSON.stringify(codedata));
 
       var options=sender.buildOptionsFromInputCodedata(codedata);
+      options.securityGroup=this.securityGroup;
       var opts=Object.assign(options,senderConnectOptions);
       console.log("********** sender connection options:"+JSON.stringify(opts));
       console.log("****sender securityGroup:"+sender.securityGroup);
@@ -62,9 +63,10 @@ test('receiver sender should pairing', (done) => {
     },
     onPairing:function(codedata){
       console.log("Pairing data is received:"+JSON.stringify(codedata));
-      sender.securityGroup=codedata.securityGroup;
-      sender.codeAES=codedata.codeAES;
+      senderCodeOptions.securityGroup=codedata.securityGroup;
+      senderCodeOptions.codeAES=codedata.codeAES;
       var codedata=receiver.buildInputCodeData();
+
       console.log("code data*****:"+codedata);
       sender.processCodeData(codedata,senderCodeOptions);
     }

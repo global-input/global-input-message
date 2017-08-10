@@ -76,8 +76,12 @@ var sharedKey="50SUB39ctEKzd6Uv2a84lFK";
           }
      }
      else if(encryptionType==="A"){
+       var codeAES=connector.codeAES;
+       if(options.codeAES){
+         codeAES=options.codeAES;
+       }
        try{
-              decryptedContent=decrypt(encryptedContent,connector.codeAES);              
+              decryptedContent=decrypt(encryptedContent,codeAES);              
             }
        catch(error){
          this.onError(options,"May not be glbal input code (A)",error);

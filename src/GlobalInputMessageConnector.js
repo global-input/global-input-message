@@ -461,6 +461,10 @@ import {codedataUtil} from "./codedataUtil";
   buildSecurityGroupCodeData(data={}){
       return codedataUtil.buildSecurityGroupCodeData(this,data);
   }
+  buildPairingData(data={}){
+      return codedataUtil.buildPairingData(this,data);
+  }
+
   buildCodeAESCodeData(data={}){
       return codedataUtil.buildCodeAESCodeData(this,data)
   }

@@ -35,6 +35,22 @@ import {encrypt,decrypt} from "./util";
           return "NJ"+JSON.stringify(codedata);
        }
    },
+
+   buildPairingData(connector,data={}){
+     var codedata=Object.assign({},data,{
+                 securityGroup:connector.securityGroup,
+                 action:"settings"
+     });
+     if(connector.codeAES){
+        return "A"+encrypt("J"+JSON.stringify(codedata),connector.codeAES);
+     }
+     else{
+         return "NJ"+JSON.stringify(codedata),connector.codeAES;
+     }
+
+   },
+
+
    buildAPIKeyCodeData(connector,data={}){
      var codedata=Object.assign({},data,{
                  apikey:connector.apikey,

@@ -16,8 +16,7 @@ export function basicGetURL(url, onSuccess, onError){
       };
       request.onreadystatechange = (e) => {
             if(e){
-              onError();
-              
+              console.log(JSON.stringify(e));            
             }
             if (request.readyState !== 4) {
               return;

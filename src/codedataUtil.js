@@ -1,6 +1,7 @@
 
 import {encrypt,decrypt} from "./util";
 
+var sharedKey="50SUB39ctEKzd6Uv2a84lFK";
 
 
  export const codedataUtil={
@@ -39,52 +40,13 @@ import {encrypt,decrypt} from "./util";
    buildPairingData(connector,data={}){
      var codedata=Object.assign({},data,{
                  securityGroup:connector.securityGroup,
-                 action:"settings"
-     });
-     if(connector.codeAES){
-        return "A"+encrypt("J"+JSON.stringify(codedata),connector.codeAES);
-     }
-     else{
-         return "NJ"+JSON.stringify(codedata),connector.codeAES;
-     }
-
-   },
-
-
-   buildAPIKeyCodeData(connector,data={}){
-     var codedata=Object.assign({},data,{
-                 apikey:connector.apikey,
-                 action:"settings"
-     });
-     if(connector.codeAES){
-
-            return "A"+encrypt("J"+JSON.stringify(codedata),connector.codeAES);
-     }
-     else{
-            return "NJ"+JSON.stringify(codedata);
-     }
-
-   },
-   buildSecurityGroupCodeData(connector,data={}){
-     var codedata=Object.assign({},data,{
-                 securityGroup:connector.securityGroup,
-                 action:"settings"
-     });
-     if(connector.codeAES){
-        return "A"+encrypt("J"+JSON.stringify(codedata),connector.codeAES);
-     }
-     else{
-         return "NJ"+JSON.stringify(codedata),connector.codeAES;
-     }
-
-   },
-   buildCodeAESCodeData(connector,data={}){
-     var codedata=Object.assign({},data,{
                  codeAES:connector.codeAES,
-                 action:"settings"
+                 action:"pairing"
      });
-     return "C"+encrypt("J"+JSON.stringify(codedata),"LNJGw0x5lqnXpnVY8");
+     return "C"+encrypt("J"+JSON.stringify(codedata),sharedKey);
    },
+
+
    onError(options,message, error){
        if(options.onError){
           options.onError(message);
@@ -106,7 +68,7 @@ import {encrypt,decrypt} from "./util";
      var decryptedContent=null;
      if(encryptionType==="C"){
           try{
-            decryptedContent=decrypt(encryptedContent,"LNJGw0x5lqnXpnVY8");
+            decryptedContent=decrypt(encryptedContent,sharedKey);
           }
           catch(error){
             this.onError(options,"May not ne a global Input code (C) ",error);
@@ -115,7 +77,7 @@ import {encrypt,decrypt} from "./util";
      }
      else if(encryptionType==="A"){
        try{
-              decryptedContent=decrypt(encryptedContent,connector.codeAES);
+              decryptedContent=decrypt(encryptedContent,connector.codeAES);              
             }
        catch(error){
          this.onError(options,"May not be glbal input code (A)",error);
@@ -158,9 +120,9 @@ import {encrypt,decrypt} from "./util";
                 options.onInputCodeData(codedata);
             }
       }
-      else if(codedata.action=='settings'){
-            if(options.onSettingsCodeData){
-                options.onSettingsCodeData(codedata);
+      else if(codedata.action=='pairing'){
+            if(options.onPairing){
+                options.onPairing(codedata);
             }
       }
    }

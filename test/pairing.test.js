@@ -1,6 +1,6 @@
 import {createMessageConnector} from "../src";
 
-test('receiver sender should send input message', (done) => {
+test('receiver sender should pairing', (done) => {
 
   const receiver=createMessageConnector();
   const sender=createMessageConnector();
@@ -57,18 +57,33 @@ test('receiver sender should send input message', (done) => {
       var options=sender.buildOptionsFromInputCodedata(codedata);
       var opts=Object.assign(options,senderConnectOptions);
       console.log("********** sender connection options:"+JSON.stringify(opts));
+      console.log("****sender securityGroup:"+sender.securityGroup);
       sender.connect(opts);
-    }
-  };
-
-  var connectSender=function(){
+    },
+    onPairing:function(codedata){
+      console.log("Pairing data is received:"+JSON.stringify(codedata));
+      sender.securityGroup=codedata.securityGroup;
+      sender.codeAES=codedata.codeAES;
       var codedata=receiver.buildInputCodeData();
       console.log("code data*****:"+codedata);
       sender.processCodeData(codedata,senderCodeOptions);
+    }
+  };
 
+
+
+  var pairingSender = function(){
+
+      var pairingData=receiver.buildPairingData();
+
+
+      sender.processCodeData(pairingData,senderCodeOptions);
   };
   var receiverOptions={
       url:'http://192.168.0.5:1337',
+      securityGroup:"KqfMZzevq2jCbQUg+W8i750",
+
+      codeAES:"YFd9o8glRNIvM0C2yU8p4",
       onInput:function(message){
             console.log("receiver received input message:"+JSON.stringify(message));
             expect(message.data.value.content).toBe(inputData.content);
@@ -83,7 +98,7 @@ test('receiver sender should send input message', (done) => {
       onRegistered:function(next){
           console.log("receiver registered");
           next();
-          connectSender();
+          pairingSender();
       },
       initData
   }

@@ -455,19 +455,11 @@ import {codedataUtil} from "./codedataUtil";
   buildInputCodeData(data={}){
         return codedataUtil.buildInputCodeData(this,data);
   }
-  buildAPIKeyCodeData(data={}){
-        return codedataUtil.buildAPIKeyCodeData(this,data);
-  }
-  buildSecurityGroupCodeData(data={}){
-      return codedataUtil.buildSecurityGroupCodeData(this,data);
-  }
+
   buildPairingData(data={}){
       return codedataUtil.buildPairingData(this,data);
   }
 
-  buildCodeAESCodeData(data={}){
-      return codedataUtil.buildCodeAESCodeData(this,data)
-  }
   processCodeData(encryptedcodedata, options){
       return codedataUtil.processCodeData(this,encryptedcodedata,options);
   }

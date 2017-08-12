@@ -99,7 +99,7 @@ import {codedataUtil} from "./codedataUtil";
                          }
                          else{
                            if(options.onRegisterFailed){
-                             options.onRegisterFailed();
+                             options.onRegisterFailed(registeredMessage);
                            }
                          }
 

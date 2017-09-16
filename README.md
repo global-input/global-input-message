@@ -219,8 +219,8 @@ Please try it out this free library and the free mobile app, and you will see th
 
 You can find the applications in action in
 
-         [https://globalinput.co.uk/](https://globalinput.co.uk/)
+[https://globalinput.co.uk/](https://globalinput.co.uk/)
 
 If your application is a React JS application, you can following the instruction in the following URL:
 
-         [https://github.com/global-input/global-input-react](https://github.com/global-input/global-input-react)
+[https://github.com/global-input/global-input-react](https://github.com/global-input/global-input-react)

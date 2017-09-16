@@ -8,13 +8,24 @@ echo $nextVersion
 
 git add .
 git commit -m "update"
+
+
+
 git push origin
+
 npm version $nextVersion
+
+git add .
+git commit -m "version"
+git tag -a v$nextVersion -m "version $nextVersion"
+git push origin
+
+
+
+browserify  -r ./lib/index.js:global-input-message  > lib/global-input-message.js
+cat lib/global-input-message.js | uglifyjs > lib/global-input-message.min.js
+
 npm publish
-
-
-
-
 
 
 

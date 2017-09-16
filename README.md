@@ -1,45 +1,48 @@
 # global-input-message
 
 
-The global-input-message library enables your JavaScript application to display a Global Input QR Code so that your users can connect their Global Input mobile app (available in [iOS](https://itunes.apple.com/us/app/global-input-app/id1269541616?mt=8&ign-mpt=uo%3D4) and [Android](https://itunes.apple.com/us/app/global-input-app/id1269541616?mt=8&ign-mpt=uo%3D4)) to your application just by poing the phone camera to the QR code displayed. Your users can operate securely on your application via their mobile. For example you can allow your users to sign in via their mobile and much more!
+The global-input-message is a javascript library that helps your application to display a Global Input QR Code so that your users can use the Global Input mobile app (available in [iOS](https://itunes.apple.com/us/app/global-input-app/id1269541616?mt=8&ign-mpt=uo%3D4) and [Android](https://itunes.apple.com/us/app/global-input-app/id1269541616?mt=8&ign-mpt=uo%3D4)) to operate on your application.  
 
-If your javascript application is developed with React JS framework, please have a look at
+One typical use case is you can allow your users to sign in quicly and securely via their mobile.
+
+If your javascript application is a ReactJS application, you may have a look at the ReactJS wrapper library in the following URL
 
    [https://github.com/global-input/global-input-react](https://github.com/global-input/global-input-react)
 
 
 ### Setup
 
-#### as node module & ES6
+#### Set up as node module and import it in your code
 
  ```npm install --save global-input-message```
 
- Also need to import a qrcode module to display qrcode:
+The ```global-input-message``` does not the code for displaying the QR code, you may need to select & import a QR Code JS library for in order to be able to display a QR code:
 
  ```npm install --save global-input-message```
 
- above command installs the [davidshimjs's qrcode module](https://github.com/davidshimjs/qrcodejs)
+ above npm command installs the [davidshimjs's qrcode module](https://github.com/davidshimjs/qrcodejs)
 
-and then  import the ```createMessageConnector``` function from the package and then call that function to create connector:
+and then in your javascript code you can import the ```createMessageConnector``` function from the package and then call that function to create message connector:
 
 ```javascript
 	import {createMessageConnector} from "global-input-message";
     var connector=createMessageConnector();
 ```
 
-#### As browserified & pure javascript
+#### Set up as a browserified JS and include it in the javascript tag
 
-If you HTML:
+In your HTML code include the necessary libraries:
 
 ```javascript
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/04f46c6a/qrcode.min.js">
 </script>
 
-<script src="https://unpkg.com/global-input-message@1.3.31/lib/global-input-message.js">
+<script src="https://unpkg.com/global-input-message@1.3.33/lib/global-input-message.min.js">
 </script>
+
 ```
 
-In the above, the first line references [davidshimjs's qrcode module](https://github.com/davidshimjs/qrcodejs), which you need to display the QR code.
+In the above, the first line references the [davidshimjs's qrcode js library](https://github.com/davidshimjs/qrcodejs), which you need to display the QR code.
 
 and then you need to create the connector in your javascript code:
 
@@ -54,18 +57,20 @@ and then you need to create the connector in your javascript code:
 
 You can play around with the full working source code in
 
-    [JSFiddler](https://jsfiddle.net/dilshat/c5fvyxqa/)
+   [JSFiddler](https://jsfiddle.net/dilshat/c5fvyxqa/)
 
 Although the code is very self-explanatory, I would like to explain to source code in details:
 
-After the doing the work explained in the Setup section, you just need to call  ```connect()``` method, get the codedata from the connector.
+After implement the set up process explained in the Setup section, you just need to call  ```connect()``` method, and get the codedata from the connector.
 
 ```
     connector.connect(globalInputConfig);
     var codedata=connector.buildInputCodeData();
 ```
 
-In the above code, the ```globalInputConfig```  variable is passed in to the connect method. The variable defines the form that you would like to display on the mobile phone screen. It also contains the callback function that you would like to be invoked when the user interact with the form. I will explain how to do this later.
+ The codedata contains the information necessary for the mobile app to connect your application. It contains the key used for end-to-en encryption and the necessary connection information. This data should be transferred to the mobile app via the QR code to the mobile application.
+
+In the above code, the ```globalInputConfig```  variable is passed in to the connect method. The variable contains the information about the form that you would like to display on the mobile phone screen. It also contains the callback function that you would like to be invoked when the user interact with the form. I comeback to this in the next sesion.
 
 After you have got the codedata, you just need to display it with QR code:
 
@@ -80,19 +85,20 @@ After you have got the codedata, you just need to display it with QR code:
     });
 ```
 
-From the above code, you need to including following HTML code to specify where you would like to display the QR Code:
+The above code tries to draw the QR Code inside the HTML element that is identified with the id value ```qrcode```. Hence you need to include the following HTML element in your HTML code:
 
-```<div id="qrcode"></div>
+```
+  <div id="qrcode"></div>
 ```
 
-That is all you need to do allow your application connect to the Global Input mobile app. In the next section, I explain how to set up the ```globalInputConfig```  variable that I mentioned earlier.
+That is all you need to do allow your users to operate on your application via their mobile.
 
 
 ### Configuration
 
 As explained above, the ```globalInputConfig```  variable is passed in to the connect method. The variable defines the form that you would like to display on the mobile phone screen. It also contains the callback function that you would like to be invoked when the user interact with the form.
 
-This can be explained very easily with the following requirements:
+This can be explained very easily with the following requirements that you may have:
 
 * Suppose you would like to display a ```Sign In``` form on the mobile screen.
 * You would like the form to contain ```Email Address``` input field,  a ```Password``` input field and a ```Login``` button.
@@ -100,7 +106,7 @@ This can be explained very easily with the following requirements:
 * When a user enters something in the ```Password``` field on the mobile screen, you would like your function called ```setPassword(password)``` invoked with the text entered.
 * When a user clicks on the ```Login``` button on the mobile screen, you would like your function ```login()``` invoked, so that you can do the login operation within your ```login()``` function
 
-The following ```globalInputConfig``` variable defines the requirements described above.
+The following ```globalInputConfig``` variable consts the data that satisfies the above  requirements.
 
 ```javascript
 

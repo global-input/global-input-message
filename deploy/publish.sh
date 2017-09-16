@@ -17,7 +17,7 @@ npm version $nextVersion
 
 git add .
 git commit -m "version"
-git tag -a v$nextVersion -m "version $nextVersion"
+
 git push origin
 
 
@@ -27,7 +27,7 @@ cat lib/global-input-message.js | uglifyjs > lib/global-input-message.min.js
 
 npm publish
 
-
+npm push origin *:*
 
 
 webversion=`grep -A 0 -B 0 '"global-input-message":' ../global-input-web/package.json |  sed 's/"global-input-message": "^//g'  | sed 's/",//g' `

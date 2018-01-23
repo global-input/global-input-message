@@ -36,7 +36,7 @@ If you do not use the ES6 transpier, then you can use ```require``` instead, che
 
 ##### Set up as a browserified JS and include it in the javascript tag
 
-In your HTML code include the qrcode javascript library as well as the ```global-input-message``` javascrypt library:
+In your HTML code, include the qrcode javascript library as well as the ```global-input-message``` javascript library:
 
 ```javascript
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/04f46c6a/qrcode.min.js">
@@ -105,7 +105,7 @@ This can be explained very easily with the following requirements that you may h
 * When a user enters something in the ```Password``` field on the mobile screen, you would like your function called ```setPassword(password)``` invoked with the text entered.
 * When a user clicks on the ```Login``` button on the mobile screen, you would like your function ```login()``` invoked, so that you can do the login operation within your ```login()``` function
 
-The following ```globalInputConfig``` variable consts the data that satisfies the above  requirements.
+The following ```globalInputConfig``` variable contains the data that satisfies the requirements described above.
 
 ```javascript
 

@@ -274,13 +274,20 @@ import {codedataUtil} from "./codedataUtil";
 
     }
     onOutputMessageReceived(messagedata, options){
-          if(options.onOutputMessageReceived && options.inputAES){
-              var outputMessageString=decrypt(messagedata.data,options.inputAES);
-              if(!outputMessageString){
-                thus.logError("error decrypting the output message");
-              }
-              options.onOutputMessageReceived(JSON.parse(outputMessageString));
-          }
+          if(options.onOutputMessageReceived){
+                var message=JSON.parse(messagedata);
+                var aes=this.aes;
+                if(this.inputAES){
+                    aes=this.inputAES;
+                }
+                if(aes && message.data){
+                      message.data=decrypt(message.data,aes);
+                 }
+                 options.onOutputMessageReceived(message);
+           }
+           else{
+             console.log("output message is ignored");
+           }
     }
     sendOutputMessage(outputMessage){
       if(!this.isConnected()){

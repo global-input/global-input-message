@@ -163,7 +163,7 @@ import {codedataUtil} from "./codedataUtil";
                 inputPermissionMessage.data=decrypt(inputPermissionMessage.data,this.aes);
             }
             catch(error){
-              this.sendInputPermissionDeniedMessage(inputPermissionResult,"failed to decrypt");
+              this.sendInputPermissionDeniedMessage(inputPermissionMessage,"failed to decrypt");
               return;
             }
           if(!inputPermissionMessage.data){
@@ -191,7 +191,7 @@ import {codedataUtil} from "./codedataUtil";
                   delete inputPermissionMessage.data;
                   that.grantInputPermission(inputPermissionMessage,options);
               },function(){
-                that.sendInputPermissionDeniedMessage(inputPermissionResult,"application denied to give permission");
+                that.sendInputPermissionDeniedMessage(inputPermissionMessage,"application denied to give permission");
               },inputPermissionMessage,options);
           }
           else{
@@ -340,8 +340,28 @@ import {codedataUtil} from "./codedataUtil";
                         that.logError(error+"failed to parse the decrypted input content")
                       }
                 }
+                else if(inputMessage.initData){
+                      var dataDecrypted=null;
+                      try{
+                            dataDecrypted=decrypt(inputMessage.initData,aes);
+                      }
+                      catch(error){
+                          that.logError(error+", failed to decrypt the initData content");
+                          return;
+                        }
+                        if(!dataDecrypted){
+                              that.logError("failed to decrypt the content");
+                              return;
+                        }
+                        try{
+                            inputMessage.initData=JSON.parse(dataDecrypted);
+                          }
+                          catch(error){
+                                that.logError(error+"failed to parse the decrypted initData content")
+                          }
+                }
                 else{
-                  that.log("received input data is not encrypted");
+                  that.logError("received input data is not encrypted");
                 }
                 if(options.onInput){
                       options.onInput(inputMessage);
@@ -381,6 +401,13 @@ import {codedataUtil} from "./codedataUtil";
       return inputSender;
     }
     _onInput(inputMessage,options){
+                if(inputMessage.initData){
+                    console.log("initData is received");
+                    if(options.initData && options.initData.operations && options.initData.operations.onInitData){
+                          options.initData.operations.onInitData(inputMessage);
+                    }
+                    return;
+                }
 
                 if(typeof inputMessage.data =="undefined"){
                   console.log("data field is missing in the input message");
@@ -390,7 +417,11 @@ import {codedataUtil} from "./codedataUtil";
                   console.log("index should be set in the data field of the input message");
                   return;
                 }
+
                 var initData=options.initData
+                if(this.activeInitData){
+                  initData=this.activeInitData;
+                }
                 if((!initData.form) || (!initData.form.fields)){
                   console.log("field is missing in the initData");
                   return;
@@ -407,8 +438,30 @@ import {codedataUtil} from "./codedataUtil";
                 }
     }
 
+   sendInitData(initData){
+     if(!this.isConnected()){
+          console.log("not connected yet");
+          return;
+     }
+       var aes=this.aes;
+       if(this.inputAES){
+           aes=this.inputAES;
+       }
+       const contentToEncrypt=JSON.stringify(initData);
+       const contentEcrypted=encrypt(contentToEncrypt,aes);
 
-
+       var message={
+           client:this.client,
+           initData:contentEcrypted
+       }
+      const content=JSON.stringify(message);
+      var session=this.session;
+      if(this.connectSession){
+        session=this.connectSession;
+      }
+      this.socket.emit(session+'/input', content);
+      this.activeInitData=initData;
+   }
 
    sendInputMessage(value, index){
       if(!this.isConnected()){

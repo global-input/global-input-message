@@ -16,7 +16,16 @@ export function basicGetURL(url, onSuccess, onError){
       };
       request.onreadystatechange = (e) => {
             if(e){
-              console.log(JSON.stringify(e));            
+              var cache=[];
+              console.log(JSON.stringify(e, (key,value)=>{
+                      if(typeof value === 'object' && value!=null){
+                            if(cache.indexOf(value)!=-1){
+                                return;
+                            }
+                            cache.push(value);
+                      }
+                      return value;
+              }));
             }
             if (request.readyState !== 4) {
               return;

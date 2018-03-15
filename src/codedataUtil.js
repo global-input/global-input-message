@@ -51,7 +51,10 @@ var sharedKey="50SUB39ctEKzd6Uv2a84lFK";
        if(options.onError){
           options.onError(message);
        }
-       console.warn(message);
+       else{
+          console.warn(message);
+       }
+
        if(error){
          console.warn(error);
        }
@@ -81,7 +84,7 @@ var sharedKey="50SUB39ctEKzd6Uv2a84lFK";
          codeAES=options.codeAES;
        }
        try{
-              decryptedContent=decrypt(encryptedContent,codeAES);              
+              decryptedContent=decrypt(encryptedContent,codeAES);
             }
        catch(error){
          this.onError(options,"May not be glbal input code (A)",error);

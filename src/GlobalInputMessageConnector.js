@@ -60,10 +60,8 @@ import {codedataUtil} from "./codedataUtil";
           }
           else{
             var url=this.url+"/global-input/request-socket-url?apikey="+this.apikey;
-            console.log("socket url request from:"+url);
             var that=this;
             basicGetURL(url,function(application){
-                console.log("socket server url granted:"+application.url);
                 that.url=application.url;
                 that._connectToSocket(options);
             }, function(){
@@ -200,18 +198,47 @@ import {codedataUtil} from "./codedataUtil";
           }
 
     }
-
-
     grantInputPermission(inputPermissionMessage,options){
-      var existingSameSenders=this.connectedSenders.filter(s=>s.client===inputPermissionMessage.client);
-      if(existingSameSenders.length>0){
-          existingSameSenders.forEach(s=>{
-              s.disconnectSender(s);
-          });
-          console.log("the client is  connected previously");
-      }
+          if(this.grantPermissionQueue){
+              this.grantPermissionQueue=this.grantPermissionQueue.filter(s=>s.inputPermissionMessage.client!==inputPermissionMessage.client);
+              this.grantPermissionQueue.push({inputPermissionMessage,options});
+              this.grantPermissionQueueLastModified=new Date();
+              return;
+          }
+          var existingSameSenders=this.connectedSenders.filter(s=>s.client===inputPermissionMessage.client);
+          if(existingSameSenders.length>0){
+              existingSameSenders.forEach(s=>{
+                  console.log("Disconnect from the same client");
+                  this.disconnectSender(s);
+              });
+              console.log("the client is  connected previously");
+              this.grantPermissionQueue=[];
+              this.grantPermissionQueue.push({inputPermissionMessage,options});
+              this.grantPermissionQueueLastModified=new Date();
+              setTimeout(this.processGrantInputPermissionQueue.bind(this),300);
+          }
+          else{
+            this._grantInputPermission(inputPermissionMessage,options);
+          }
+    }
+    processGrantInputPermissionQueue(){
+          var currentTime=new Date();
+          if((currentTime.getTime()-this.grantPermissionQueueLastModified.getTime())<200){
+              setTimeout(this.processGrantInputPermissionQueue.bind(this),300);
+          }
+          else{
+              var grantPermissionQueue=this.grantPermissionQueue;
+              this.grantPermissionQueue=null;
+              grantPermissionQueue.forEach(queitem=>{
+                  this._grantInputPermission(queitem.inputPermissionMessage,queitem.options);
+              });
+          }
+    }
+
+    _grantInputPermission(inputPermissionMessage,options){
       const inputSender=this.buildInputSender(inputPermissionMessage,options);
       this.connectedSenders.push(inputSender);
+      console.log(":::connectedSenders:"+this.connectedSenders.length);
       if(options.onSenderConnected){
                       options.onSenderConnected(inputSender, this.connectedSenders);
       }
@@ -378,27 +405,33 @@ import {codedataUtil} from "./codedataUtil";
 
          },
          onLeave:function(data){
-
+            console.log("On leavbe message is received:"+data);
              const leaveMessage=JSON.parse(data);
              const matchedSenders=that.connectedSenders.filter(s =>s.client===leaveMessage.client);
              if(matchedSenders.length>0){
                const inputSenderToLeave=matchedSenders[0];
-               inputSenderToLeave.disconnectSender(inputSenderToLeave);
+               that.disconnectSender(inputSenderToLeave);
 
                if(options.onSenderDisconnected){
                        options.onSenderDisconnected(inputSenderToLeave, that.connectedSenders);
                }
 
              }
-         },
-         disconnectSender(inputSender){
-           that.socket.removeListener(that.session+"/input",inputSender.onInput);
-           that.socket.removeListener(that.session+"/leave",inputSender.onLeave);
-           that.connectedSenders=that.connectedSenders.filter(s =>s.client!==inputSender.client);
          }
 
       };
       return inputSender;
+    }
+    disconnectSender(inputSender){
+      try{
+      this.socket.removeListener(this.session+"/input",inputSender.onInput);
+      this.socket.removeListener(this.session+"/leave",inputSender.onLeave);
+       }
+       catch(error){
+         console.error(error);
+       }
+      this.connectedSenders=this.connectedSenders.filter(s =>s.client!==inputSender.client);
+      console.log("client disconnected:"+inputSender.client);
     }
     _onInput(inputMessage,options){
                 if(inputMessage.initData){

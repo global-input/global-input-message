@@ -22,7 +22,7 @@ git push origin
 
 
 
-browserify -r -t [ babelify --presets [ es2015 ] ]   ./lib/index.js  > lib/global-input-message.js
+browserify  -t [ babelify --presets [ es2015 ] ]   -r ./lib/index.js:global-input-message  > lib/global-input-message.js
 cat lib/global-input-message.js | uglifyjs > lib/global-input-message.min.js
 
 npm publish

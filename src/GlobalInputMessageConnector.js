@@ -66,6 +66,9 @@ import {codedataUtil} from "./codedataUtil";
                 that._connectToSocket(options);
             }, function(){
                 console.warn("failed to get the socket server url");
+                if(options.onError){
+                    options.onError("failed to get the socket server url");
+                }
             });
           }
 

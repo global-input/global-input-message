@@ -477,7 +477,7 @@ import {codedataUtil} from "./codedataUtil";
                 else if(typeof inputMessage.data.fieldId !='undefined'){
                         var matchedFields=initData.form.fields.filter(f=>f.id===inputMessage.data.fieldId);
                         if(matchedFields.length){
-                          var matchedField=field[0];
+                          var matchedField=matchedFields[0];
                           if(matchedField.operations &&   matchedField.operations.onInput){
                               matchedField.operations.onInput(inputMessage.data.value);
                           }
@@ -520,16 +520,21 @@ import {codedataUtil} from "./codedataUtil";
       this.activeInitData=initData;
    }
 
-   sendInputMessage(value, index){
+   sendInputMessage(value, index,fieldId){
       if(!this.isConnected()){
            console.log("not connected yet");
            return;
       }
       var data={
           id:generatateRandomString(10),
-          value,
-          index
+          value
         };
+    if(fieldId){
+      data.fieldId=fieldId;
+    }
+    else{
+        data.index=index;
+    }
         var aes=this.aes;
         if(this.inputAES){
             aes=this.inputAES;

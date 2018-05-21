@@ -462,16 +462,37 @@ import {codedataUtil} from "./codedataUtil";
                   console.log("field is missing in the initData");
                   return;
                 }
-                if(initData.form.fields.length<=inputMessage.data.index){
-                    console.log("index data is too big in the input message");
-                    return;
+                if(typeof inputMessage.data.index !='undefined'){
+                        if(inputMessage.data.index<0 || initData.form.fields.length<=inputMessage.data.index){
+                            console.log("index data is too big in the input message");
+                            return;
+                        }
+                        if(initData.form.fields[inputMessage.data.index].operations &&   initData.form.fields[inputMessage.data.index].operations.onInput){
+                            initData.form.fields[inputMessage.data.index].operations.onInput(inputMessage.data.value);
+                        }
+                        else{
+                          console.log("onInput operations is not defined in the initData index:"+inputMessage.data.index);
+                        }
                 }
-                if(initData.form.fields[inputMessage.data.index].operations &&   initData.form.fields[inputMessage.data.index].operations.onInput){
-                    initData.form.fields[inputMessage.data.index].operations.onInput(inputMessage.data.value);
+                else if(typeof inputMessage.data.fieldId !='undefined'){
+                        var matchedFields=initData.form.fields.filter(f=>f.id===inputMessage.data.fieldId);
+                        if(matchedFields.length){
+                          var matchedField=field[0];
+                          if(matchedField.operations &&   matchedField.operations.onInput){
+                              matchedField.operations.onInput(inputMessage.data.value);
+                          }
+                          else{
+                            console.log("onInput operations is not defined in the initData fieldId:"+inputMessage.data.fieldId);
+                          }
+                        }
+                        else{
+                            console.log("reiceved input message is skipped:The field with the matching id does not exists:"+inputMessage.data.fieldId);
+                        }
                 }
                 else{
-                  console.log("onInput operations is not defined in the initData index:"+inputMessage.data.index);
+                    console.log("reiceved input message is skipped because it does not have fieldId or index");
                 }
+
     }
 
    sendInitData(initData){

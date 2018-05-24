@@ -20,6 +20,8 @@ git commit -m "version"
 
 git push origin
 
+git tag -a v$nextVersion -a "$nextVersion"
+git push origin v$nextVersion
 
 
 browserify  -t [ babelify --presets [ es2015 ] ]   -r ./lib/index.js:global-input-message  > lib/global-input-message.js

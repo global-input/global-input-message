@@ -548,20 +548,27 @@ import {codedataUtil} from "./codedataUtil";
        }
        this.socket.emit(session+'/input', content);
    }
-   changeGlobalInputFieldData(globalInputdata,index, value){
-     if(!globalInputdata){
-          console.log("ignored:"+index+":"+value+" because globalInputdata is empty");
-          return globalInputdata;
-     }
-     if(globalInputdata.length<=index){
-       console.warn("receied the data index is bigger that that of initData");
-       return globalInputdata;
-     }
-      var globalInputdata=globalInputdata.slice(0);
-
-      globalInputdata[index].value=value;
-      return globalInputdata;
-
+   changeGlobalInputFieldData(globalInputdata,data){
+        if(!globalInputdata){
+                  console.log(" because globalInputdata is empty");
+                  return globalInputdata;
+        }
+        if(data.fieldId){
+            globalInputdata=globalInputdata.map(f=>{
+              if(f.id===data.fieldId){
+                  f.value=data.value;
+              }
+              return f;
+            });
+         }
+         else if(typeof data.index !=='undefined' && data.index<globalInputdata.length){
+           var globalInputdata=globalInputdata.slice(0);
+           globalInputdata[data.index].value=data.value;
+        }
+        else{
+             console.warn("receied the data index is bigger that that of initData");
+        }
+        return globalInputdata;
    }
 
 

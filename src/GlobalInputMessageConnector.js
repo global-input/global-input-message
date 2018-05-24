@@ -449,11 +449,6 @@ import {codedataUtil} from "./codedataUtil";
                   console.log("data field is missing in the input message");
                   return;
                 }
-                if(typeof inputMessage.data.index =="undefined"){
-                  console.log("index should be set in the data field of the input message");
-                  return;
-                }
-
                 var initData=options.initData
                 if(this.activeInitData){
                   initData=this.activeInitData;

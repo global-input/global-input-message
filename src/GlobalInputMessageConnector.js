@@ -280,15 +280,20 @@ import {codedataUtil} from "./codedataUtil";
                   inputPermissionResultMessage.initData=JSON.parse(descryptedInitData);
             }
             else{
-                  console.log("received initData is not encrypted");
+                  console.log("skipped:received initData is not encrypted");
+                  return;
             }
 
             if(this.socket){
                 var receveiverDisconnected=function(){
-
-                     if(options.onReceiverDisconnected){
-                       options.onReceiverDisconnected();
+                     var currentTime=(new Date()).getTime();
+                     if((!this.latTimeReceiverDisconnected) || ((currentTime-this.latTimeReceiverDisconnected)<200)){
+                       if(options.onReceiverDisconnected){
+                         options.onReceiverDisconnected();
+                       }
                      }
+                     this.latTimeReceiverDisconnected=currentTime;
+
                 }
                 this.socket.on(options.connectSession+"/leave",receveiverDisconnected);
                 var inputSender=this.buildInputSender(inputPermissionResultMessage,options);
@@ -408,7 +413,7 @@ import {codedataUtil} from "./codedataUtil";
 
          },
          onLeave:function(data){
-            console.log("On leavbe message is received:"+data);
+            console.log("On leave message is received:"+data);
              const leaveMessage=JSON.parse(data);
              const matchedSenders=that.connectedSenders.filter(s =>s.client===leaveMessage.client);
              if(matchedSenders.length>0){

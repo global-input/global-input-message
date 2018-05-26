@@ -280,8 +280,7 @@ import {codedataUtil} from "./codedataUtil";
                   inputPermissionResultMessage.initData=JSON.parse(descryptedInitData);
             }
             else{
-                  console.log("skipped:received initData is not encrypted");
-                  return;
+                  console.log("the permission may not be granted by the other party");                  
             }
 
             if(this.socket){

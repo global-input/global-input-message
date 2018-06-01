@@ -12,7 +12,6 @@ import {codedataUtil} from "./codedataUtil";
       else{
           console.warn(this.client+":"+message);
       }
-
     }
     constructor(){
         this.apikey="k7jc3QcMPKEXGW5UC";
@@ -280,7 +279,7 @@ import {codedataUtil} from "./codedataUtil";
                   inputPermissionResultMessage.initData=JSON.parse(descryptedInitData);
             }
             else{
-                  console.log("the permission may not be granted by the other party");                  
+                  console.log("the permission may not be granted by the other party");
             }
 
             if(this.socket){

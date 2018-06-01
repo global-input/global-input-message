@@ -16,7 +16,7 @@ test('receiver sender should pairing', (done) => {
   console.log("sender session:"+sender.session);
   console.log("sender client:"+sender.client);
   var initData={
-    action:"input-form",
+    action:"input",
     form:{
            title:"Login",
               fields:[{

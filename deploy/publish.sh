@@ -23,9 +23,9 @@ git push origin
 git tag -a v$nextVersion -a "$nextVersion"
 git push origin v$nextVersion
 
-
-browserify  -t [ babelify --presets [ es2015 ] ]   -r ./lib/index.js:global-input-message  > lib/global-input-message.js
-cat lib/global-input-message.js | uglifyjs > lib/global-input-message.min.js
+browserify    -r ./distribution/index.js:global-input-message  > distribution/globalinputmessage.js
+#browserify  -t [ babelify --presets [ es2015 ] ]   -r ./lib/index.js:global-input-message  > lib/global-input-message.js
+cat distribution/globalinputmessage.js | uglifyjs > distribution/globalinputmessage.min.js
 
 npm publish
 

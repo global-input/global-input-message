@@ -3,6 +3,7 @@
 # dependencies
 /lib/
 /node_modules
+/distribution
 
 
 # production

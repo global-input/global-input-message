@@ -1,30 +1,58 @@
 # global-input-message
+```global-input-message``` is a JavaScript library for transfering the end-to-end encypted data via the [Global Input WebSocket server](https://github.com/global-input/global-input-node).
 
-
-The global-input-message is a javascript library that helps your application to display a Global Input QR Code so that your users can use the Global Input mobile app (available both in [iOS](https://itunes.apple.com/us/app/global-input-app/id1269541616?mt=8&ign-mpt=uo%3D4) and [Android](https://itunes.apple.com/us/app/global-input-app/id1269541616?mt=8&ign-mpt=uo%3D4)) to operate on your application.  
-
-One typical use case is that you can allow your users to sign in quicly and securely via their mobile into your application.
-
-If your javascript application is a ReactJS application, you may also have a look at the ReactJS wrapper library in the following URL to make it even simpler.
-
-   [https://github.com/global-input/global-input-react](https://github.com/global-input/global-input-react)
-
+The WebSocket client applications can simply pass the unencrypted messsages to the global-input-message JavaScript library, which encrypts the message content and forwards them over to the destination. On the receiving end, the WebSocket client appplication can simply register a callback function to the [global-input-message] JavaScript library to receive the decrypted messages. The JavaScript library is responsible to receiving the encrypted messages, decrypting them and forwarding the decrypted message to the registered callback function. The end-to-end encryption details and the message routing logic is transparently implemented inside the JavaScript library.
 
 ### Setup
+The Websocket applications need to use the QR codes to share the encryption key as well as the other connection parameters with each other so that they can transfer the message using the end-to-end encryption. Hence, beside including the global-input-message JavaScript module, you may also include another QR Code Javascript module in your set up process.  
 
-##### Set up as a node module and use ```import```/```require``` in your code
+Type the following command in your project directory to install the global-input-message node module
 
-Type the following command to install the global-input-message module
+```shell
+npm install --save global-input-message
+```
 
-```npm install --save global-input-message```
+ Type the following command to to install the [davidshimjs's qrcode module](https://github.com/davidshimjs/qrcodejs)
 
-The ```global-input-message``` does not contain the QR code implementation itself, so you need to install one of the QR Code javascript libraries. For example, you can type the following command
+ ```shell
+ npm install --save davidshimjs-qrcodejs
+ ```
 
- ```npm install --save davidshimjs-qrcodejs```
+ and then include  ```import```/```require``` to the javascript libraries in your code:
+ ```javascript
+	import {createMessageConnector} from "global-input-message";
+```
 
- to install the [davidshimjs's qrcode module](https://github.com/davidshimjs/qrcodejs)
+If your JavaScript application is a traditonal HTML+Javascript application without using any transpilers, dependency or development tools, you can set it up by placing  the following scrip tags in your HTML page:
+```javascript
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/04f46c6a/qrcode.min.js">
+</script>
 
-After above is done, you need to ```import```/```require``` the javascript libraries in your code.
+<script src="https://unpkg.com/global-input-message@1.4.6/lib/global-input-message.min.js">
+</script>
+```
+
+### Hello World Example
+The following defines a form field to receive messages from another device (mobile), when a user type in the field on the mobile, the javascript console in the computer will display the content received:
+
+```javascript
+var options={
+     initData:{
+            form:{                                       
+                title:"Type Something in the following field:",        
+                fields:[{
+                    label:"Content",
+                    operations:{
+                        onInput:function(content){                                                                 console.log("Content received:"+content);
+                        }
+                    }
+                }]
+             }
+        }
+    };
+```
+The
+
 
 For example, if you use the ES6 transpiler, then you can import the ```createMessageConnector``` function from the package and then call that function to create message connector:
 
@@ -42,23 +70,28 @@ In your HTML code, include the qrcode javascript library as well as the ```globa
 <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/04f46c6a/qrcode.min.js">
 </script>
 
-<script src="https://unpkg.com/global-input-message@1.3.33/lib/global-input-message.min.js">
+<script src="https://unpkg.com/global-input-message@1.4.6/lib/global-input-message.min.js">
 </script>
 
 ```
 
-In the above code, the first line uses the [davidshimjs's qrcode javascript library](https://github.com/davidshimjs/qrcodejs), which you need to display the QR code.
+In the above code, the first line uses the [davidshimjs's qrcode javascript library](https://github.com/davidshimjs/qrcodejs), which you need to use to display the QR code to share the encryption key etc with the other WebSocket client application.
 
-and then you need to create the connector in your javascript code:
+Now you can create the WebSocket connector in your javascript code:
 
 ```javascript
 	var globalinput=require("global-input-message");
     var connector = globalinput.createMessageConnector();
 ```
+### Define configuration object.
+The configuration define the callback intwerface to receive the
+
+
+
+
+
 
 ### Usage
-
-You can play around with [the full working example here](https://jsfiddle.net/dilshat/c5fvyxqa/). The code is self-explanatory. But before looking at the example, better read through the following explanation about the codes.  
 
 After implement the set up process explained in the Setup section, you just need to call  ```connect()``` method, and get the codedata from the connector.
 

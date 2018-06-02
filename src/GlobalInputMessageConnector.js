@@ -275,11 +275,23 @@ import {codedataUtil} from "./codedataUtil";
             this.inputAES=options.aes;
             if(this.inputAES && inputPermissionResultMessage.initData && typeof inputPermissionResultMessage.initData ==="string"){
                    const descryptedInitData=decrypt(inputPermissionResultMessage.initData,this.inputAES);
+                  if(descryptedInitData){
+                      try{
+                        inputPermissionResultMessage.initData=JSON.parse(descryptedInitData);
+                      }
+                      catch(error){
+                        console.warn("the service applications responsed with invalid data");
+                        inputPermissionResultMessage.initData=null;
+                      }
+                  }
+                  else{
+                    console.warn("decruption of descryptedInitData  skipped because it is empty");
+                  }
 
-                  inputPermissionResultMessage.initData=JSON.parse(descryptedInitData);
             }
             else{
                   console.log("the permission may not be granted by the other party");
+                  inputPermissionResultMessage.initData=null;
             }
 
             if(this.socket){

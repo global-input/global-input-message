@@ -18,6 +18,9 @@ var codedataUtil = exports.codedataUtil = {
       aes: codedata.aes,
       apikey: codedata.apikey
     };
+    if (codedata.securityGroup) {
+      buildOptions.securityGroup = codedata.securityGroup;
+    }
     if (!options) {
       return buildOptions;
     } else {
@@ -34,6 +37,7 @@ var codedataUtil = exports.codedataUtil = {
       action: "input",
       aes: connector.aes
     });
+
     if (connector.codeAES) {
       return "A" + (0, _util.encrypt)("J" + JSON.stringify(codedata), connector.codeAES);
     } else {

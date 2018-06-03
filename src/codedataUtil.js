@@ -13,6 +13,9 @@ var sharedKey="50SUB39ctEKzd6Uv2a84lFK";
           aes:codedata.aes,
           apikey:codedata.apikey
         }
+        if(codedata.securityGroup){
+              buildOptions.securityGroup=codedata.securityGroup;
+        }
         if(!options){
             return buildOptions;
         }
@@ -29,6 +32,7 @@ var sharedKey="50SUB39ctEKzd6Uv2a84lFK";
                    action:"input",
                    aes:connector.aes
        });
+
        if(connector.codeAES){
           return "A"+encrypt("J"+JSON.stringify(codedata),connector.codeAES);
        }

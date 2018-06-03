@@ -1,7 +1,7 @@
 # global-input-message
 ```global-input-message``` is a JavaScript library for transfering the encypted data via the [Global Input WebSocket server](https://github.com/global-input/global-input-node).
 
-The WebSocket client applications can simply pass the unencrypted messsages to the global-input-message JavaScript library, which encrypts the message content with the end-to-end encryption and forwards them over to the destination. On the receiving end, the WebSocket client appplication can simply register a callback function to the [global-input-message] JavaScript library to receive the decrypted messages. The JavaScript library is responsible to receiving the encrypted messages, decrypting them and forwarding the decrypted message to the registered callback function. The end-to-end encryption details and the message routing logic is transparently implemented inside the JavaScript library.
+A WebSocket client application can pass unencrypted messsages to the global-input-message JavaScript library, without worrying about the encryption and delivering of the messages. The global-input-message JavaScript library encrypts the message content with the end-to-end encryption and forwards them over to the destination. On the receiving end, the WebSocket client appplication registers a callback function to the [global-input-message] JavaScript library to receive the decrypted messages. The JavaScript library is responsible for receiving encrypted messages, decrypting them and forwarding the decrypted messages to the registered callback function. The end-to-end encryption details and the message routing logic is transparently implemented inside the JavaScript library.
 
 ### Setup
 
@@ -55,10 +55,7 @@ var options={
                 title:"Type Something in the following field:",        
                 fields:[{
                     label:"Content",
-                    operations:{
-                        onInput:function(content){                                                                 console.log("Content received:"+content);
-                        }
-                    }
+                    operations:{onInput:function(content){console.log("Content received:"+content);}}
                 }]
              }
         }
@@ -96,7 +93,10 @@ var qrcode=new QRCode(document.getElementById("qrcode"), {
 
 Now your application will display a QR code. If you scan it with the Global Input App [https://globalinput.co.uk/](https://globalinput.co.uk/), the app will display a field on your mobile screen. When you type something on it, you can see the content that you have typed appear in the console. This means that the content is transferred securely from the Global Input App running on your mobile to your application using the end-to-end encryption.
 
-Now you can build on top the above example iteratively towards to your goal by modifying the [configuration](#configuration_50) step by step. For example, if you want to display a button on the mobile and disconnect from the WebSocket Server, you need to add the following to the ```fields``` array:
+Now you can build on top the above example iteratively towards to your goal by modifying the [configuration](#configuration_50) step by step.
+
+### Adding a Button
+For example, if you may like to display a button on the mobile and disconnect from the WebSocket Server if the user has pressed on it. Add the following to the ```fields``` array in the [configuration](#configuration_50):
 ```javascript
     {
         label:"Login",
@@ -105,5 +105,52 @@ Now you can build on top the above example iteratively towards to your goal by m
                  gloalinputconnector.disconnect();   
             }
 ```
+### URL to the Websocket Server & API Key
+In the above example, the URL to the WebSocket Server and the API key value are not provided. Hence, as the default, the ```global-input-message``` JavaScript library is going to use a shared WebSocket Server and its corresponding API key value. If you do so, the performance of the WebSocker Server is not gurantaed. So it is better to run your own WebSocket server by downloading from the [WebSocket Server Github repository](https://github.com/global-input/global-input-node).
 
-For more advanced example, please visit the [Global Input Website](https://globalinput.co.uk/)
+After your WebSocket server is up and running, you can modify the [configuration](#configuration_50) to include the URL to your Websocket Server and the API key value:
+```javascript
+var options={
+    url:"URL to your WebSocket server",
+    apikey:"API key value required by your WebSocket server",
+     initData:{
+            form:{                                       
+                title:"Type Something in the following field:",        
+                fields:[{
+                    label:"Content",
+                    operations:{onInput:function(content){console.log("Content received:"+content);}}
+                }]
+             }
+        }
+    };
+```
+
+### Multi-line Text Field
+
+If you would like to display a multi-line Text Field on the Mobile screen, you can just add ```nLines``` attributes to the corresponding configuration item:
+
+
+```javascript
+var options={
+    url:"URL to your WebSocket server",
+    apikey:"API key value required by your WebSocket server",
+     initData:{
+            form:{                                       
+                title:"Type Something in the following field:",        
+                fields:[{
+                    label:"Content",
+                    nLines:5,
+                    operations:{onInput:function(content){console.log("Content received:"+content);}}
+                }]
+             }
+        }
+    };
+```
+
+### More Advanced Examples
+You can declartively define a complex UI elements on the mobile screen. For example you can compose a Video Player Controller to allow users to control the video from the mobile etc.  For more advanced example, please visit:
+
+[Global Input Website](https://globalinput.co.uk/).
+
+The source code the above website is available at:
+[https://github.com/global-input/global-input-web](https://github.com/global-input/global-input-web)

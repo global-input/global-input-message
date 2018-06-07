@@ -42,11 +42,11 @@ var sharedKey="50SUB39ctEKzd6Uv2a84lFK";
    },
 
    buildPairingData(connector,data={}){
-     var codedata=Object.assign({},data,{
+     var codedata=Object.assign({},{
                  securityGroup:connector.securityGroup,
                  codeAES:connector.codeAES,
                  action:"pairing"
-     });
+     },data);
      return "C"+encrypt("J"+JSON.stringify(codedata),sharedKey);
    },
 

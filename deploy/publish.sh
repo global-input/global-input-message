@@ -13,6 +13,7 @@ git commit -m "update"
 
 git push origin
 
+
 npm version $nextVersion
 
 git add .
@@ -20,8 +21,10 @@ git commit -m "version"
 
 git push origin
 
+
 git tag -a v$nextVersion -a "$nextVersion"
 git push origin v$nextVersion
+
 
 browserify    -r ./distribution/index.js:global-input-message  > distribution/globalinputmessage.js
 #browserify  -t [ babelify --presets [ es2015 ] ]   -r ./lib/index.js:global-input-message  > lib/global-input-message.js
@@ -29,7 +32,11 @@ cat distribution/globalinputmessage.js | uglifyjs > distribution/globalinputmess
 
 npm publish
 
+git checkout master
+git merge develop
+
 npm push origin *:*
+
 
 
 webversion=`grep -A 0 -B 0 '"global-input-message":' ../global-input-web/package.json |  sed 's/"global-input-message": "^//g'  | sed 's/",//g' `
@@ -60,3 +67,5 @@ yarn install
 
 cd ../globalInputMobile/
 yarn install
+
+git checkout develop

@@ -37,7 +37,7 @@ And install the [socket.io](https://socket.io/) dependency:
 npm install --save socket.io-client
 ```
 
-The [receiver application](#receiver-application) application uses QR codes to share the WebSocket URL, API key, its ```session``` and the ```encryption key``` values. Hence, you also need to install a QR Code Javascript library. If you are using the ReactJS framework, you may choose to use [qrcode.react](https://github.com/zpao/qrcode.react):
+The [receiver application](#receiver-application) uses QR codes to share the [the required information](#qr-code) with the [calling application](#calling-application). Hence, you also need to install a QR Code Javascript library. If you are using the ReactJS framework, you may choose to use [qrcode.react](https://github.com/zpao/qrcode.react):
 ```shell
 npm install --save qrcode.react
 ```
@@ -47,8 +47,8 @@ If you are not using the ReactJS framework, you may choose to use [davidshimjs's
  npm install --save davidshimjs-qrcodejs
  ```
 
-###### Coding Directly in the Native JavaScript+HTML ####
-If you prefer manipulating the native JavaScript+HTML pages directly, you can set it up by placing the following script tag in your HTML page:
+###### Plain HTML+JavaScript ####
+If you prefer manipulating the plain HTML+JavaScript directly, you can set it up by placing the following script tag in your HTML page:
 ```javascript
 <script src="https://unpkg.com/global-input-message@1.5.1/distribution/globalinputmessage.min.js">
 </script>
@@ -71,7 +71,7 @@ var globalInputMessage=require("global-input-message");
 var createMessageConnector=globalInputMessage.createMessageConnector;
 ```
 
-In the case of [Direct JavaScript+HTML](#coding-directly-in-the native-javascript-html), you can use:
+In the case of [Plain JavaScript+HTML](plain-html-javascript), you can use:
 
 ```javascript
 var globalinputmessage=require("global-input-message");

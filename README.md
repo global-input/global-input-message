@@ -203,7 +203,7 @@ Use ```icon``` to specify the icon in a button:
 ### Grouping UI elements into a row.
 If some UI elements has a same ```viewId``` attribute it will display in a row. This is because ```viewId``` specifies that the parent view the element belongs to. A view lines its elements in row as default. Views can also be customised.
 
-###Customise a button
+### Customise a button
 you can customise a button, for example, if you would its border as green color:
 ```javascript
     {

@@ -200,10 +200,10 @@ Use ```icon``` to specify the icon in a button:
         ...
     }
 ```
+
 ### Grouping UI elements into a view.
 
-the ```viewId``` of an the UI element specifies its the parent view that the element belongs to.
-The default style of an view is `flexDirection:row`, so it will renders its children in a row.
+The ```viewId``` of an UI element specifies its the parent view that the element belongs to, and the default behaviour of an view is to render its children in a row.
 
 
 

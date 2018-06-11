@@ -190,6 +190,32 @@ If you would like to display a multi-line Text Field on the Mobile screen, you c
                    }
             }
 ```
+### Display a Icon as button.
+Use ```icon``` to specify the icon in a button:
+```javascript
+    {
+        label:"Play",
+        icon: play,
+        type:"button",
+        ...
+    }
+```
+### Grouping UI elements into a row.
+If some UI elements has a same ```viewId``` attribute it will display in a row. This is because ```viewId``` specifies that the parent view the element belongs to. A view lines its elements in row as default. Views can also be customised.
+
+###Customise a button
+you can customise a button, for example, if you would its border as green color:
+```javascript
+    {
+        label:"Up",
+        type:"button",
+        style:{
+            borderColor:"green",
+        },
+        ...
+    }
+```
+
 
 ### More Advanced Examples
 You can declartively define a complex UI elements on the mobile screen. For example you can compose a Video Player Controller to allow users to control the video from the mobile, or you can compose a game pad on the mobile screen to control a game running on your computer.  For more advanced example, please visit:

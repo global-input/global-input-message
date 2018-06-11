@@ -229,5 +229,5 @@ For more advanced example, please visit:
 
 [Global Input Website](https://globalinput.co.uk/).
 
-The source code the Global Input website is available at:
+The source code of the Global Input website is available at:
 [https://github.com/global-input/global-input-web](https://github.com/global-input/global-input-web)

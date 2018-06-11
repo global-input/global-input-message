@@ -203,7 +203,7 @@ Use ```icon``` to specify the icon in a button:
 
 ### Grouping UI elements into a view.
 
-The ```viewId``` of an UI element specifies its the parent view that the element belongs to, and the default behaviour of an view is to render its children in a row.
+The ```viewId``` of an UI element identifies its the parent view that the element belongs to, and the default behaviour of an view is to render its children in a row. This means if you would like to render a number of UI elements into a row, you can set the value of their ```viewId``` to a same value.
 
 
 

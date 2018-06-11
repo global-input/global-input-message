@@ -208,8 +208,8 @@ The ```viewId``` of an UI element identifies its the parent view that the elemen
 
 
 
-### Customise a button
-you can customise a button, for example, if you would its border as green color:
+### Customise a UI element.
+you can customise the looks of an UI element with its ```style``` attribute. For example, if you would the border of a button as green color:
 ```javascript
     {
         label:"Up",
@@ -222,8 +222,10 @@ you can customise a button, for example, if you would its border as green color:
 ```
 
 
-### More Advanced Examples
-You can declartively define a complex UI elements on the mobile screen. For example you can compose a Video Player Controller to allow users to control the video from the mobile, or you can compose a game pad on the mobile screen to control a game running on your computer.  For more advanced example, please visit:
+### More Examples
+You can declaratively define a set of UI elements and then customise any of them with ```style``` attributes.
+
+For more advanced example, please visit:
 
 [Global Input Website](https://globalinput.co.uk/).
 

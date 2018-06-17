@@ -1,26 +1,26 @@
 # global-input-message
-```global-input-message``` is a WebSocket JavaScript library for transfering the end-to-end encrypted data via the [Global Input WebSocket server](https://github.com/global-input/global-input-node). You can download the WebSocket server at
+```global-input-message``` is a WebSocket JavaScript library for transferring the end-to-end encrypted data via the [Global Input WebSocket server](https://github.com/global-input/global-input-node). You can download the WebSocket server at
     [https://github.com/global-input/global-input-node](https://github.com/global-input/global-input-node)
 
-A WebSocket client application passes the unencrypted messsages to the global-input-message JavaScript library, without worrying about the encryption and the delivery of the messages. The global-input-message JavaScript library encrypts the message content using the end-to-end encryption and forwards them over to the destination. On the receiving end, the global-input-message JavaScript library receives the encrypted messages, decrypt them and forward the decrypted messages to the callback function that the application has provided when connected to the library.
+A WebSocket client application passes the unencrypted messages to the global-input-message JavaScript library, without worrying about the encryption and the delivery of the messages. The global-input-message JavaScript library encrypts the message content using the end-to-end encryption and forwards them over to the destination. On the receiving end, the global-input-message JavaScript library receives the encrypted messages, decrypt them and forward the decrypted messages to the callback function that the application has provided when connected to the library.
 
 ### How It Works
-The [global-input-message](https://github.com/global-input/global-input-message) JavaScript library and the [WebSocket server](https://github.com/global-input/global-input-node) imeplements the end-to-end encryption and the message trasnsporting logic transparently. At the simples level, a WebSocket client application connects to the WebSocket server, and shares its details via a QR Code and waits for the connection. Another WebSocket client reads the QR code to obtain the information about how to find the waiting client (The URL of the WebSocket Server, API key etc) and connects to the waiting client via the WebSocket server.
+The [global-input-message](https://github.com/global-input/global-input-message) JavaScript library and the [WebSocket server](https://github.com/global-input/global-input-node) implements the end-to-end encryption and the message transporting logic transparently. At the simples level, a WebSocket client application connects to the WebSocket server, and shares its details via a QR Code and waits for the connection. Another WebSocket client reads the QR code to obtain the information about how to find the waiting client (The URL of the WebSocket Server, API key etc) and connects to the waiting client via the WebSocket server.
 
 ###### Receiver Application
-A ```global-input-message``` application is a ```reiceiver application``` if it connects to the WebSocket server and waits for connection from another application.
+A ```global-input-message``` application is a ```receiver application```, if it connects to the WebSocket server and waits for connection from another application.
 
 ###### Calling Application
-A ```global-input-message``` application is a ```calling application``` if it requests to connet to the ```Receiver application```.
+A ```global-input-message``` application is a ```calling application```, if it requests to connect to a ```receiver application```.
 
 ###### QR Code
-A ```receiver application``` uses QR Code to share the required information with the ```calling application``` to let the ```calling application``` to find the ```Receiver``` application and establish the communication using the end-to-end encryption.
+A ```receiver application``` uses QR Code to share the required information with the ```calling application``` to let the ```calling application``` to find the ```receiver``` application and establish the communication.
 
 The QR code contains the following information:
 (1) The ```url``` value of the WebSocket server that the ```receiver application``` has connected to.
 (2) The  ```apikey``` value required by the WebSocket server.
 (3) A ```session``` value that uniquely identifies the ```receiver application``` in the WebSocket server.
-(4) The encryption key for encrypting/decrypting the message content. This value will not be shared with the WebSocket server, and will stay in the reicever application and shared with the calling application only via the QR code.
+(4) The encryption key for encrypting/decrypting the message content. This value will not be shared with the WebSocket server, and will stay in the receiver application and shared with the calling application only via the QR code.
 
 Because a new encryption key is generated inside the [receiver application](#receiver-application) for each session and transferred to the [calling application](#calling-application) directly without involving any network connection, the encrypted messages can only be decrypted by the receiver and calling applications. The WebSocket server will not be able to decrypt the content of the messages.
 
@@ -31,13 +31,13 @@ Install the global-input-message JavaScript library:
 ```shell
 npm install --save global-input-message
 ```
-And install the [socket.io](https://socket.io/) dependency:
+And install its only dependency [socket.io](https://socket.io/):
 
 ```shell
 npm install --save socket.io-client
 ```
 
-The [receiver application](#receiver-application) needs to use QR codes to share the [the required information](#qr-code) with the [calling application](#calling-application). Hence, you also need to install a QR Code Javascript library. If you are using the ReactJS framework, you may choose to use [qrcode.react](https://github.com/zpao/qrcode.react):
+A [receiver application](#receiver-application) needs to use the QR codes to share the [the required information](#qr-code) with the [calling application](#calling-application). Hence, you also need to install a QR Code Javascript library. If you are using the ReactJS framework, you may choose to use [qrcode.react](https://github.com/zpao/qrcode.react):
 ```shell
 npm install --save qrcode.react
 ```
@@ -88,7 +88,7 @@ This example application is a [receiver application](#receiver-application). Whe
 You can test the example explained below on [fiddler](https://jsfiddle.net/dilshat/c5fvyxqa/)
 
 ###### Configuration
-Create a configuration object, which declatively specifies a text field and its callback function to receive messages:
+Create a configuration object, which declaratively defines a text field and its callback function to receive messages:
 
 ```javascript
 var options={
@@ -135,7 +135,7 @@ If are not using the ReactJS, you can specify where to display the QR code in yo
 ```html
 <div id="qrcode"/>
 ```
-and then, in your script:
+and then you can include the following code in your application:
 ```javascript
 var qrcode=new QRCode(document.getElementById("qrcode"), {
       text: codedataToShare,
@@ -204,13 +204,13 @@ Use ```icon``` to specify the icon in a button:
     }
 ```
 
-### Grouping UI elements into a view.
+### Grouping elements into a view.
 
-The ```viewId``` of an UI element identifies its the parent view that the element belongs to, and the default behaviour of an view is to render its children in a row. This means if you would like to render a number of UI elements into a row, you can set the value of their ```viewId``` to a same value. For example, if the value of the ```viewId``` for two buttons is 'row1', the Global Input App will try to line up the buttons in a row. You can customise any UI element  including the views with ```style``` attributes.  
+The ```viewId``` of an element identifies its the parent view that the element belongs to, and the default behaviour of an view is to render its children in a row on the mobile screen. This means if you would like to render a number of UI elements into a row, you can set the value of their ```viewId``` to a same value. You can customise any UI element, including the view that the element belongs to, with ```style``` attributes.  
 
 
 ### Customise a UI element.
-you can customise an element with the ```style``` attribute. For example, if you would the color of the border of a button as green:
+you can customise an element with the ```style``` attribute. For example, if you would set the colour of the border of a button to ```green```:
 ```javascript
     {
         label:"Up",
@@ -225,7 +225,7 @@ you can customise an element with the ```style``` attribute. For example, if you
 
 ### More Examples
 
-For more advanced example, please visit:
+For more advanced examples, please visit:
 
 [Global Input Website](https://globalinput.co.uk/).
 

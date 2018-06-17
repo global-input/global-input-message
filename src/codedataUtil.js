@@ -117,13 +117,11 @@ var sharedKey="50SUB39ctEKzd6Uv2a84lFK";
             }
             catch(error){
               this.onError(options," incorrect format decrypted",error);
-              console.warn(" not a json:"+dataContent);
               return;
             }
       }
       else{
           this.onError(options,"unrecognized format decrypted");
-          console.log("the code:"+dataContent)
           return;
       }
       if(codedata.action=='input'){

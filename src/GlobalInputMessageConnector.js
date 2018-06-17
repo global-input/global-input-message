@@ -240,7 +240,7 @@ import {codedataUtil} from "./codedataUtil";
     _grantInputPermission(inputPermissionMessage,options){
       const inputSender=this.buildInputSender(inputPermissionMessage,options);
       this.connectedSenders.push(inputSender);
-      console.log(":::connectedSenders:"+this.connectedSenders.length);
+      console.log("connectedSenders:"+this.connectedSenders.length);
       if(options.onSenderConnected){
                       options.onSenderConnected(inputSender, this.connectedSenders);
       }
@@ -423,7 +423,6 @@ import {codedataUtil} from "./codedataUtil";
 
          },
          onLeave:function(data){
-            console.log("On leave message is received:"+data);
              const leaveMessage=JSON.parse(data);
              const matchedSenders=that.connectedSenders.filter(s =>s.client===leaveMessage.client);
              if(matchedSenders.length>0){

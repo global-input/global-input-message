@@ -5,7 +5,7 @@
 A WebSocket client application passes the unencrypted messages to the global-input-message JavaScript library, without worrying about the encryption and the delivery of the messages. The global-input-message JavaScript library encrypts the message content using the end-to-end encryption and forwards them over to the destination. On the receiving end, the global-input-message JavaScript library receives the encrypted messages, decrypt them and forward the decrypted messages to the callback function that the application has provided when connected to the library.
 
 ### How It Works
-The [global-input-message](https://github.com/global-input/global-input-message) JavaScript library and the [WebSocket server](https://github.com/global-input/global-input-node) implements the end-to-end encryption and the message transporting logic transparently. At the simples level, a WebSocket client application connects to the WebSocket server, and shares its details via a QR Code and waits for the connection. Another WebSocket client reads the QR code to obtain the information about how to find the waiting client (The URL of the WebSocket Server, API key etc) and connects to the waiting client via the WebSocket server.
+The [global-input-message](https://github.com/global-input/global-input-message) JavaScript library and the [WebSocket server](https://github.com/global-input/global-input-node) implements the end-to-end encryption and the message transporting logic transparently. At the simple level, a WebSocket client application connects to the WebSocket server, and shares its details via a QR Code and waits for the connection. Another WebSocket client reads the QR code to obtain the information about how to find the waiting client (The URL of the WebSocket Server, API key etc) and connects to the waiting client via the WebSocket server.
 
 ###### Receiver Application
 A ```global-input-message``` application is a ```receiver application```, if it connects to the WebSocket server and waits for connection from another application.
@@ -80,7 +80,7 @@ In the case of [Plain JavaScript+HTML](#plain-htmljavascript), the JavaScript li
     var globalinputmessage=require("global-input-message");
 	var gloalinputconnector=globalinputmessage.createMessageConnector();
 ```
-Now the next step is to invoke the ```connect()``` method on the ```gloalinputconnector``` object by passing a configuration object as its argument. It is more straightforward to understand this by an actual example, so I explain the rest with an example.
+Now the next step is to invoke the ```connect()``` method on the ```gloalinputconnector``` object by passing a configuration object as its argument. It is more straightforward to understand this by an actual example, so I'll explain the rest with an example.
 
 ### An Example
 This example application is a [receiver application](#receiver-application). When you use a [Global Input App](https://globalinput.co.uk/) to scan the QR code displayed, the Global Input App displays a field on your mobile where you can type content, the content will be sent over to the example application using the end-to-end encryption. The application then prints the content in the JavaScript console. You can build an application on top of this example iteratively to implement more complex logic.
@@ -151,7 +151,7 @@ Now the [receiver application](#receiver-application) displays a QR code using t
 
 If you scan the QR Code using your [Global Input App](https://globalinput.co.uk/), a form will be displayed on your mobile screen and it contains a single field called ```Content```. When you type something on it, you can see the content that you have typed appear in the JavaScript console on your desktop browser. This means that the content is transferred securely from the Global Input App running on your mobile to the example application using the end-to-end encryption.
 
-Now you can build your actual application iteratively on top the example by modifying the [configuration](#configuration) step by step.
+Now you can build your actual application iteratively on top of the example by modifying the [configuration](#configuration) step by step.
 
 ### Adding a Button
 If you like to display a button on the mobile screen and disconnect the application from the WebSocket Server if the user has pressed on it,  add the following to the ```fields``` array in the [configuration](#configuration):
@@ -193,7 +193,7 @@ If you would like to display a multi-line Text Field on the Mobile screen, you c
                    }
             }
 ```
-### Display a Icon button.
+### Display an Icon button.
 Use ```icon``` to specify the icon in a button:
 ```javascript
     {

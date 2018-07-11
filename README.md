@@ -1,28 +1,5 @@
 # global-input-message
-```global-input-message``` is a WebSocket JavaScript library for transferring the end-to-end encrypted data via the [Global Input WebSocket server](https://github.com/global-input/global-input-node). You can download the WebSocket server at
-    [https://github.com/global-input/global-input-node](https://github.com/global-input/global-input-node)
-
-A WebSocket client application passes the unencrypted messages to the global-input-message JavaScript library, without worrying about the encryption and the delivery of the messages. The global-input-message JavaScript library encrypts the message content using the end-to-end encryption and forwards them over to the destination. On the receiving end, the global-input-message JavaScript library receives the encrypted messages, decrypt them and forward the decrypted messages to the callback function that the application has provided when connected to the library.
-
-### How It Works
-The [global-input-message](https://github.com/global-input/global-input-message) JavaScript library and the [WebSocket server](https://github.com/global-input/global-input-node) implements the end-to-end encryption and the message transporting logic transparently. At the simple level, a WebSocket client application connects to the WebSocket server, and shares its details via a QR Code and waits for the connection. Another WebSocket client reads the QR code to obtain the information about how to find the waiting client (The URL of the WebSocket Server, API key etc) and connects to the waiting client via the WebSocket server.
-
-###### Receiver Application
-A ```global-input-message``` application is a ```receiver application```, if it connects to the WebSocket server and waits for connection from another application.
-
-###### Calling Application
-A ```global-input-message``` application is a ```calling application```, if it requests to connect to a ```receiver application```.
-
-###### QR Code
-A ```receiver application``` uses QR Code to share the required information with the ```calling application``` to let the ```calling application``` to find the ```receiver``` application and establish the communication.
-
-The QR code contains the following information:
-(1) The ```url``` value of the WebSocket server that the ```receiver application``` has connected to.
-(2) The  ```apikey``` value required by the WebSocket server.
-(3) A ```session``` value that uniquely identifies the ```receiver application``` in the WebSocket server.
-(4) The encryption key for encrypting/decrypting the message content. This value will not be shared with the WebSocket server, and will stay in the receiver application and shared with the calling application only via the QR code.
-
-Because a new encryption key is generated inside the [receiver application](#receiver-application) for each session and transferred to the [calling application](#calling-application) directly without involving any network connection, the encrypted messages can only be decrypted by the receiver and calling applications. The WebSocket server will not be able to decrypt the content of the messages.
+```global-input-message``` is a JavaScript library for connecting device and web applications to the [Global Input Platform](https://globalinput.co.uk/global-input-app/paltform). The Global Input platform is an open-source platform, which allows device and web applications to be extended to have mobile input and mobile control functionalities without developing separate mobile apps. An application can declaratively specify mobile user interface components and the callback functions to receive mobile input events. The platform is responsible for sending and receiving messages using end-to-end encryption etc. Please visit [Global Input Platform page](https://globalinput.co.uk/global-input-app/paltform) to have an overview on the platform for better of the JavaScript library.
 
 ### Setup
 
@@ -37,7 +14,7 @@ And install its only dependency [socket.io](https://socket.io/):
 npm install --save socket.io-client
 ```
 
-A [receiver application](#receiver-application) needs to use the QR codes to share the [the required information](#qr-code) with the [calling application](#calling-application). Hence, you also need to install a QR Code Javascript library. If you are using the ReactJS framework, you may choose to use [qrcode.react](https://github.com/zpao/qrcode.react):
+The application also needs to use QR Code to share the Global Input code data, which can be obtained from the JS library. Hence, you also need to install a QR Code Javascript library. If you are using the ReactJS framework, you may choose to use [qrcode.react](https://github.com/zpao/qrcode.react):
 ```shell
 npm install --save qrcode.react
 ```
@@ -88,7 +65,7 @@ This example application is a [receiver application](#receiver-application). Whe
 You can test the example explained below on [fiddler](https://jsfiddle.net/dilshat/c5fvyxqa/)
 
 ###### Configuration
-Create a configuration object, which declaratively defines a text field and its callback function to receive messages:
+Create a configuration object, which declaratively defines a text field and its callback function to receive mobile input events:
 
 ```javascript
 var options={
@@ -107,17 +84,17 @@ var options={
     }
 };
 ```
-The ```form``` object display a form in the Global Input App, the ```title``` specifies the title of the form. The ```fields``` array contains a single field called ```Content```. The ```onInput``` is the callback function to receive messages from the [calling application](#calling-application)
+The ```form``` object is for displaying a form in the Global Input App, the ```title``` specifies the title of the form. The ```fields``` array contains a single field called ```Content```. The ```onInput``` is the callback function to receive the mobile input events from the application.
 
 ###### Connect
-You can now invoke the connector method on the ```connector``` object to connect to the WebSocket server. You need to pass the [configuration](#configuration) object as its argument:
+You can now invoke the connector method on the ```connector``` object to connect to the Global Input WebSocket server. You need to pass the [configuration](#configuration) object as its argument:
 
 ```javascript
     gloalinputconnector.connect(options);
 ```
-The application now waits for the [calling application](#calling-application) to connect.
+The application now waits for the Global Input App to connect.
 
-In order for a [calling application](#calling-application) to be able to connect to this [receiver application](#receiver-application), it needs to obtains the [necessary information](qr-code) from the [receiver application](#receiver-application). This information can be obtained from the ```connector``` object:
+The next step for the application is to obtain the code data from the the ```connector``` object:
 ```javascript
     var codedataToShare=gloalinputconnector.buildInputCodeData();
 ```
@@ -149,7 +126,7 @@ var qrcode=new QRCode(document.getElementById("qrcode"), {
 
 Now the [receiver application](#receiver-application) displays a QR code using the content of the variable ```codedataToShare```.
 
-If you scan the QR Code using your [Global Input App](https://globalinput.co.uk/), a form will be displayed on your mobile screen and it contains a single field called ```Content```. When you type something on it, you can see the content that you have typed appear in the JavaScript console on your desktop browser. This means that the content is transferred securely from the Global Input App running on your mobile to the example application using the end-to-end encryption.
+If you scan the QR Code using your [Global Input App](https://globalinput.co.uk/global-input-app/app), a form will be displayed on your mobile screen and it contains a single field called ```Content```. When you type something on it, you can see the content that you have typed appear in the JavaScript console on your desktop browser. This means that the content is transferred securely from the Global Input App running on your mobile to the example application using end-to-end encryption.
 
 Now you can build your actual application iteratively on top of the example by modifying the [configuration](#configuration) step by step.
 
@@ -165,7 +142,7 @@ If you like to display a button on the mobile screen and disconnect the applicat
 ```
 
 ### URL of the Websocket Server & API Key
-In the example [configuration](#configuration), the URL of the [WebSocket Server](https://github.com/global-input/global-input-node) and the API key value are not provided. The ```global-input-message``` JavaScript library is going to use a shared WebSocket Server and its corresponding API key value if they are not found in the configuration. The performance of the shared WebSocker Server is not guaranteed, so it is better to run your own WebSocket server by downloading from the [WebSocket Server Github repository](https://github.com/global-input/global-input-node).
+In the example [configuration](#configuration), the URL of the [Global Input WebSocket Server](https://github.com/global-input/global-input-node) and the API key are not specified. Hence, the ```global-input-message``` JavaScript library is going to use a shared Global Input WebSocket Server and its corresponding API key value if they are not found in the configuration. The performance of the shared WebSocker Server is not guaranteed, so it is better to download and run your own Global Input WebSocket server from the [Global Input WebSocket Server Github repository](https://github.com/global-input/global-input-node).
 
 After your WebSocket server is up and running, you can modify the [configuration](#configuration_50) to include the URL of your Websocket Server and the API key value:
 ```javascript

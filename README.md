@@ -1,5 +1,5 @@
 # global-input-message
-```global-input-message``` is a JavaScript library for connecting device and web applications to the [Global Input Platform](https://globalinput.co.uk/global-input-app/paltform). The Global Input platform is an open-source platform, which allows device and web applications to be extended to have mobile input and mobile control functionalities without developing separate mobile apps. An application can declaratively specify mobile user interface components and the callback functions to receive mobile input events. The platform is responsible for sending and receiving messages using end-to-end encryption etc. Please visit [Global Input Platform page](https://globalinput.co.uk/global-input-app/paltform) to have an overview on the platform for better of the JavaScript library.
+```global-input-message``` is a JavaScript extension of the [Global Input App](https://globalinput.co.uk). The extension allows applications to have mobile input, mobile control, mobile encrypted storage functionalities without the need to develop separate mobile apps. An application can declaratively specify mobile user interfaces and the callback functions to receive mobile input events. The JavaScript extension is responsible for sending and receiving messages that are secured with end-to-end encryption, and the application can concentrate on implmenting the mobile business logic within its context.
 
 ### Setup
 
@@ -14,7 +14,7 @@ And install its only dependency [socket.io](https://socket.io/):
 npm install --save socket.io-client
 ```
 
-The application also needs to use QR Code to share the Global Input code data, which can be obtained from the JS library. Hence, you also need to install a QR Code Javascript library. If you are using the ReactJS framework, you may choose to use [qrcode.react](https://github.com/zpao/qrcode.react):
+The application also needs to use a QR Code to display its communication pararameters. Global Input App scans the QR code to obtain the communication parmeters including the encryption key used for end-to-end encryptuon. Hence, you also need to install a QR Code Javascript library. If you are using the ReactJS framework, you may choose to use [qrcode.react](https://github.com/zpao/qrcode.react):
 ```shell
 npm install --save qrcode.react
 ```

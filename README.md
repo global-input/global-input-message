@@ -1,5 +1,5 @@
 # global-input-message
-```global-input-message``` is a JavaScript extension of the [Global Input App](https://globalinput.co.uk). The extension allows applications to have mobile input, mobile control, mobile encrypted storage functionalities without the need to develop separate mobile apps. An application can declaratively specify mobile user interfaces and the callback functions to receive mobile input events. The JavaScript extension is responsible for sending and receiving messages that are secured with end-to-end encryption, and the application can concentrate on implementing the mobile business logic within its context.
+```global-input-message``` is a JavaScript extension of the [Global Input App](https://globalinput.co.uk). By including this extension in your JavaScript application, you can allow your users to use their mobile to operate securely on your JavaScript applications running on other devices. Your applications will have mobile input, mobile control, portable encrypted storage functionalities without the need to develop separate mobile apps. An application can declaratively specify mobile user interfaces and the callback functions to receive mobile input events. The JavaScript extension is responsible for sending and receiving messages that are secured with the end-to-end encryption, and your application can concentrate on implementing the mobile business logic within its context.
 
 ### Setup
 
@@ -7,11 +7,6 @@ Install the global-input-message JavaScript library:
 
 ```shell
 npm install --save global-input-message
-```
-And install its only dependency [socket.io](https://socket.io/):
-
-```shell
-npm install --save socket.io-client
 ```
 
 The application also needs to use a QR Code to display its communication parameters. Global Input App scans the QR code to obtain the communication parameters including the encryption key used for end-to-end encryption. Hence, you also need to install a QR Code Javascript library. If you are using the ReactJS framework, you may choose to use [qrcode.react](https://github.com/zpao/qrcode.react):
@@ -25,9 +20,9 @@ If you are not using the ReactJS framework, you may choose to use [davidshimjs's
  ```
 
 ###### Plain HTML+JavaScript ####
-If you prefer manipulating the plain HTML+JavaScript directly, you can set it up by placing the following script tag in your HTML page:
+If you prefer the plain HTML+JavaScript, you can place the following script tag in your HTML page:
 ```javascript
-<script src="https://unpkg.com/global-input-message@1.5.3/distribution/globalinputmessage.min.js">
+<script src="https://unpkg.com/global-input-message@1.6.1/distribution/globalinputmessage.min.js">
 </script>
 ```
 and the JavaScript tag for the qrcode library:
@@ -51,16 +46,10 @@ var globalInputMessage=require("global-input-message");
 var gloalinputconnector=globalInputMessage.createMessageConnector();
 ```
 
-In the case of [Plain JavaScript+HTML](#plain-htmljavascript), the JavaScript library that you have included in the JavaScript tag provides the ```require``` method itself, so you can still write the following code in your application.
-
-```javascript
-    var globalinputmessage=require("global-input-message");
-    var gloalinputconnector=globalinputmessage.createMessageConnector();
-```
-Now the next step is to invoke the ```connect()``` method on the ```gloalinputconnector``` object by passing a configuration object as its argument. It is more straightforward to understand this by an actual example, so I'll explain the rest with an example.
+Now the next step is to invoke the ```connect()``` method on the ```gloalinputconnector``` object passing a configuration object as its argument. It is more straightforward to understand this by an actual example.
 
 ### An Example
-This example allows you to use your Global Input App running on your mobile to control your JavaScript application. The communication is secured with the end-to-end encryption. When you use your [Global Input App](https://globalinput.co.uk/) scan the QR code displayed, the Global Input App displays a field on your mobile screen where you can type content, the content will be sent over to the example application. The application then prints the content in the JavaScript console. You can build an application on top of this example iteratively to implement more complex logic.
+This example allows you to use your Global Input App running on your mobile to control your JavaScript application. The communication is secured with the end-to-end encryption. When you scan the QR code with the [Global Input App](https://globalinput.co.uk/), a form appears on your mobile screen.  As you type content on the field on your mobile, the content will be sent over to the example application. The application then prints the content in the JavaScript console. You can build an application on top of this example to implement your actual business logic.
 
 You can test the example explained below on [fiddler](https://jsfiddle.net/dilshat/c5fvyxqa/)
 
@@ -88,7 +77,7 @@ var options={
     }
 };
 ```
-The ```form``` object is for displaying a form in the Global Input App, the ```title``` specifies the title of the form. The ```fields``` array contains a single field called ```Content```. The ```onInput``` is the callback function to receive the mobile input events from the application.
+The ```form``` object is for displaying a form in the Global Input App, the ```title``` specifies the title of the form. The ```fields``` array contains a single field called ```Content```. The ```onInput``` is the callback function to receive the mobile input events from the mobile app.
 
 ###### Connect
 You can now invoke the connector method on the ```connector``` object to connect to the Global Input WebSocket server. You need to pass the [configuration](#configuration) object as its argument:
@@ -98,30 +87,11 @@ You can now invoke the connector method on the ```connector``` object to connect
 ```
 The application now waits for the Global Input App to connect.
 
-The next step for the application is to obtain the code data from the  ```connector``` object, that is initiated when the connection is successful:
+When the connection is successful, the ``` onRegistered()``` function specified in the configuration will be called. There you can obtain the code data from the  ```connector``` object, and use it to display the QR code:
 ```javascript
     displayQRCode(){    
             var codedataToShare=gloalinputconnector.buildInputCodeData();
-            ....
-     }
-```
-You can now use QR Code to display content of the ```codedataToShare```.
-
-If you are using the ReactJS:
-
-```javascript
-  ...
-  <QRCode  value={codedataToShare}
-           level="H"
-           size={300}/>
-```
-This will display a QR code on the screen using the content of the variable ```codedataToShare```.
-If are not using the ReactJS, you can specify where to display the QR code in your HTML page:
-```html
-<div id="qrcode"/>
-```
-and then you can include the following code in your application:
-```javascript
+           ```javascript
 displayQRCode(){    
             var codedataToShare=gloalinputconnector.buildInputCodeData();      
     var qrcode=new QRCode(document.getElementById("qrcode"), {
@@ -134,16 +104,29 @@ displayQRCode(){
     });
  }
 ```
+The above code looks for the HTML snippet and place the QR code there:
+```html
+<div id="qrcode"/>
+```
+If you are using the ReactJS:
 
-Now the [receiver application](#receiver-application) displays a QR code using the content of the variable ```codedataToShare```.
+```javascript
+  ...
+            var codedataToShare=gloalinputconnector.buildInputCodeData();
+return (
+  <QRCode  value={codedataToShare}
+           level="H"
+           size={300}/>
+    );
+ ```
 
-If you scan the QR Code using your [Global Input App](https://globalinput.co.uk/global-input-app/app), a form will be displayed on your mobile screen and it contains a single field called ```Content```. When you type something on it, you can see the content that you have typed appear in the JavaScript console on your desktop browser. This means that the content is transferred securely from the Global Input App running on your mobile to the example application using end-to-end encryption.
+If you scan the QR Code using your [Global Input App](https://globalinput.co.uk/global-input-app/app), a form will be displayed on your mobile screen and it contains a single field called ```Content```. When you type something on it, you can see the content that you have typed appear in the JavaScript console on your desktop browser. This means that the content is transferred securely from the Global Input App running on your mobile to the example application.
 
-Now you can build your actual application iteratively on top of the example by modifying the [configuration](#configuration) step by step.
+Now you can build your actual application on top of the example by modifying the [configuration](#configuration) step by step.
 
 ### Obtaining the QR code via buildInputCodeData()
 
-In order obtain the value used for QR code, you should invole the ```buildInputCodeData()``` method after the connection is successful:
+In order to obtain the value used for QR code correctly, you should invoke the ```buildInputCodeData()``` method after the connection is successful:
 ```javascript
 
 var displayQRCode=function(){
@@ -179,10 +162,10 @@ var options={
 gloalinputconnector.connect(options);
 
 ```
-In the code above, the ```onRegistered()``` function will be invoked when extension code has registered itself to the WebSocket server successfully. You can write the code inside this function to obtain the QR code data and display it on the page.
+In the code above, the ```onRegistered()``` function will be invoked when the extension code has registered itself to the WebSocket server successfully. You can write the code inside this function to obtain the QR code data and display it on the page.
 
 ### Adding a Button
-If you like to display a button on the mobile screen and disconnect the application from the WebSocket Server if the user has pressed on it,  add the following to the ```fields``` array in the [configuration](#configuration):
+You may like to display a button on the mobile screen and disconnect the application from the WebSocket Server when the user has pressed on it. To achieve  this, modify the ```fields``` array in the [configuration](#configuration) to add the following:
 ```javascript
     {
         label:"Login",
@@ -193,7 +176,7 @@ If you like to display a button on the mobile screen and disconnect the applicat
 ```
 
 ### URL of the WebSocket Server & API Key
-In the example [configuration](#configuration), the URL of the [Global Input WebSocket Server](https://github.com/global-input/global-input-node) and the API key are not specified. Hence, the ```global-input-message``` JavaScript library is going to use the default Global Input WebSocket Server and its corresponding API key value.  You can download and run your own Global Input WebSocket server from the [Global Input WebSocket Server Github repository](https://github.com/global-input/global-input-node).
+In the example [configuration](#configuration), the URL of the [Global Input WebSocket Server](https://github.com/global-input/global-input-node) and the API key are not specified. In this case, the ```global-input-message``` JavaScript library uses the default Global Input WebSocket Server farm and its corresponding API key value.  You can download and run your own Global Input WebSocket server from the [Global Input WebSocket Server Github repository](https://github.com/global-input/global-input-node).
 
 After your WebSocket server is up and running, you can modify the [configuration](#configuration_50) to include the URL of your WebSocket Server and the API key value:
 ```javascript
@@ -208,7 +191,7 @@ var options={
 
 ### Multi-line Text Field
 
-If you would like to display a multi-line Text Field on the Mobile screen, you can  add ```nLines``` attributes to the corresponding configuration item:
+You may like to display a multi-line Text Field on the Mobile screen, you can  add ```nLines``` attributes to the corresponding configuration item:
 
 ```javascript
            {

@@ -63,7 +63,7 @@ import {codedataUtil} from "./codedataUtil";
             basicGetURL(url,function(application){
                 that.url=application.url;
                 if(application.apikey){
-                  that.apikey=apikey;
+                  that.apikey=application.apikey;
                 }
                 that._connectToSocket(options);
             }, function(){

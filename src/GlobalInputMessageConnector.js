@@ -62,6 +62,9 @@ import {codedataUtil} from "./codedataUtil";
             var that=this;
             basicGetURL(url,function(application){
                 that.url=application.url;
+                if(application.apikey){
+                  that.apikey=apikey;
+                }
                 that._connectToSocket(options);
             }, function(){
                 console.warn("failed to get the socket server url");

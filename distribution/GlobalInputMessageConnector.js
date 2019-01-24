@@ -89,6 +89,7 @@ var GlobalInputMessageConnector = function () {
       } else {
         var url = this.url + "/global-input/request-socket-url?apikey=" + this.apikey;
         var that = this;
+        console.log("url:" + url);
         (0, _util.basicGetURL)(url, function (application) {
           that.url = application.url;
           if (application.apikey) {

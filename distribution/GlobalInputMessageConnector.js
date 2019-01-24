@@ -91,6 +91,9 @@ var GlobalInputMessageConnector = function () {
         var that = this;
         (0, _util.basicGetURL)(url, function (application) {
           that.url = application.url;
+          if (application.apikey) {
+            that.apikey = application.apikey;
+          }
           that._connectToSocket(options);
         }, function () {
           console.warn("failed to get the socket server url");
@@ -270,7 +273,7 @@ var GlobalInputMessageConnector = function () {
     value: function _grantInputPermission(inputPermissionMessage, options) {
       var inputSender = this.buildInputSender(inputPermissionMessage, options);
       this.connectedSenders.push(inputSender);
-      console.log(":::connectedSenders:" + this.connectedSenders.length);
+      console.log("connectedSenders:" + this.connectedSenders.length);
       if (options.onSenderConnected) {
         options.onSenderConnected(inputSender, this.connectedSenders);
       }
@@ -448,7 +451,6 @@ var GlobalInputMessageConnector = function () {
           }
         },
         onLeave: function onLeave(data) {
-          console.log("On leave message is received:" + data);
           var leaveMessage = JSON.parse(data);
           var matchedSenders = that.connectedSenders.filter(function (s) {
             return s.client === leaveMessage.client;

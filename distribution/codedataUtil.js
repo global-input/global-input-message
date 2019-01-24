@@ -48,11 +48,11 @@ var codedataUtil = exports.codedataUtil = {
   buildPairingData: function buildPairingData(connector) {
     var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-    var codedata = Object.assign({}, data, {
+    var codedata = Object.assign({}, {
       securityGroup: connector.securityGroup,
       codeAES: connector.codeAES,
       action: "pairing"
-    });
+    }, data);
     return "C" + (0, _util.encrypt)("J" + JSON.stringify(codedata), sharedKey);
   },
   onError: function onError(options, message, error) {
@@ -113,12 +113,10 @@ var codedataUtil = exports.codedataUtil = {
         codedata = JSON.parse(dataContent);
       } catch (error) {
         this.onError(options, " incorrect format decrypted", error);
-        console.warn(" not a json:" + dataContent);
         return;
       }
     } else {
       this.onError(options, "unrecognized format decrypted");
-      console.log("the code:" + dataContent);
       return;
     }
     if (codedata.action == 'input') {

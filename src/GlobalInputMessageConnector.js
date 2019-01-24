@@ -60,6 +60,7 @@ import {codedataUtil} from "./codedataUtil";
           else{
             var url=this.url+"/global-input/request-socket-url?apikey="+this.apikey;
             var that=this;
+            console.log("url:"+url);
             basicGetURL(url,function(application){
                 that.url=application.url;
                 if(application.apikey){

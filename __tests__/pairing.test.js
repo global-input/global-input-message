@@ -82,7 +82,7 @@ test('receiver sender should pairing', (done) => {
       sender.processCodeData(pairingData,senderCodeOptions);
   };
   var receiverOptions={
-      url:'http://192.168.0.5:1337',
+      url:'https://globalinput.co.uk',
       securityGroup:"KqfMZzevq2jCbQUg+W8i750",
 
       codeAES:"YFd9o8glRNIvM0C2yU8p4",
@@ -93,7 +93,7 @@ test('receiver sender should pairing', (done) => {
             receiver.disconnect();
             done();
       },
-      apikey:"AME6hDRWzGLfCfZbs",
+      apikey:"k7jc3QcMPKEXGW5UC",
       onInputPermission:function(next){
           next();
       },

@@ -17,7 +17,7 @@ test("encrypt and decrypt should work", function(){
 
              var codestring=JSON.stringify(codedata);
              var encryptedvalue="A"+encrypt("J"+codestring,codeAES);
-             console.log(codestring.length+":"+encryptedvalue.length+":encrypted content:"+encryptedvalue);
+            // console.log(codestring.length+":"+encryptedvalue.length+":encrypted content:"+encryptedvalue);
              var decrypted=decrypt(encryptedvalue.substring(1),codeAES);
              var obj=JSON.parse(decrypted.substring(1));
              expect(obj.url).toBe(codedata.url);

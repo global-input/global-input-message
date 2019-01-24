@@ -1,6 +1,14 @@
 import CryptoJS from "crypto-js";
 export function generatateRandomString(length=10){
-  var randPassword = Array(length).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz").map(function(x) { return x[Math.floor(Math.random() * x.length)] }).join('');
+
+
+
+
+  var randPassword = Array(length).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@£$&*:;").map(function(x) {
+        var indexString = CryptoJS.enc.Hex.stringify(CryptoJS.lib.WordArray.random(1));
+        var indexValue=parseInt(indexString,16);
+        return x[indexValue % x.length]
+  }).join('');
   return randPassword;
 }
 export function encrypt(content, password){

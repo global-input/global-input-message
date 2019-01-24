@@ -68,7 +68,7 @@ test('receiver sender should send input message', (done) => {
 
   };
   var receiverOptions={
-      url:'http://192.168.0.5:1337',
+      url:'https://globalinput.co.uk',
       onInput:function(message){
             console.log("receiver received input message:"+JSON.stringify(message));
             expect(message.data.value.content).toBe(inputData.content);
@@ -76,7 +76,7 @@ test('receiver sender should send input message', (done) => {
             receiver.disconnect();
             done();
       },
-      apikey:"AME6hDRWzGLfCfZbs",
+      apikey:"k7jc3QcMPKEXGW5UC",
       onInputPermission:function(next){
           next();
       },

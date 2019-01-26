@@ -22,7 +22,7 @@ If you are not using the ReactJS framework, you may choose to use [davidshimjs's
 ###### Plain HTML+JavaScript ####
 If you prefer the plain HTML+JavaScript, you can place the following script tag in your HTML page:
 ```javascript
-<script src="https://unpkg.com/global-input-message@1.6.1/distribution/globalinputmessage.min.js">
+<script src="https://unpkg.com/global-input-message@1.6.4/distribution/globalinputmessage.min.js">
 </script>
 ```
 and the JavaScript tag for the qrcode library:

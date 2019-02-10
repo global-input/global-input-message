@@ -1,5 +1,5 @@
 # global-input-message
-```global-input-message``` is a JavaScript extension for the [Global Input App](https://globalinput.co.uk). It enables applications to allow users to use their mobile to operate securely on the applications running on other devices. It provides applications with mobile input, mobile control, and portable encrypted storage functionalities without the need to develop separate mobile apps. An application can declaratively specify mobile user interfaces and the callback functions to receive mobile input events. The JavaScript extension encapsulates the logic of sending and receiving messages that are secured with the end-to-end encryption so that the application can implement mobile business logic within its context. The extensions enables applications to impelement "Authentication via mobile", "Second Screen App",  and "Operating on Self-service machines without the need of a keyboard or a touch screen" and much more. For more information, please visit the [Global Input App](https://globalinput.co.uk) website.
+```global-input-message``` is a JavaScript extension for the [Global Input App](https://globalinput.co.uk). It enables applications to allow users to use their mobile to operate securely on the applications running on other devices. It provides applications with mobile input, mobile control, and portable encrypted storage functionalities without the need to develop separate mobile apps. An application can declaratively specify mobile user interfaces and the callback functions to receive mobile input events. The JavaScript extension encapsulates the logic of sending and receiving messages that are secured with the end-to-end encryption so that the application can implement mobile business logic within its context. The extensions enables applications to impelement "Authentication via Mobile", "Second Screen App",  and "Operating on Self-service machines without the need of a keyboard or a touch screen" and much more. For more information, please visit the [Global Input App](https://globalinput.co.uk) website.
 
 ### Setup
 
@@ -56,7 +56,7 @@ return (
            size={300}/>
     );
 }
-or if you are using react:
+or if you are not using react:
 
 ```javascript
 

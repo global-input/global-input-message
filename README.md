@@ -71,6 +71,7 @@ var displayQRCode=function(){
         correctLevel : QRCode.CorrectLevel.H
     });    
 };
+```
 The above code looks for the HTML snippet and place the QR code there:
 ```html
 <div id="qrcode"/>

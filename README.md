@@ -88,7 +88,7 @@ Then, invoke the ```connect()``` method on the ```gloalinputconnector``` object 
 
 This example allows you to use your mobile to control your JavaScript application. The communication is secured with the end-to-end encryption.
 
-If you scan the QR Code using your [Global Input App](https://globalinput.co.u), a form will be displayed on your mobile screen and it contains a single field called ```Content```. When you type something on it, you can see that the content that you have typed appear in the JavaScript console on your desktop browser. This means that the content is transferred securely from the Global Input App running on your mobile to the example application.
+If you scan the QR Code using your [Global Input App](https://globalinput.co.u), a form will be displayed on your mobile screen and it contains a single field called ```Content```. When you type something on it, you can see that the content that you have typed appears in the JavaScript console of your desktop browser. This tells that the content is transferred securely from your Global Input App running on your mobile to the example application.
 
 You can easily extend this to implement actual business logic.
 

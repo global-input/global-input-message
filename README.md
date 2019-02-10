@@ -72,10 +72,13 @@ var displayQRCode=function(){
     });    
 };
 ```
+
 The above code looks for the HTML snippet and place the QR code there:
+
 ```html
 <div id="qrcode"/>
 ```
+
 Then, invoke the ```connect()``` method on the ```gloalinputconnector``` object passing a configuration object as its argument.  The following example describes the structure of the configuration object.
 
 ### Example

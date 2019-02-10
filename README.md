@@ -118,9 +118,9 @@ var options={
 };
   gloalinputconnector.connect(options);
 ```
-The ```form```  specifies the form on the mobile screen, the ```title``` provides the title of the form. The ```fields``` array contains a single field called ```Content```. The ```onInput``` is the callback function to receive the mobile input events from the mobile app.
+The ```form```  specifies the form on the mobile screen, the ```title``` provides the title of the form. The ```fields``` array contains a single field ```Content```. The ```onInput``` is the callback function for receiving the mobile input events from the mobile app.
 
-The ``` onRegistered()``` function provided in the configuration will be invoked when the extension has registered itself to a WebSocket server (https://github.com/global-input/global-input-node).  It is important to invoke the ```displayQRCode()``` function only after the extension has registered itself to a WebSocket server.
+The ``` onRegistered()``` function provided in the configuration is invoked when the extension has registered itself to a WebSocket server (https://github.com/global-input/global-input-node).  It is important to invoke the ```displayQRCode()``` function only after the extension has registered itself to a WebSocket server.
 
 
 ### Adding a Button
@@ -136,7 +136,8 @@ For adding a button to the form, modify the ```fields``` array in the [configura
 ```
 
 ### URL of the WebSocket Server & API Key
-In the example [configuration](#configuration), the URL of the [Global Input WebSocket Server](https://github.com/global-input/global-input-node) and the API key are not specified. In this case, the ```global-input-message``` JavaScript library uses the default Global Input WebSocket Server farm and its corresponding API key value.  You can download and run your own Global Input WebSocket server from the [Global Input WebSocket Server Github repository](https://github.com/global-input/global-input-node).
+
+In the example [configuration](#configuration), the URL of the [Global Input WebSocket Server](https://github.com/global-input/global-input-node) and the API key are not specified. Hence, the ```global-input-message``` JavaScript library uses the default Global Input WebSocket Server farm and its corresponding API key value.  You can download and run your own Global Input WebSocket server from the [Global Input WebSocket Server Github repository](https://github.com/global-input/global-input-node).
 
 After your WebSocket server is up and running, you can modify the [configuration](#configuration_50) to include the URL of your WebSocket Server and the API key value:
 ```javascript

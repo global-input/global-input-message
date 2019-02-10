@@ -47,6 +47,7 @@ var gloalinputconnector=globalInputMessage.createMessageConnector();
 Global Input App needs to scan an encrypted QR code to obtain the necessary information to establish secure communication with the application.
 
 Define a function to obtains the encrypted code data from the extension and render the QR Code:
+
 ```javascript
 renderQRCode(){
             var codedataToShare=gloalinputconnector.buildInputCodeData();
@@ -60,8 +61,8 @@ return (
 
 or if you are not using react:
 
-```javascript
 
+```javascript
 var displayQRCode=function(){
         var codedataToShare=gloalinputconnector.buildInputCodeData();
         var qrcode=new QRCode(document.getElementById("qrcode"), {

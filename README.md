@@ -21,7 +21,7 @@ Otherwise, you can use [davidshimjs's qrcode](https://github.com/davidshimjs/qrc
 ###### Plain HTML+JavaScript ####
 for vanilla JavaScript, you can place script tag in the HTML page:
 ```javascript
-<script src="https://unpkg.com/global-input-message@1.6.5/distribution/globalinputmessage.min.js">
+<script src="https://unpkg.com/global-input-message@1.6.6/distribution/globalinputmessage.min.js">
 </script>
 <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@04f46c6a0708418cb7b96fc563eacae0fbf77674/qrcode.min.js">
 </script>

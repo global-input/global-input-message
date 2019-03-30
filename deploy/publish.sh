@@ -36,36 +36,4 @@ git checkout master
 git merge develop
 
 npm push origin *:*
-
-
-
-webversion=`grep -A 0 -B 0 '"global-input-message":' ../global-input-web/package.json |  sed 's/"global-input-message": "^//g'  | sed 's/",//g' `
-mobileversion=`grep -A 0 -B 0 '"global-input-message":' ../globalInputMobile/package.json |  sed 's/"global-input-message": "^//g'  | sed 's/",//g' `
-
-echo $nextVersion
-echo $webversion
-echo $mobileversion
-
-nextVersion=$(echo "$nextVersion" | sed -e "s/ //g")
-webversion=$(echo "$webversion" | sed -e "s/ //g")
-
-
-oldstring='\"global-input-message\": \"^'$webversion'\"'
-newstring='\"global-input-message\": \"^'$nextVersion'\"'
-
-
-comandtoexecute='sed -i -e "s/'$oldstring'/'$newstring'/g" ../global-input-web/package.json'
-eval $comandtoexecute
-
-comandtoexecute='sed -i -e "s/'$oldstring'/'$newstring'/g" ../globalInputMobile/package.json'
-eval $comandtoexecute
-
-sleep 3
-
-cd ../global-input-web/
-yarn install
-
-cd ../globalInputMobile/
-yarn install
-
 git checkout develop

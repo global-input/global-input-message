@@ -15,7 +15,7 @@ Some of its use cases:
 ### React Application
 
 For React application, please use the [Global Input React](https://github.com/global-input/global-input-react) Component that
-you may find much straightforward to use.
+you may find much more straightforward to use.
 
 
 ### Setup

@@ -1,5 +1,22 @@
-# global-input-message
-```global-input-message``` is a JavaScript extension for the [Global Input App](https://globalinput.co.uk). It enables applications to allow users to use their mobile to operate securely on the applications running on other devices. It provides applications with mobile input, mobile control, and portable encrypted storage functionalities without the need to develop separate mobile apps. An application can declaratively specify mobile user interfaces and the callback functions to receive mobile input events. The JavaScript extension encapsulates the logic of sending and receiving messages that are secured with the end-to-end encryption so that the application can implement mobile business logic within its context. The extensions enables applications to impelement "Authentication via Mobile", "Second Screen App",  and "Operating on Self-service machines without the need of a keyboard or a touch screen" and much more. For more information, please visit the [Global Input App](https://globalinput.co.uk) website.
+
+A [Global Input App](https://globalinput.co.uk) JavaScript library for web applications to implement mobile integrations.
+
+The [Global Input App](https://globalinput.co.uk) with its extensions provides a universal mobile integration solution for web and device applications, allowing users to use mobiles to operate on those applications. It provides applications with mobile input, mobile control, and portable encrypted storage functionalities without the need to develop separate mobile apps. Applications can implement mobile integration logic within its application context.
+
+Some of its use cases:
+* [Mobile Authentication](https://globalinput.co.uk/global-input-app/about-mobile-authentication)
+* [Mobile Input & Control](https://globalinput.co.uk/global-input-app/about-mobile-control)
+* [Second Screen Experience](https://globalinput.co.uk/global-input-app/about-second-screen)
+* [Mobile Content Encryption](https://globalinput.co.uk/global-input-app/about-print-scan-qrcodes)
+
+
+
+
+### React Application
+
+For React application, please use the [Global Input React](https://github.com/global-input/global-input-react) Component that
+you may find much straightforward to use.
+
 
 ### Setup
 
@@ -8,132 +25,133 @@ Install the global-input-message JavaScript library:
 ```shell
 npm install --save global-input-message
 ```
-You also need a QR Code library. Global Input App scans the QR code to obtain the communication parameters that includes the one-time-use encryption key for end-to-end encryption. If you are using the ReactJS, you may use [qrcode.react](https://github.com/zpao/qrcode.react):
-```shell
-npm install --save qrcode.react
-```
-Otherwise, you can use [davidshimjs's qrcode](https://github.com/davidshimjs/qrcodejs) or any other QR code javascript library:
 
- ```shell
- npm install --save davidshimjs-qrcodejs
- ```
+### Usage
 
-###### Plain HTML+JavaScript ####
-for vanilla JavaScript, you can place script tag in the HTML page:
-```javascript
-<script src="https://unpkg.com/global-input-message@1.6.6/distribution/globalinputmessage.min.js">
-</script>
-<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@04f46c6a0708418cb7b96fc563eacae0fbf77674/qrcode.min.js">
-</script>
+import and create the connector object:
 
-```
 
-### Create Message Connector Object
- ```import/require``` the JavaScript module and create a message connector:
 
 ```JavaScript
 import {createMessageConnector} from "global-input-message";
 var gloalinputconnector=createMessageConnector();
 ```
 
-or use ```require```:
+or if you use require:
 
 ```JavaScript
 var globalInputMessage=require("global-input-message");
 var gloalinputconnector=globalInputMessage.createMessageConnector();
 ```
 
-### Display QR Code
-Global Input App needs to scan an encrypted QR code to obtain the necessary information to establish secure communication with the application.
+or if go for manual insertion into the HTML page:
 
-Define a function to obtains the encrypted code data from the extension and render the QR Code:
-
-```javascript
-renderQRCode(){
-            var codedataToShare=gloalinputconnector.buildInputCodeData();
-return (
-  <QRCode  value={codedataToShare}
-           level="H"
-           size={300}/>
-    );
-}
+```JavaScript
+<script src="https://unpkg.com/global-input-message@1.6.6/distribution/globalinputmessage.min.js">
+</script>
+<script>
+var globalInputMessage=require("global-input-message");
+var gloalinputconnector=globalInputMessage.createMessageConnector();
+</script>
 ```
 
-or if you are not using react:
+Then, if you would like to display a 'Content' field on the connected mobile screen, and then receive content on the
+```setContent(content)``` function as user types on it:
 
-
-```javascript
-var displayQRCode=function(){
-        var codedataToShare=gloalinputconnector.buildInputCodeData();
-        var qrcode=new QRCode(document.getElementById("qrcode"), {
-        text: codedataToShare,
-        width: 300,
-        height: 300,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
-    });    
-};
+```JavaScript
+const [content, setContent]=useState("");  
+ let mobileConfig={        
+                          initData:{                              
+                              form:{
+                                	title:"Content Transfer",   
+                                fields:[{
+                                  label:"Content",            
+                                  operations:{
+                                      onInput:value=>setContent(value);
+                                  }
+                                }]
+                              }
+                          },
+                          onRegistered:function(next){
+                                  next();
+                                  displayQRCode();
+                          }
+             };
+  gloalinputconnector.connect(mobileConfig);           
 ```
 
-The above code looks for the HTML snippet and place the QR code there:
+You may have a look at the [Content Transfer Example](https://globalinput.co.uk/global-input-app/content-transfer), you can download the source code from its [GitHub repository](https://github.com/global-input/content-transfer-example).
 
-```html
-<div id="qrcode"/>
+Let's say you have another application that you would like to allow users to use mobiles to invoke its ```play()``` function. You can put the following into the render function of your component:
+
+
+```JavaScript
+const [content, setContent]=useState("");  
+ let mobileConfig={        
+                          initData:{                              
+                              form:{
+                                	title:"Play",   
+                                fields:[{
+                                  label:"Play",
+                                  type:"button",            
+                                  operations:{
+                                      onInput:()=>play();
+                                  }
+                                }]
+                              }
+                          },
+                          onRegistered:function(next){
+                                  next();
+                                  displayQRCode();
+                          }
+             };
+  gloalinputconnector.connect(mobileConfig);           
 ```
 
-Then, invoke the ```connect()``` method on the ```gloalinputconnector``` object passing a configuration object as its argument.  The following example describes the structure of the configuration object.
+If you have a Sign In Component that uses password authentication, and you would like your users to use mobiles to sign in speedily. You just need to include the following in the render function of your component:
 
-### Example
+```JavaScript
+ let mobileConfig={        
+                          initData:{                              
+                              form:{
+                                	title:"Sign In",
+                                  id:"###username###@mycompany.com",  
+                                fields:[{
+                                  label:"Username",            
+                                  operations:{
+                                      onInput:username=>setUsername(username);
+                                  }
+                                },{
+                                  label:"Password",            
+                                  operations:{
+                                      onInput:password=>setPassword(password);
+                                  }
+                                },{
+                                  label:"Sign In",
+                                  type:"button",            
+                                  operations:{
+                                      onInput:()=>signIn(username,password);
+                                  }
+                                }]
+                              }
+                          },
+             };
 
-This example allows you to use your mobile to control your JavaScript application. The communication is secured with the end-to-end encryption.
-
-If you scan the QR Code using your [Global Input App](https://globalinput.co.u), a form will be displayed on your mobile screen and it contains a single field called ```Content```. When you type something on it, you can see that the content that you have typed appears in the JavaScript console of your desktop browser. This tells that the content is transferred securely from your Global Input App running on your mobile to the example application.
-
-You can easily extend this to implement actual business logic.
-
-You can test the example explained below on [fiddler](https://jsfiddle.net/dilshat/c5fvyxqa/)
-
-The configuration declaratively defines a text field and a callback function to receive mobile input events:
-
-```javascript
-var options={
-    initData:{
-    form:{                                       
-        title:"Type Something in the following field:",        
-        fields:[{
-            label:"Content",
-            operations:{
-                onInput:function(content){
-                        console.log("Content received:"+content);
-                        }
-                }
-        }]
-      }
-    },
-    onRegistered:function(next){
-            next();
-            displayQRCode();
-    }
-};
-  gloalinputconnector.connect(options);
+    gloalinputconnector.connect(mobileConfig);           
 ```
-The ```form```  specifies the form on the mobile screen, the ```title``` provides the title of the form. The ```fields``` array contains a single field ```Content```. The ```onInput``` is the callback function for receiving the mobile input events from the mobile app.
 
-The ``` onRegistered()``` function provided in the configuration is invoked when the extension has registered itself to a WebSocket server (https://github.com/global-input/global-input-node).  It is important to invoke the ```displayQRCode()``` function only after the extension has registered itself to a WebSocket server.
+In the above example, you can replace the ```this.signIn()``` with whatever function that you have implemented to accept username and password to validate user credential.
 
+The value of the ```id``` of the form in the above example identifies the form data when the user stores/loads it from/to the encrypted storage on his/her mobile device. using place holder ```###username###``` allows to store multiple accounts on the same domain.
 
-### Adding a Button
-For adding a button to the form, modify the ```fields``` array in the [configuration](#configuration)  to add the following:
-```javascript
-    {
-        label:"Disconnect",
-        type:"button",
-        operations:{      
-   onInput:function(){
-                 gloalinputconnector.disconnect();   
-            }
-```
+### More Examples
+* [Content Transfer Example](https://globalinput.co.uk/global-input-app/content-transfer)
+* [Second Screen Application](https://globalinput.co.uk/global-input-app/video-player)
+* [Game Control Application](https://globalinput.co.uk/global-input-app/game-example)
+* [Mobile Form Automation](https://globalinput.co.uk/global-input-app/send-message)
+* [Mobile Form Transfer](https://globalinput.co.uk/global-input-app/form-data-transfer)
+* [Mobile Content Encryption](https://globalinput.co.uk/global-input-app/qr-printing)
+
 
 ### URL of the WebSocket Server & API Key
 
@@ -193,10 +211,3 @@ You can customise an element with the ```style``` attribute. For example, if you
         ...
     }
 ```
-
-
-### More Examples
-
-For more advanced examples, please visit:
-
-[Global Input Website](https://globalinput.co.uk/).

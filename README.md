@@ -49,17 +49,13 @@ or if go for manual insertion into the HTML page:
 ```JavaScript
 <script src="https://unpkg.com/global-input-message@1.6.6/distribution/globalinputmessage.min.js">
 </script>
-<script>
-var globalInputMessage=require("global-input-message");
-var gloalinputconnector=globalInputMessage.createMessageConnector();
-</script>
 ```
 
-Then, if you would like to display a 'Content' field on the connected mobile screen, and then receive content on the
-```setContent(content)``` function as user types on it:
+Let's say that you would like to display a text field, labelled with ```Content```, on the user's mobile screen after the user has connected to your application by scanning the encrypted QR code. And you would like to receive the typed content via ```setContent(content)``` function when the user is typing on his/her mobile. You can achieve your goal just by the following code:
+
 
 ```JavaScript
-const [content, setContent]=useState("");  
+
  let mobileConfig={        
                           initData:{                              
                               form:{
@@ -80,7 +76,7 @@ const [content, setContent]=useState("");
   gloalinputconnector.connect(mobileConfig);           
 ```
 
-You may have a look at the [Content Transfer Example](https://globalinput.co.uk/global-input-app/content-transfer), you can download the source code from its [GitHub repository](https://github.com/global-input/content-transfer-example).
+You can see it in action in the [live demo](https://globalinput.co.uk/global-input-app/content-transfer), or you can download the source code from [GitHub repository](https://github.com/global-input/content-transfer-example).
 
 Let's say you have another application that you would like to allow users to use mobiles to invoke its ```play()``` function. You can put the following into the render function of your component:
 

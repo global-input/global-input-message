@@ -81,12 +81,13 @@ Let's say that you would like to display a text field, labelled with ```Content`
 You can see it in action in the [live demo](https://globalinput.co.uk/global-input-app/content-transfer), or you can download the source code from [GitHub repository](https://github.com/global-input/content-transfer-example).
 
 
+###Another Example
 
-Let's say you have another application that you would like to allow users to use mobiles to invoke its ```play()``` function. You can put the following into the render function of your component:
+Let's say that you would like to display a button, labelled with ```Play```, on the user's mobile screen after the user has connected to your application by scanning the encrypted QR code. And you would like to invoke ```play()``` function when the user has press the button on his/her mobile. You can include the following code to achieve that:
 
 
 ```JavaScript
-const [content, setContent]=useState("");  
+
  let mobileConfig={        
                           initData:{                              
                               form:{
@@ -108,7 +109,10 @@ const [content, setContent]=useState("");
   gloalinputconnector.connect(mobileConfig);           
 ```
 
-If you have a Sign In Component that uses password authentication, and you would like your users to use mobiles to sign in speedily. You just need to include the following in the render function of your component:
+###Sign In Example
+Let's say that you would like to display a ```Username``` and a ```Password``` fields, and a ```Sign In``` button, on
+the user's mobile screen after the user has connected to your application by scanning the encrypted QR code. And you would like to receive user inputs via ```setUsername(username)``` and ```setPassword(password)``` functions when the user are filling their credentials. And you would like to invoke ```signIn()``` function when the user has pressed the ```Sign In``` button on
+his/her button. You can include the following code to achieve that:
 
 ```JavaScript
  let mobileConfig={        
@@ -130,7 +134,7 @@ If you have a Sign In Component that uses password authentication, and you would
                                   label:"Sign In",
                                   type:"button",            
                                   operations:{
-                                      onInput:()=>signIn(username,password);
+                                      onInput:()=>signIn();
                                   }
                                 }]
                               }
@@ -140,9 +144,7 @@ If you have a Sign In Component that uses password authentication, and you would
     gloalinputconnector.connect(mobileConfig);           
 ```
 
-In the above example, you can replace the ```this.signIn()``` with whatever function that you have implemented to accept username and password to validate user credential.
-
-The value of the ```id``` of the form in the above example identifies the form data when the user stores/loads it from/to the encrypted storage on his/her mobile device. using place holder ```###username###``` allows to store multiple accounts on the same domain.
+In the above example, The ```id``` of the form identifies the form data when the user saves/loads the data from/to the encrypted storage on his/her mobile device. using place holder ```###username###``` allows to identifies data uniquely when multiple accounts on the same domain are used.
 
 ## More Examples
 * [Content Transfer Example](https://globalinput.co.uk/global-input-app/content-transfer)

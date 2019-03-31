@@ -1,5 +1,5 @@
 
-### global-input-message
+## global-input-message
 
 This is a [Global Input App](https://globalinput.co.uk) JavaScript library for web applications to implement mobile integrations.
 
@@ -14,13 +14,13 @@ Some of its use cases:
 
 
 
-### React Application
+## React Application
 
 For React application, please use the [Global Input React](https://github.com/global-input/global-input-react) Component that
 you may find much more straightforward to use.
 
 
-### Setup
+## Setup
 
 Install the global-input-message JavaScript library:
 
@@ -28,7 +28,7 @@ Install the global-input-message JavaScript library:
 npm install --save global-input-message
 ```
 
-### Usage
+## Usage
 
 import and create the connector object:
 
@@ -79,6 +79,8 @@ Let's say that you would like to display a text field, labelled with ```Content`
 ```
 
 You can see it in action in the [live demo](https://globalinput.co.uk/global-input-app/content-transfer), or you can download the source code from [GitHub repository](https://github.com/global-input/content-transfer-example).
+
+
 
 Let's say you have another application that you would like to allow users to use mobiles to invoke its ```play()``` function. You can put the following into the render function of your component:
 
@@ -142,7 +144,7 @@ In the above example, you can replace the ```this.signIn()``` with whatever func
 
 The value of the ```id``` of the form in the above example identifies the form data when the user stores/loads it from/to the encrypted storage on his/her mobile device. using place holder ```###username###``` allows to store multiple accounts on the same domain.
 
-### More Examples
+## More Examples
 * [Content Transfer Example](https://globalinput.co.uk/global-input-app/content-transfer)
 * [Second Screen Application](https://globalinput.co.uk/global-input-app/video-player)
 * [Game Control Application](https://globalinput.co.uk/global-input-app/game-example)

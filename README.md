@@ -81,7 +81,7 @@ Let's say that you would like to display a text field, labelled with ```Content`
 You can see it in action in the [live demo](https://globalinput.co.uk/global-input-app/content-transfer), or you can download the source code from [GitHub repository](https://github.com/global-input/content-transfer-example).
 
 
-###Another Example
+### Another Example
 
 Let's say that you would like to display a button, labelled with ```Play```, on the user's mobile screen after the user has connected to your application by scanning the encrypted QR code. And you would like to invoke ```play()``` function when the user has press the button on his/her mobile. You can include the following code to achieve that:
 
@@ -109,7 +109,7 @@ Let's say that you would like to display a button, labelled with ```Play```, on 
   gloalinputconnector.connect(mobileConfig);           
 ```
 
-###Sign In Example
+### Sign In Example
 Let's say that you would like to display a ```Username``` and a ```Password``` fields, and a ```Sign In``` button, on
 the user's mobile screen after the user has connected to your application by scanning the encrypted QR code. And you would like to receive user inputs via ```setUsername(username)``` and ```setPassword(password)``` functions when the user are filling their credentials. And you would like to invoke ```signIn()``` function when the user has pressed the ```Sign In``` button on
 his/her button. You can include the following code to achieve that:

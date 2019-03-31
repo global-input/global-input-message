@@ -1,5 +1,7 @@
 
-A [Global Input App](https://globalinput.co.uk) JavaScript library for web applications to implement mobile integrations.
+### global-input-message
+
+This is a [Global Input App](https://globalinput.co.uk) JavaScript library for web applications to implement mobile integrations.
 
 The [Global Input App](https://globalinput.co.uk) with its extensions provides a universal mobile integration solution for web and device applications, allowing users to use mobiles to operate on those applications. It provides applications with mobile input, mobile control, and portable encrypted storage functionalities without the need to develop separate mobile apps. Applications can implement mobile integration logic within its application context.
 

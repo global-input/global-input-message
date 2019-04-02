@@ -22,8 +22,8 @@ git commit -m "version"
 git push origin
 
 
-git tag -a v$nextVersion -m "released a new version: $nextVersion"
-git checkout v$nextVersion
+git tag -a $nextVersion -m "released a new version: $nextVersion"
+git checkout $nextVersion
 git push origin
 git checkout develop
 

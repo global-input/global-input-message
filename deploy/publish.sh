@@ -17,24 +17,20 @@ git push origin
 npm version $nextVersion
 
 git add .
-git commit -m "version"
+git commit -m "version $nextVersion"
 
 git push origin
 
 
-git tag -a $nextVersion -m "released a new version: $nextVersion"
-git checkout $nextVersion:$nextVersion
-git push origin
-git checkout develop
 
 
 
 
-#browserify    -r ./distribution/index.js:global-input-message  > distribution/globalinputmessage.js
+browserify    -r ./distribution/index.js:global-input-message  > distribution/globalinputmessage.js
 
-#cat distribution/globalinputmessage.js | uglifyjs > distribution/globalinputmessage.min.js
+cat distribution/globalinputmessage.js | uglifyjs > distribution/globalinputmessage.min.js
 
-#npm publish
+npm publish
 
 #git checkout master
 #git merge develop

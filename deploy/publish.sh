@@ -23,7 +23,7 @@ git push origin
 
 
 git tag -a v$nextVersion -m "released a new version: $nextVersion"
-git push origin v$nextVersion:v$nextVersion
+git push origin "v$nextVersion":"v$nextVersion"
 
 
 #browserify    -r ./distribution/index.js:global-input-message  > distribution/globalinputmessage.js

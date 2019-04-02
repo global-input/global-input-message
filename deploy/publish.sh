@@ -22,7 +22,7 @@ git commit -m "version"
 git push origin
 
 
-git tag -a $nextVersion
+git tag -a $nextVersion -m "released a new version: $nextVersion"
 git push origin $nextVersion:$nextVersion
 
 

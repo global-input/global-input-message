@@ -54,7 +54,7 @@ or if you are using manual linking of your JavaScript files:
 </script>
 ```
 
-Let's say that you would like to display a text field, labelled with ```Content```, on the user's mobile screen after the user has connected to your application by scanning the encrypted QR code. And you would like to receive the typed content via ```setContent(content)``` function when the user is typing on his/her mobile. You can achieve your goal just by the following code:
+Let's say that you would like to display a text field, labelled as ```Content```, on the user's mobile screen after the user has connected to your application by scanning an encrypted QR code. And you would like to receive the content when the user is typing on his/her mobile:
 
 
 ```JavaScript
@@ -79,7 +79,9 @@ Let's say that you would like to display a text field, labelled with ```Content`
   gloalinputconnector.connect(mobileConfig);           
 ```
 
-You can see it in action in the [live demo](https://globalinput.co.uk/global-input-app/content-transfer), or you can download the source code from [GitHub repository](https://github.com/global-input/content-transfer-example).
+On scanning the Encrypted QR Code using the [Global Input App](https://globalinput.co.uk/), a form titles as "Content Transfer" will be displayed on the mobile screen. The form contains a single field labelled as "Content". If you type on the content field on your mobile, the ```setContent()'``` will be invoked with the content parameter in real-time. The GlobalInputConnect component is responsible for displaying an encrypted QR code that contains a one-time-use encryption key among other communication channel parameters.
+
+The 'displayQRCode' function displays an encrypted QR code that contains a one-time-use encryption key among other communication channel parameters.
 
 
 ### Another Example

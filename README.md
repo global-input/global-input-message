@@ -54,7 +54,7 @@ or if you are using manual linking of your JavaScript files:
 </script>
 ```
 
-Let's say that you would like to display a text field, labelled as ```Content```, on the user's mobile screen after the user has connected to your application by scanning an encrypted QR code. And you would like to receive the content when the user is typing on his/her mobile:
+Let's say that you would like to display a text field, labelled as ```Content```, on the user's mobile screen after the user has connected to your application by scanning an encrypted QR code:
 
 
 ```JavaScript

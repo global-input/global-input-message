@@ -22,8 +22,8 @@ git commit -m "version"
 git push origin
 
 
-git tag -a v$nextVersion
-git push origin "v$nextVersion"
+git tag -a $nextVersion
+git push origin $nextVersion
 
 
 #browserify    -r ./distribution/index.js:global-input-message  > distribution/globalinputmessage.js

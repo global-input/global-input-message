@@ -15,10 +15,10 @@ Some of its use cases are:
 
 
 
-## React Application
+## React Applications
 
-For React application, please use the [Global Input React](https://github.com/global-input/global-input-react) Component that
-you may find much more straightforward to use.
+For React applications, please use the [Global Input React](https://github.com/global-input/global-input-react) Component that
+you may find even more delightful.
 
 
 ## Setup

@@ -23,7 +23,7 @@ git push origin
 
 
 git tag -a $nextVersion
-git push origin $nextVersion
+git push origin $nextVersion:$nextVersion
 
 
 #browserify    -r ./distribution/index.js:global-input-message  > distribution/globalinputmessage.js

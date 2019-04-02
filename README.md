@@ -92,7 +92,7 @@ array of the above example:
   {
         label:"Play",
         type:'button'           
-        operations:{onInput:()=>play();}
+        operations:{onInput:()=>play()}
   }
 ```
 
@@ -112,18 +112,18 @@ You can achieve the requirement by including the following in your application:
                                 fields:[{
                                   label:"Username",            
                                   operations:{
-                                      onInput:username=>setUsername(username);
+                                      onInput:username=>setUsername(username)
                                   }
                                 },{
                                   label:"Password",            
                                   operations:{
-                                      onInput:password=>setPassword(password);
+                                      onInput:password=>setPassword(password)
                                   }
                                 },{
                                   label:"Sign In",
                                   type:"button",            
                                   operations:{
-                                      onInput:()=>signIn();
+                                      onInput:()=>signIn()
                                   }
                                 }]
                               }

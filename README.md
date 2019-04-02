@@ -66,7 +66,7 @@ Let's say that you would like to display a text field, labelled as ```Content```
                                 fields:[{
                                   label:"Content",            
                                   operations:{
-                                      onInput:value=>setContent(value);
+                                      onInput:value=>setContent(value)
                                   }
                                 }]
                               }

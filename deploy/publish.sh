@@ -23,7 +23,7 @@ git push origin
 
 
 git tag -a $nextVersion -m "released a new version: $nextVersion"
-git checkout $nextVersion
+git checkout $nextVersion:$nextVersion
 git push origin
 git checkout develop
 

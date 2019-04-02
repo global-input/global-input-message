@@ -50,7 +50,7 @@ var gloalinputconnector=globalInputMessage.createMessageConnector();
 or if you are using manual linking of your JavaScript files:
 
 ```JavaScript
-<script src="https://unpkg.com/global-input-message@1.6.6/distribution/globalinputmessage.min.js">
+<script src="https://unpkg.com/global-input-message@1.6.8/distribution/globalinputmessage.min.js">
 </script>
 ```
 
@@ -84,38 +84,24 @@ On scanning the Encrypted QR Code using the [Global Input App](https://globalinp
 The 'displayQRCode' function displays an encrypted QR code that contains a one-time-use encryption key among other communication channel parameters.
 
 
-### Another Example
-
-Let's say that you would like to display a button, labelled with ```Play```, on the user's mobile screen after the user has connected to your application by scanning the encrypted QR code. And you would like to invoke ```play()``` function when the user has press the button on his/her mobile. You can include the following code to achieve that:
+If you would like to display a button, labelled as ```Play```, on the user's mobile screen, and you would like to invoke ```play()``` function when the user has pressed the button on his/her mobile. you just need to add the following to the ```fields```
+array of the above example:
 
 
 ```JavaScript
-
- let mobileConfig={        
-                          initData:{                              
-                              form:{
-                                	title:"Play",   
-                                fields:[{
-                                  label:"Play",
-                                  type:"button",            
-                                  operations:{
-                                      onInput:()=>play();
-                                  }
-                                }]
-                              }
-                          },
-                          onRegistered:function(next){
-                                  next();
-                                  displayQRCode();
-                          }
-             };
-  gloalinputconnector.connect(mobileConfig);           
+  {
+        label:"Play",
+        type:'button'           
+        operations:{onInput:()=>play();}
+  }
 ```
 
+
 ### Sign In Example
+
 Let's say that you would like to display a ```Username``` and a ```Password``` fields, and a ```Sign In``` button, on
-the user's mobile screen after the user has connected to your application by scanning the encrypted QR code. And you would like to receive user inputs via ```setUsername(username)``` and ```setPassword(password)``` functions when the user are filling their credentials. And you would like to invoke ```signIn()``` function when the user has pressed the ```Sign In``` button on
-his/her button. You can include the following code to achieve that:
+the user's mobile screen after the user has connected to your application by scanning an encrypted QR code.
+You can achieve the requirement by including the following in your application:
 
 ```JavaScript
  let mobileConfig={        
@@ -142,12 +128,20 @@ his/her button. You can include the following code to achieve that:
                                 }]
                               }
                           },
+                          onRegistered:function(next){
+                                  next();
+                                  displayQRCode();
+                          }
              };
 
     gloalinputconnector.connect(mobileConfig);           
 ```
 
-In the above example, The ```id``` of the form identifies the form data when the user saves/loads the data from/to the encrypted storage on his/her mobile device. using place holder ```###username###``` allows to identifies data uniquely when multiple accounts on the same domain are used.
+The value of the ```id``` of the form in the above example identifies the form data when the user stores/loads it from/to the encrypted storage on his/her mobile device. The place holder ```###username###``` is used when a user needs to have multiple user accounts on the same application/domain.
+
+This means that users can sign in to your application by pushing stored credentials from the mobile devices to your application. This brings convenience and security by allowing users to set up complicated passwords without the need to remember them, allowing users to sign in securely on shared devices in public view.
+
+
 
 ## More Examples
 * [Content Transfer Example](https://globalinput.co.uk/global-input-app/content-transfer)

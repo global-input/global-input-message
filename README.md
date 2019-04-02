@@ -79,7 +79,7 @@ Let's say that you would like to display a text field, labelled as ```Content```
   gloalinputconnector.connect(mobileConfig);           
 ```
 
-On scanning the Encrypted QR Code using the [Global Input App](https://globalinput.co.uk/), a form titles as "Content Transfer" will be displayed on the mobile screen. The form contains a single field labelled as "Content". If you type on the content field on your mobile, the ```setContent()'``` will be invoked with the content parameter in real-time. The GlobalInputConnect component is responsible for displaying an encrypted QR code that contains a one-time-use encryption key among other communication channel parameters.
+When scan the Encrypted QR Code using the [Global Input App](https://globalinput.co.uk/), a form titles as "Content Transfer" will be displayed on the mobile screen. The form contains a single field labelled as "Content". If you type on the content field on your mobile, the ```setContent()'``` will be invoked with the content parameter in real-time. The GlobalInputConnect component is responsible for displaying an encrypted QR code that contains a one-time-use encryption key among other communication channel parameters.
 
 The 'displayQRCode' function displays an encrypted QR code that contains a one-time-use encryption key among other communication channel parameters.
 
@@ -139,8 +139,7 @@ You can achieve the requirement by including the following in your application:
 
 The value of the ```id``` of the form in the above example identifies the form data when the user stores/loads it from/to the encrypted storage on his/her mobile device. The place holder ```###username###``` is used when a user needs to have multiple user accounts on the same application/domain.
 
-This means that users can sign in to your application by pushing stored credentials from the mobile devices to your application. This brings convenience and security by allowing users to set up complicated passwords without the need to remember them, allowing users to sign in securely on shared devices in public view.
-
+This means that users can sign in to your application by pushing stored credentials from the mobile devices to your application. This brings convenience and security by allowing users to set up complicated passwords without the need to remember them, allowing users to sign in securely on shared devices in public view. You can try out the sample code on [JSFiddler](https://jsfiddle.net/dilshat/c5fvyxqa/)
 
 
 ## More Examples

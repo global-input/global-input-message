@@ -1,9 +1,10 @@
 
 ## global-input-message
 
-This is a [Global Input App](https://globalinput.co.uk) JavaScript library for web applications to implement mobile integrations.
+This is a [Global Input App](https://globalinput.co.uk) JavaScript library for web and device applications to implement mobile integrations.
 
 The [Global Input App](https://globalinput.co.uk) with its extensions provides a universal mobile integration solution for web and device applications, allowing users to use mobiles to operate on those applications. It provides applications with mobile input, mobile control, and portable encrypted storage functionalities without the need to develop separate mobile apps. Applications can implement mobile integration logic within its application context.
+
 
 Some of its use cases:
 * [Mobile Authentication](https://globalinput.co.uk/global-input-app/about-mobile-authentication)
@@ -22,7 +23,7 @@ you may find much more straightforward to use.
 
 ## Setup
 
-Install the global-input-message JavaScript library:
+The following command installs the ```npm``` module:
 
 ```shell
 npm install --save global-input-message
@@ -30,7 +31,7 @@ npm install --save global-input-message
 
 ## Usage
 
-import and create the connector object:
+import and create a connector object:
 
 
 
@@ -46,7 +47,7 @@ var globalInputMessage=require("global-input-message");
 var gloalinputconnector=globalInputMessage.createMessageConnector();
 ```
 
-or if go for manual insertion into the HTML page:
+or if you are using manual linking of your JavaScript files:
 
 ```JavaScript
 <script src="https://unpkg.com/global-input-message@1.6.6/distribution/globalinputmessage.min.js">

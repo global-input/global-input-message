@@ -22,18 +22,18 @@ git commit -m "version"
 git push origin
 
 
-git tag -a v$nextVersion -a "$nextVersion"
-git push origin v$nextVersion
+git tag -a v$nextVersion
+git push origin "v$nextVersion"
 
 
-browserify    -r ./distribution/index.js:global-input-message  > distribution/globalinputmessage.js
-#browserify  -t [ babelify --presets [ es2015 ] ]   -r ./lib/index.js:global-input-message  > lib/global-input-message.js
-cat distribution/globalinputmessage.js | uglifyjs > distribution/globalinputmessage.min.js
+#browserify    -r ./distribution/index.js:global-input-message  > distribution/globalinputmessage.js
 
-npm publish
+#cat distribution/globalinputmessage.js | uglifyjs > distribution/globalinputmessage.min.js
 
-git checkout master
-git merge develop
+#npm publish
 
-npm push origin *:*
-git checkout develop
+#git checkout master
+#git merge develop
+
+#npm push origin *:*
+#git checkout develop

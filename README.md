@@ -79,7 +79,7 @@ Let's say that you would like to display a text field, labelled as ```Content```
   gloalinputconnector.connect(mobileConfig);           
 ```
 
-When scan the Encrypted QR Code using the [Global Input App](https://globalinput.co.uk/), a form titles as "Content Transfer" will be displayed on the mobile screen. The form contains a single field labelled as "Content". If you type on the content field on your mobile, the ```setContent()'``` will be invoked with the content parameter in real-time. The GlobalInputConnect component is responsible for displaying an encrypted QR code that contains a one-time-use encryption key among other communication channel parameters.
+When scan the Encrypted QR Code using the [Global Input App](https://globalinput.co.uk/), a form titles as "Content Transfer" will be displayed on the mobile screen. The form contains a single field labelled as "Content". If you type on the content field on your mobile, the ```setContent()``` will be invoked with the content parameter in real-time. The GlobalInputConnect component is responsible for displaying an encrypted QR code that contains a one-time-use encryption key among other communication channel parameters.
 
 The 'displayQRCode' function displays an encrypted QR code that contains a one-time-use encryption key among other communication channel parameters.
 

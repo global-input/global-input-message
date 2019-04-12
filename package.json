@@ -1,6 +1,6 @@
 {
   "name": "global-input-message",
-  "version": "1.6.21",
+  "version": "1.6.22",
   "description": "global input core js library",
   "main": "./distribution/index.js",
   "scripts": {
@@ -23,7 +23,7 @@
     "mobile signing",
     "mobile content transfer",
     "mobile encrypted storage",
-    "password-less authentication"    
+    "password-less authentication"
   ],
   "author": "dilshat hewzulla",
   "license": "Apache-2.0",

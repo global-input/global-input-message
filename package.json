@@ -13,12 +13,17 @@
     "url": "git+https://github.com/global-input/global-input-message.git"
   },
   "keywords": [
-    "global-input",
-    "global input",
     "mobile integration",
     "mobile authentication",
-    "moible input",
-    "mobile control"
+    "mobile input",
+    "mobile control",
+    "second screen experience",
+    "moible personal storage",
+    "mobile encryption",
+    "mobile signing",
+    "mobile content transfer",
+    "mobile encrypted storage",
+    "password-less authentication"    
   ],
   "author": "dilshat hewzulla",
   "license": "Apache-2.0",

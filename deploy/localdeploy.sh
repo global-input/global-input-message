@@ -2,7 +2,9 @@
 #rsync -azvv distribution/ ../globalInputMobile/app/global-input-message/
 #rsync -azvv src/ ../globalInputMobile/app/global-input-message/
 
-mkdir ../global-input-web/app/global-input-message/src
+mkdir ../../global-input-web/
+
+ ../global-input-web/app/global-input-message/src
 #rsync -azvv distribution/ ../global-input-web/src/global-input-message/
 rsync -azvv src/ ../global-input-web/src/global-input-message/
 

@@ -1,69 +1,73 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-      value: true
+  value: true
 });
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 exports.generatateRandomString = generatateRandomString;
 exports.encrypt = encrypt;
 exports.decrypt = decrypt;
 exports.basicGetURL = basicGetURL;
 
-var _cryptoJs = require("crypto-js");
+require("core-js/modules/es6.regexp.to-string");
 
-var _cryptoJs2 = _interopRequireDefault(_cryptoJs);
+var _cryptoJs = _interopRequireDefault(require("crypto-js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function generatateRandomString() {
-      var length = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
+  let length = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
+  var randPassword = Array(length).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@£$&*:;").map(function (x) {
+    var indexString = _cryptoJs.default.enc.Hex.stringify(_cryptoJs.default.lib.WordArray.random(1));
 
-
-      var randPassword = Array(length).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@£$&*:;").map(function (x) {
-            var indexString = _cryptoJs2.default.enc.Hex.stringify(_cryptoJs2.default.lib.WordArray.random(1));
-            var indexValue = parseInt(indexString, 16);
-            return x[indexValue % x.length];
-      }).join('');
-      return randPassword;
+    var indexValue = parseInt(indexString, 16);
+    return x[indexValue % x.length];
+  }).join('');
+  return randPassword;
 }
+
 function encrypt(content, password) {
-      return escape(_cryptoJs2.default.AES.encrypt(content, password).toString());
+  return escape(_cryptoJs.default.AES.encrypt(content, password).toString());
 }
+
 function decrypt(content, password) {
-      return _cryptoJs2.default.AES.decrypt(unescape(content), password).toString(_cryptoJs2.default.enc.Utf8);
+  return _cryptoJs.default.AES.decrypt(unescape(content), password).toString(_cryptoJs.default.enc.Utf8);
 }
+
 function basicGetURL(url, onSuccess, onError) {
-      var request = new XMLHttpRequest();
-      request.ontimeout = function (e) {
-            console.warn("requesting socket server url timeout");
-            onError();
-      };
-      request.onreadystatechange = function (e) {
-            if (e) {
-                  var cache = [];
-                  console.log(JSON.stringify(e, function (key, value) {
-                        if ((typeof value === "undefined" ? "undefined" : _typeof(value)) === 'object' && value != null) {
-                              if (cache.indexOf(value) != -1) {
-                                    return;
-                              }
-                              cache.push(value);
-                        }
-                        return value;
-                  }));
-            }
-            if (request.readyState !== 4) {
-                  return;
-            }
-            if (request.status === 200) {
-                  onSuccess(JSON.parse(request.responseText));
-            } else {
-                  onError();
-            }
-      };
+  var request = new XMLHttpRequest();
 
-      request.open('GET', url, true);
+  request.ontimeout = e => {
+    console.warn("requesting socket server url timeout");
+    onError();
+  };
 
-      request.send();
+  request.onreadystatechange = e => {
+    if (e) {
+      var cache = [];
+      console.log(JSON.stringify(e, (key, value) => {
+        if (typeof value === 'object' && value != null) {
+          if (cache.indexOf(value) != -1) {
+            return;
+          }
+
+          cache.push(value);
+        }
+
+        return value;
+      }));
+    }
+
+    if (request.readyState !== 4) {
+      return;
+    }
+
+    if (request.status === 200) {
+      onSuccess(JSON.parse(request.responseText));
+    } else {
+      onError();
+    }
+  };
+
+  request.open('GET', url, true);
+  request.send();
 }

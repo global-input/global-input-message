@@ -1,4 +1,5 @@
 /deploy
 /src/
-.babelrc
+.webpack.config.babel
+.babel.config.js
 /test

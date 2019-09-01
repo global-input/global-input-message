@@ -3,14 +3,12 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.codedataUtil = undefined;
+exports.codedataUtil = void 0;
 
 var _util = require("./util");
 
 var sharedKey = "50SUB39ctEKzd6Uv2a84lFK";
-
-var codedataUtil = exports.codedataUtil = {
-
+const codedataUtil = {
   buildOptionsFromInputCodedata: function buildOptionsFromInputCodedata(connector, codedata, options) {
     var buildOptions = {
       connectSession: codedata.session,
@@ -18,9 +16,11 @@ var codedataUtil = exports.codedataUtil = {
       aes: codedata.aes,
       apikey: codedata.apikey
     };
+
     if (codedata.securityGroup) {
       buildOptions.securityGroup = codedata.securityGroup;
     }
+
     if (!options) {
       return buildOptions;
     } else {
@@ -28,8 +28,7 @@ var codedataUtil = exports.codedataUtil = {
     }
   },
   buildInputCodeData: function buildInputCodeData(connector) {
-    var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
+    let data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     var codedata = Object.assign({}, data, {
       url: connector.url,
       session: connector.session,
@@ -45,9 +44,8 @@ var codedataUtil = exports.codedataUtil = {
     }
   },
 
-  buildPairingData: function buildPairingData(connector) {
-    var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
+  buildPairingData(connector) {
+    let data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     var codedata = Object.assign({}, {
       securityGroup: connector.securityGroup,
       codeAES: connector.codeAES,
@@ -55,7 +53,8 @@ var codedataUtil = exports.codedataUtil = {
     }, data);
     return "C" + (0, _util.encrypt)("J" + JSON.stringify(codedata), sharedKey);
   },
-  onError: function onError(options, message, error) {
+
+  onError(options, message, error) {
     if (options.onError) {
       options.onError(message);
     } else {
@@ -66,7 +65,8 @@ var codedataUtil = exports.codedataUtil = {
       console.warn(error);
     }
   },
-  processCodeData: function processCodeData(connector, encryptedcodedata, options) {
+
+  processCodeData(connector, encryptedcodedata, options) {
     if (!encryptedcodedata) {
       console.log("empty codedata");
       return;
@@ -75,6 +75,7 @@ var codedataUtil = exports.codedataUtil = {
     var encryptionType = encryptedcodedata.substring(0, 1);
     var encryptedContent = encryptedcodedata.substring(1);
     var decryptedContent = null;
+
     if (encryptionType === "C") {
       try {
         decryptedContent = (0, _util.decrypt)(encryptedContent, sharedKey);
@@ -84,9 +85,11 @@ var codedataUtil = exports.codedataUtil = {
       }
     } else if (encryptionType === "A") {
       var codeAES = connector.codeAES;
+
       if (options.codeAES) {
         codeAES = options.codeAES;
       }
+
       try {
         decryptedContent = (0, _util.decrypt)(encryptedContent, codeAES);
       } catch (error) {
@@ -104,6 +107,7 @@ var codedataUtil = exports.codedataUtil = {
       this.onError(options, "Not a global Input code (E)");
       return;
     }
+
     var dataFormat = decryptedContent.substring(0, 1);
     var dataContent = decryptedContent.substring(1);
     var codedata = null;
@@ -119,6 +123,7 @@ var codedataUtil = exports.codedataUtil = {
       this.onError(options, "unrecognized format decrypted");
       return;
     }
+
     if (codedata.action == 'input') {
       if (options.onInputCodeData) {
         options.onInputCodeData(codedata);
@@ -129,4 +134,6 @@ var codedataUtil = exports.codedataUtil = {
       }
     }
   }
+
 };
+exports.codedataUtil = codedataUtil;

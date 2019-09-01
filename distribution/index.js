@@ -3,20 +3,34 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createMessageConnector = exports.decrypt = exports.encrypt = exports.generatateRandomString = undefined;
+Object.defineProperty(exports, "generatateRandomString", {
+  enumerable: true,
+  get: function get() {
+    return _util.generatateRandomString;
+  }
+});
+Object.defineProperty(exports, "encrypt", {
+  enumerable: true,
+  get: function get() {
+    return _util.encrypt;
+  }
+});
+Object.defineProperty(exports, "decrypt", {
+  enumerable: true,
+  get: function get() {
+    return _util.decrypt;
+  }
+});
+exports.createMessageConnector = void 0;
 
-var _GlobalInputMessageConnector = require("./GlobalInputMessageConnector");
-
-var _GlobalInputMessageConnector2 = _interopRequireDefault(_GlobalInputMessageConnector);
+var _GlobalInputMessageConnector = _interopRequireDefault(require("./GlobalInputMessageConnector"));
 
 var _util = require("./util");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var createMessageConnector = function createMessageConnector() {
-  return new _GlobalInputMessageConnector2.default();
+const createMessageConnector = function createMessageConnector() {
+  return new _GlobalInputMessageConnector.default();
 };
-exports.generatateRandomString = _util.generatateRandomString;
-exports.encrypt = _util.encrypt;
-exports.decrypt = _util.decrypt;
+
 exports.createMessageConnector = createMessageConnector;

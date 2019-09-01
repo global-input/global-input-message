@@ -1,6 +1,6 @@
 
 import {generatateRandomString} from "../src";
-import CryptoJS from "crypto-js";
+
 
 test("encrypt and decrypt should work", function(){
 

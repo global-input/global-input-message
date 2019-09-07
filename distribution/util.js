@@ -8,8 +8,6 @@ exports.encrypt = encrypt;
 exports.decrypt = decrypt;
 exports.basicGetURL = basicGetURL;
 
-require("core-js/modules/es6.regexp.to-string");
-
 var _cryptoJs = _interopRequireDefault(require("crypto-js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }

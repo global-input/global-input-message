@@ -2,4 +2,8 @@
 /src/
 .webpack.config.babel
 .babel.config.js
-/test
+/test/
+.storybook/
+./storybook/
+*.tgz
+./stories/

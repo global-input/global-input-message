@@ -8,7 +8,9 @@
     "build": "./node_modules/.bin/babel src  --out-dir distribution",
     "prepublish": "npm run webpack",
     "dev": "webpack --mode development --output distribution/globalinputmessage.js",
-    "webpack": "webpack --mode production --output distribution/globalinputmessage.min.js"
+    "webpack": "webpack --mode production --output distribution/globalinputmessage.min.js",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "repository": {
     "type": "git",
@@ -43,10 +45,12 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.5.5",
+    "@storybook/html": "^5.1.11",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
     "jest": "^24.9.0",
     "jest-cli": "^24.9.0",
+    "qrcode": "^1.4.1",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.7"
   }

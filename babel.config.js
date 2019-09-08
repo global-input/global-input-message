@@ -14,4 +14,4 @@ const presets = [
       ],
   ];
   
-  module.exports = { presets:presets};
+  module.exports = { presets};

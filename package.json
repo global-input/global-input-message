@@ -1,11 +1,11 @@
 {
   "name": "global-input-message",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "global input core js library",
   "main": "./distribution/index.js",
   "scripts": {
     "test": "jest ",
-    "build": "./node_modules/.bin/babel src  --out-dir distribution",     
+    "build": "./node_modules/.bin/babel src  --out-dir distribution",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },

@@ -1,4 +1,3 @@
-/deploy
 /src/
 .webpack.config.babel
 .babel.config.js

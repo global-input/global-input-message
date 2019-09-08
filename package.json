@@ -6,8 +6,8 @@
   "scripts": {
     "test": "jest ",
     "build": "./node_modules/.bin/babel src  --out-dir distribution",
-    "prepublish": "npm run webpack",
-    "dev": "webpack --mode development --output distribution/globalinputmessage.js",
+    "prepublish": "npm run build",
+    "webpackdev": "webpack --mode development --output distribution/globalinputmessage.js",
     "webpack": "webpack --mode production --output distribution/globalinputmessage.min.js",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"

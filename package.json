@@ -5,9 +5,7 @@
   "main": "./distribution/index.js",
   "scripts": {
     "test": "jest ",
-    "build": "./node_modules/.bin/babel src  --out-dir distribution",    
-    "webpackdev": "webpack --mode development --output distribution/globalinputmessage.js",
-    "webpack": "webpack --mode production --output distribution/globalinputmessage.min.js",
+    "build": "./node_modules/.bin/babel src  --out-dir distribution",     
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
@@ -50,8 +48,6 @@
     "core-js": "^2.6.9",
     "jest": "^24.9.0",
     "jest-cli": "^24.9.0",
-    "qrcode": "^1.4.1",
-    "webpack": "^4.39.2",
-    "webpack-cli": "^3.3.7"
+    "qrcode": "^1.4.1"
   }
 }

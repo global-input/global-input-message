@@ -25,8 +25,16 @@ const startGlobaInput = ({onReceiveConnectionCode,onInput,onSenderConnected,onSe
             next();
             onReceiveConnectionCode(connector.buildInputCodeData());
           },
+          onRegisterFailed:function(registeredMessage){
+              console.log("failed to register to the WebSocket:"+registeredMessage);
+          },
           onSenderConnected,
-          onSenderDisconnected
+          onSenderDisconnected,
+          apikey:"k7jc3QcMPKEXGW5UC",
+          securityGroup:"1CNbWCFpsbmRQuKdd",
+          aes:"dfhrhahfhhfsdhlnnnlkfjlihjc3QcMPKEXGW5UC",
+          client:"thisShouldBeUniqueId"
+          //url:"http://localhost:1337"
   };
   connector.connect(mobileConfig);
 };

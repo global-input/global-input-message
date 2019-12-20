@@ -1,111 +1,84 @@
 
 import {encrypt,decrypt} from "./util";
 
-var sharedKey="50SUB39ctEKzd6Uv2a84lFK";
+const sharedKey="50SUB39ctEKzd6Uv2a84lFK";
 
+export const buildOptionsFromInputCodedata = (connector,codedata, options) => {
+        const {session,url,aes,apikey,securityGroup}=codedata;
+        return {
+          connectSession:session,
+          url,aes,apikey,securityGroup,
+          ...options
+        };
+   };
 
- export const codedataUtil={
-
-   buildOptionsFromInputCodedata:function(connector,codedata, options){
-        var buildOptions={
-          connectSession:codedata.session,
-          url:codedata.url,
-          aes:codedata.aes,
-          apikey:codedata.apikey
-        }
-        if(codedata.securityGroup){
-              buildOptions.securityGroup=codedata.securityGroup;
-        }
-        if(!options){
-            return buildOptions;
-        }
-        else{
-            return Object.assign(buildOptions,options);
-        }
-
-   },
-   buildInputCodeData:function(connector,data={}){
-       var codedata=Object.assign({},data,{
-                   url:connector.url,
-                   session:connector.session,
-                   apikey:connector.apikey,
-                   action:"input",
-                   aes:connector.aes
-       });
-
-       if(connector.codeAES){
-          return "A"+encrypt("J"+JSON.stringify(codedata),connector.codeAES);
+export const buildInputCodeData = (connector,data={}) => {
+       const {url,session,apikey,aes,codeAES}=connector;
+       const codedata={...data,url, session,apikey, aes, action:'input'};
+       if(codeAES){
+          return "A"+encrypt("J"+JSON.stringify(codedata),codeAES);
        }
        else{
           return "NJ"+JSON.stringify(codedata);
        }
-   },
+};
 
-   buildPairingData(connector,data={}){
-     var codedata=Object.assign({},{
-                 securityGroup:connector.securityGroup,
-                 codeAES:connector.codeAES,
-                 action:"pairing"
-     },data);
+
+export  const buildPairingData = (connector,data={}) => {
+     const {securityGroup,codeAES}=connector;
+     const codedata={securityGroup,codeAES,action:'pairing',...data};     
      return "C"+encrypt("J"+JSON.stringify(codedata),sharedKey);
-   },
+};
 
-
-   onError(options,message, error){
+const onError = (options,message, error) => {
        if(options.onError){
           options.onError(message);
        }
        else{
           console.warn(message);
        }
-
        if(error){
          console.warn(error);
        }
-   },
-   processCodeData(connector,encryptedcodedata, options){
+};
+
+export const processCodeData = (connector,encryptedcodedata, options) => {
      if(!encryptedcodedata){
        console.log("empty codedata");
        return;
      }
-
-
-     var encryptionType=encryptedcodedata.substring(0,1);
-     var encryptedContent=encryptedcodedata.substring(1);
-     var decryptedContent=null;
-     if(encryptionType==="C"){
-          try{
-            decryptedContent=decrypt(encryptedContent,sharedKey);
-          }
-          catch(error){
-            this.onError(options,"May not ne a global Input code (C) ",error);
-            return;
-          }
-     }
-     else if(encryptionType==="A"){
-       var codeAES=connector.codeAES;
-       if(options.codeAES){
-         codeAES=options.codeAES;
-       }
-       try{
-              decryptedContent=decrypt(encryptedContent,codeAES);
-            }
-       catch(error){
-         this.onError(options,"May not be glbal input code (A)",error);
-         return;
-       }
-     }
-     else if(encryptionType==="N"){
-        decryptedContent=encryptedContent;
-     }
-     else{
-       this.onError(options,"Not a Global Input code (N)  ");
-       return;
-     }
-
+     const encryptionType=encryptedcodedata.substring(0,1);
+     const encryptedContent=encryptedcodedata.substring(1);
+     let decryptedContent=null;
+     switch(encryptionType){
+              case 'C':
+                    try{
+                      decryptedContent=decrypt(encryptedContent,sharedKey);
+                      break;
+                    }
+                    catch(error){
+                      onError(options,"May not ne a global Input code (C) ",error);
+                      return;
+                    }
+             case 'A':                    
+                    try{
+                          decryptedContent=decrypt(encryptedContent,options.codeAES?options.codeAES:connector.codeAES);
+                          break;
+                        }
+                    catch(error){
+                      onError(options,"May not be glbal input code (A)",error);
+                      return;
+                    }
+          case 'N':
+                    decryptedContent=encryptedContent;
+                    break;
+          default:
+                    onError(options,"Not a Global Input code (N)  ");
+                    return;
+     }     
       if(!decryptedContent){
-        this.onError(options,"Not a global Input code (E)");
-        return;
+            onError(options,"Not a global Input code (E)");
+            return;
       }
       var dataFormat=decryptedContent.substring(0,1);
       var dataContent=decryptedContent.substring(1);
@@ -116,12 +89,12 @@ var sharedKey="50SUB39ctEKzd6Uv2a84lFK";
                 codedata=JSON.parse(dataContent);
             }
             catch(error){
-              this.onError(options," incorrect format decrypted",error);
+              onError(options," incorrect format decrypted",error);
               return;
             }
       }
       else{
-          this.onError(options,"unrecognized format decrypted");
+          onError(options,"unrecognized format decrypted");
           return;
       }
       if(codedata.action=='input'){
@@ -134,6 +107,4 @@ var sharedKey="50SUB39ctEKzd6Uv2a84lFK";
                 options.onPairing(codedata);
             }
       }
-   }
-
-}
+};

@@ -1,23 +1,19 @@
 import CryptoJS from "crypto-js";
-export function generatateRandomString(length=10){
 
 
-
-
-  var randPassword = Array(length).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@£$&*:;").map(function(x) {
-        var indexString = CryptoJS.enc.Hex.stringify(CryptoJS.lib.WordArray.random(1));
-        var indexValue=parseInt(indexString,16);
+export const generatateRandomString = (length=10) => {
+      const randPassword = Array(length).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@£$&*:;").map(function(x) {
+        const indexString = CryptoJS.enc.Hex.stringify(CryptoJS.lib.WordArray.random(1));
+        const indexValue=parseInt(indexString,16);
         return x[indexValue % x.length]
-  }).join('');
-  return randPassword;
-}
-export function encrypt(content, password){
-    return escape(CryptoJS.AES.encrypt(content, password).toString());
-}
-export function decrypt(content, password){
-  return CryptoJS.AES.decrypt(unescape(content), password).toString(CryptoJS.enc.Utf8);
-}
-export function basicGetURL(url, onSuccess, onError){
+      }).join('');
+      return randPassword;
+};
+export const encrypt = (content, password) => escape(CryptoJS.AES.encrypt(content, password).toString());
+
+export const decrypt = (content, password) => CryptoJS.AES.decrypt(unescape(content), password).toString(CryptoJS.enc.Utf8);
+
+export const basicGetURL = (url, onSuccess, onError) => {
       var request = new XMLHttpRequest();
       request.ontimeout = (e) => {
             console.warn("requesting socket server url timeout");
@@ -50,4 +46,4 @@ export function basicGetURL(url, onSuccess, onError){
     request.open('GET', url,true);
 
     request.send();
-}
+};

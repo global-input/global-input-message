@@ -1,6 +1,6 @@
 import SocketIOClient from "socket.io-client";
 import {encrypt,decrypt,generatateRandomString,basicGetURL} from "./util";
-import {codedataUtil} from "./codedataUtil";
+import * as codedataUtil from "./codedataUtil";
 
 
  export default class GlobalInputMessageConnector{

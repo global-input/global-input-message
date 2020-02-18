@@ -30,8 +30,11 @@ import * as codedataUtil from "./codedataUtil";
     }
     disconnect(){
         if(this.socket){
+          this.disconnectSenders(this.connectedSenders);              
           this.socket.disconnect();
           this.socket=null;
+          
+          this.connectedSenders=[];
         }
         this.targetSession=null;
     }
@@ -203,6 +206,21 @@ import * as codedataUtil from "./codedataUtil";
           }
 
     }
+    disconnectSenders(sendersToDisconnect){
+      if(!sendersToDisconnect || !sendersToDisconnect.length){
+        return;
+      }
+      try{
+        sendersToDisconnect.forEach(s=>{
+          console.log("Disconnect from the same client");
+          this.disconnectSender(s);
+        });
+      }
+      catch(error){
+        console.warn("error while disocnnecting senders:"+error);
+      }
+      
+    }
     grantInputPermission(inputPermissionMessage,options){
           if(this.grantPermissionQueue){
               this.grantPermissionQueue=this.grantPermissionQueue.filter(s=>s.inputPermissionMessage.client!==inputPermissionMessage.client);
@@ -212,10 +230,7 @@ import * as codedataUtil from "./codedataUtil";
           }
           var existingSameSenders=this.connectedSenders.filter(s=>s.client===inputPermissionMessage.client);
           if(existingSameSenders.length>0){
-              existingSameSenders.forEach(s=>{
-                  console.log("Disconnect from the same client");
-                  this.disconnectSender(s);
-              });
+              this.disconnectSenders(existingSameSenders);              
               console.log("the client is  connected previously");
               this.grantPermissionQueue=[];
               this.grantPermissionQueue.push({inputPermissionMessage,options});

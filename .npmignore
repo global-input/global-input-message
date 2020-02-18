@@ -5,4 +5,15 @@
 .storybook/
 ./storybook/
 *.tgz
-./stories/
+.webpack.config.babel
+.babel.config.js
+/.vscode
+/stories/
+/storybook-static/
+/__mocks__/
+.eslintrc.js
+babel.config.js
+jest.config.js
+/scripts/
+setupJest.js
+webpack.config.babel.js

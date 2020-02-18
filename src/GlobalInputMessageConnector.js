@@ -33,7 +33,7 @@ import * as codedataUtil from "./codedataUtil";
           this.disconnectSenders(this.connectedSenders);              
           this.socket.disconnect();
           this.socket=null;
-          
+          this.activeInitData=null;          
           this.connectedSenders=[];
         }
         this.targetSession=null;

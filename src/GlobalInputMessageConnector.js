@@ -152,6 +152,9 @@ import * as codedataUtil from "./codedataUtil";
                     if(options.aes){
                            requestInputPermissionMessage.data=encrypt(requestInputPermissionMessage.data,options.aes);
                     }
+                    else{
+                      throw new Error("AES encryption key is missing, key is required");
+                    }
 
 
                     const data=JSON.stringify(requestInputPermissionMessage)
@@ -273,6 +276,9 @@ import * as codedataUtil from "./codedataUtil";
               var inputPermissionResultInString=JSON.stringify(inputPermissionResult.initData);
               if(this.aes){
                   inputPermissionResult.initData=encrypt(inputPermissionResultInString,this.aes);
+              }
+              else{
+                throw new Error("AES encryption key is missing in grant");
               }
       }
       inputPermissionResult.allow=true;

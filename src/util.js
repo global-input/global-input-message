@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js";
 
 
-export const generatateRandomString = (length=10) => {
+export const generateRandomString = (length=10) => {
       const randPassword = Array(length).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@£$&*:;").map(function(x) {
         const indexString = CryptoJS.enc.Hex.stringify(CryptoJS.lib.WordArray.random(1));
         const indexValue=parseInt(indexString,16);

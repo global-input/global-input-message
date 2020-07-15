@@ -1,4 +1,4 @@
-import {decrypt,encrypt,generatateRandomString} from "../src";
+import {decrypt,encrypt,generateRandomString} from "../src";
 
 
 test("encrypt and decrypt should work", function(){
@@ -9,11 +9,11 @@ test("encrypt and decrypt should work", function(){
    for(var i=0;i<100;i++){
              var codedata={
                        url:"https://globalinput.co.uk",
-                       session:generatateRandomString(17),
+                       session:generateRandomString(17),
                        action:"input",
-                       aes:generatateRandomString(17)
+                       aes:generateRandomString(17)
              };
-             var codeAES=generatateRandomString(17);
+             var codeAES=generateRandomString(17);
 
              var codestring=JSON.stringify(codedata);
              var encryptedvalue="A"+encrypt("J"+codestring,codeAES);

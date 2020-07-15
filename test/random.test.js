@@ -1,5 +1,5 @@
 
-import {generatateRandomString} from "../src";
+import {generateRandomString} from "../src";
 
 
 test("encrypt and decrypt should work", function(){
@@ -10,7 +10,7 @@ test("encrypt and decrypt should work", function(){
 
 
   for(var i=0;i<size;i++){
-       var pass=generatateRandomString(17);       
+       var pass=generateRandomString(17);       
        uniquevalues.add(pass);
 
   };

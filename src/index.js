@@ -1,7 +1,9 @@
 import GlobalInputMessageConnector from "./GlobalInputMessageConnector";
-import {generatateRandomString,encrypt,decrypt} from "./util";
+import {generateRandomString,encrypt,decrypt} from "./util";
 
  const createMessageConnector=function(){
    return new GlobalInputMessageConnector();
  }
- export {generatateRandomString,encrypt,decrypt,createMessageConnector};
+ const generatateRandomString=generateRandomString; //will be removed in the future
+
+ export {generateRandomString,generatateRandomString,encrypt,decrypt,createMessageConnector};

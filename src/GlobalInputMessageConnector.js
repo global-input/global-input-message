@@ -1,5 +1,5 @@
 import SocketIOClient from "socket.io-client";
-import {encrypt,decrypt,generatateRandomString,basicGetURL} from "./util";
+import {encrypt,decrypt,generateRandomString,basicGetURL} from "./util";
 import * as codedataUtil from "./codedataUtil";
 
 
@@ -17,9 +17,9 @@ import * as codedataUtil from "./codedataUtil";
         this.apikey="k7jc3QcMPKEXGW5UC";
         this.securityGroup="1CNbWCFpsbmRQuKdd";
         this.codeAES="LNJGw0x5lqnXpnVY8";
-        this.session=generatateRandomString(17);
-        this.client=generatateRandomString(17);
-        this.aes=generatateRandomString(17);
+        this.session=generateRandomString(17);
+        this.client=generateRandomString(17);
+        this.aes=generateRandomString(17);
         this.socket=null;
         this.connectedSenders=[];
         this.url="https://globalinput.co.uk";
@@ -559,7 +559,7 @@ import * as codedataUtil from "./codedataUtil";
            return;
       }
       var data={
-          id:generatateRandomString(10),
+          id:generateRandomString(10),
           value
         };
     if(fieldId){

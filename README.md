@@ -63,7 +63,7 @@ The following configuration specifies a login form:
    initData:{                              
      form:{
         title:"Sign In",
-        id:"###username###@mycompany.com",
+        id:"###username###@myCompany.com",
         fields:[{
            label:"Username",
            id:"username",

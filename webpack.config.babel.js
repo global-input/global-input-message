@@ -1,5 +1,5 @@
 const path = require('path')
-var webpackconfig={
+const webpackconfig={
     entry: './src/index.js',
     mode:'development',
     output: {      

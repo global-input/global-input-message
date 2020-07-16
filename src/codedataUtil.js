@@ -42,13 +42,13 @@ const onError = (options,message, error) => {
        }
 };
 
-export const processCodeData = (connector,encryptedcodedata, options) => {
-     if(!encryptedcodedata){
+export const processCodeData = (connector,encryptedCodedata, options) => {
+     if(!encryptedCodedata){
        console.log("empty codedata");
        return;
      }
-     const encryptionType=encryptedcodedata.substring(0,1);
-     const encryptedContent=encryptedcodedata.substring(1);
+     const encryptionType=encryptedCodedata.substring(0,1);
+     const encryptedContent=encryptedCodedata.substring(1);
      let decryptedContent=null;
      switch(encryptionType){
               case 'C':
@@ -66,7 +66,7 @@ export const processCodeData = (connector,encryptedcodedata, options) => {
                           break;
                         }
                     catch(error){
-                      onError(options,"May not be glbal input code (A)",error);
+                      onError(options,"May not be global input code (A)",error);
                       return;
                     }
           case 'N':
@@ -80,9 +80,9 @@ export const processCodeData = (connector,encryptedcodedata, options) => {
             onError(options,"Not a global Input code (E)");
             return;
       }
-      var dataFormat=decryptedContent.substring(0,1);
-      var dataContent=decryptedContent.substring(1);
-      var codedata=null;
+      const dataFormat=decryptedContent.substring(0,1);
+      const dataContent=decryptedContent.substring(1);
+      let codedata=null;
 
       if(dataFormat==="J"){
           try{

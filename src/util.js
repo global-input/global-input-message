@@ -14,14 +14,14 @@ export const encrypt = (content, password) => escape(CryptoJS.AES.encrypt(conten
 export const decrypt = (content, password) => CryptoJS.AES.decrypt(unescape(content), password).toString(CryptoJS.enc.Utf8);
 
 export const basicGetURL = (url, onSuccess, onError) => {
-      var request = new XMLHttpRequest();
+      let request = new XMLHttpRequest();
       request.ontimeout = (e) => {
             console.warn("requesting socket server url timeout");
             onError();
       };
       request.onreadystatechange = (e) => {
             if(e){
-              var cache=[];
+              let cache=[];
               console.log(JSON.stringify(e, (key,value)=>{
                       if(typeof value === 'object' && value!=null){
                             if(cache.indexOf(value)!=-1){

@@ -14,8 +14,10 @@ import * as codedataUtil from "./codedataUtil";
       }
     }
     constructor(){
-        this.apikey="k7jc3QcMPKEXGW5UC";
+      // cSpell:disable
+        this.apikey="k7jc3QcMPKEXGW5UC";      
         this.securityGroup="1CNbWCFpsbmRQuKdd";
+        // cSpell:enable      
         this.codeAES="LNJGw0x5lqnXpnVY8";
         this.session=generateRandomString(17);
         this.client=generateRandomString(17);
@@ -61,8 +63,8 @@ import * as codedataUtil from "./codedataUtil";
             this._connectToSocket(options);
           }
           else{
-            var url=this.url+"/global-input/request-socket-url?apikey="+this.apikey;
-            var that=this;
+            let url=this.url+"/global-input/request-socket-url?apikey="+this.apikey;
+            let that=this;
             basicGetURL(url,function(application){
                 that.url=application.url;
                 if(application.apikey){
@@ -80,19 +82,19 @@ import * as codedataUtil from "./codedataUtil";
 
 
     }
-    _connectToSocket(options){
+    _connectToSocket(options){        
           console.log("Copyright © 2017-2022 by Dilshat Hewzulla");
           this.socket=SocketIOClient(this.url);
-          const that=this;
+          let that=this;
           this.socket.on("registerPermission", function(data){
                   that.onRegisterPermission(JSON.parse(data), options);
           });
     }
-    onRegisterPermission(registerPermistion, options){
-         if(registerPermistion.result==="ok"){
-                 var that=this;
+    onRegisterPermission(registerPermission, options){
+         if(registerPermission.result==="ok"){
+                 let that=this;
                  this.socket.on("registered", function(data){
-                         var registeredMessage=JSON.parse(data);
+                         let registeredMessage=JSON.parse(data);
                          if(registeredMessage.result==="ok"){
                                if(options.onRegistered){
                                   options.onRegistered(function(){
@@ -110,7 +112,7 @@ import * as codedataUtil from "./codedataUtil";
                          }
 
                  });
-                 const registerMessage={
+                 let registerMessage={
                        securityGroup:this.securityGroup,
                        session:this.session,
                        client:this.client,
@@ -128,7 +130,7 @@ import * as codedataUtil from "./codedataUtil";
 
 
     onRegistered(registeredMessage, options){
-            var that=this;
+            let that=this;
             this.socket.on(this.session+"/inputPermission", function(data){
 
 
@@ -138,7 +140,7 @@ import * as codedataUtil from "./codedataUtil";
                     that.socket.on(options.connectSession+"/inputPermissionResult", function(data){
                     that.onInputPermissionResult(JSON.parse(data),options);
                     });
-                    const requestInputPermissionMessage={
+                    let requestInputPermissionMessage={
                           securityGroup:that.securityGroup,
                           session:that.session,
                           client:that.client,
@@ -157,7 +159,7 @@ import * as codedataUtil from "./codedataUtil";
                     }
 
 
-                    const data=JSON.stringify(requestInputPermissionMessage)
+                    let data=JSON.stringify(requestInputPermissionMessage)
 
                     this.socket.emit("inputPermision",data);
             }
@@ -165,7 +167,7 @@ import * as codedataUtil from "./codedataUtil";
     }
     processInputPermission(inputPermissionMessage,options){
             if(!inputPermissionMessage.data){
-              this.sendInputPermissionDeniedMessage(inputPermissionMessage,"data is missing in the permision request");
+              this.sendInputPermissionDeniedMessage(inputPermissionMessage,"data is missing in the permission request");
               return;
           }
           try{
@@ -184,8 +186,8 @@ import * as codedataUtil from "./codedataUtil";
                 inputPermissionMessage.data=JSON.parse(inputPermissionMessage.data);
           }
           catch(error){
-              this.logError(error+" while parsing the json data in the permisson request");
-              this.sendInputPermissionDeniedMessage(inputPermissionMessage,"data format error in the permisson request");
+              this.logError(error+" while parsing the json data in the permission request");
+              this.sendInputPermissionDeniedMessage(inputPermissionMessage,"data format error in the permission request");
               return;
           }
           if(inputPermissionMessage.data.client!==inputPermissionMessage.client){
@@ -193,7 +195,7 @@ import * as codedataUtil from "./codedataUtil";
             this.sendInputPermissionDeniedMessage(inputPermissionMessage,"client id mismatch");
             return;
           }
-          var that=this;
+          let that=this;
 
           if(options.onInputPermission){
               options.onInputPermission(function(){
@@ -220,7 +222,7 @@ import * as codedataUtil from "./codedataUtil";
         });
       }
       catch(error){
-        console.warn("error while disocnnecting senders:"+error);
+        console.warn("error while disconnecting senders:"+error);
       }
       
     }
@@ -231,7 +233,7 @@ import * as codedataUtil from "./codedataUtil";
               this.grantPermissionQueueLastModified=new Date();
               return;
           }
-          var existingSameSenders=this.connectedSenders.filter(s=>s.client===inputPermissionMessage.client);
+          let existingSameSenders=this.connectedSenders.filter(s=>s.client===inputPermissionMessage.client);
           if(existingSameSenders.length>0){
               this.disconnectSenders(existingSameSenders);              
               console.log("the client is  connected previously");
@@ -245,21 +247,21 @@ import * as codedataUtil from "./codedataUtil";
           }
     }
     processGrantInputPermissionQueue(){
-          var currentTime=new Date();
+          let currentTime=new Date();
           if((currentTime.getTime()-this.grantPermissionQueueLastModified.getTime())<200){
               setTimeout(this.processGrantInputPermissionQueue.bind(this),300);
           }
           else{
-              var grantPermissionQueue=this.grantPermissionQueue;
+              let grantPermissionQueue=this.grantPermissionQueue;
               this.grantPermissionQueue=null;
-              grantPermissionQueue.forEach(queitem=>{
-                  this._grantInputPermission(queitem.inputPermissionMessage,queitem.options);
+              grantPermissionQueue.forEach(queueItem=>{
+                  this._grantInputPermission(queueItem.inputPermissionMessage,queueItem.options);
               });
           }
     }
 
     _grantInputPermission(inputPermissionMessage,options){
-      const inputSender=this.buildInputSender(inputPermissionMessage,options);
+      let inputSender=this.buildInputSender(inputPermissionMessage,options);
       this.connectedSenders.push(inputSender);
       console.log("connectedSenders:"+this.connectedSenders.length);
       if(options.onSenderConnected){
@@ -270,10 +272,10 @@ import * as codedataUtil from "./codedataUtil";
       this.sendInputPermissionGrantedMessage(inputPermissionMessage, options);
     }
     sendInputPermissionGrantedMessage(inputPermissionMessage,options){
-      var inputPermissionResult=Object.assign({},inputPermissionMessage);
+      let inputPermissionResult=Object.assign({},inputPermissionMessage);
       if(options.initData){
               inputPermissionResult.initData=options.initData;
-              var inputPermissionResultInString=JSON.stringify(inputPermissionResult.initData);
+              let inputPermissionResultInString=JSON.stringify(inputPermissionResult.initData);
               if(this.aes){
                   inputPermissionResult.initData=encrypt(inputPermissionResultInString,this.aes);
               }
@@ -290,7 +292,7 @@ import * as codedataUtil from "./codedataUtil";
       this.sendInputPermissionResult(inputPermissionMessage);
     }
     sendInputPermissionResult(inputPermissionResult){
-      var data=JSON.stringify(inputPermissionResult);
+      let data=JSON.stringify(inputPermissionResult);
       this.socket.emit(this.session+"/inputPermissionResult",data);
     }
 
@@ -298,18 +300,18 @@ import * as codedataUtil from "./codedataUtil";
             this.connectSession=options.connectSession;
             this.inputAES=options.aes;
             if(this.inputAES && inputPermissionResultMessage.initData && typeof inputPermissionResultMessage.initData ==="string"){
-                   const descryptedInitData=decrypt(inputPermissionResultMessage.initData,this.inputAES);
-                  if(descryptedInitData){
+                   let decryptedInitData=decrypt(inputPermissionResultMessage.initData,this.inputAES);
+                  if(decryptedInitData){
                       try{
-                        inputPermissionResultMessage.initData=JSON.parse(descryptedInitData);
+                        inputPermissionResultMessage.initData=JSON.parse(decryptedInitData);
                       }
                       catch(error){
-                        console.warn("the service applications responsed with invalid data");
+                        console.warn("the service applications responded with invalid data");
                         inputPermissionResultMessage.initData=null;
                       }
                   }
                   else{
-                    console.warn("decruption of descryptedInitData  skipped because it is empty");
+                    console.warn("decryption of decryptedInitData  skipped because it is empty");
                   }
 
             }
@@ -319,8 +321,8 @@ import * as codedataUtil from "./codedataUtil";
             }
 
             if(this.socket){
-                var receveiverDisconnected=function(){
-                     var currentTime=(new Date()).getTime();
+                let receiverDisconnected=function(){
+                     let currentTime=(new Date()).getTime();
                      if((!this.latTimeReceiverDisconnected) || ((currentTime-this.latTimeReceiverDisconnected)<200)){
                        if(options.onReceiverDisconnected){
                          options.onReceiverDisconnected();
@@ -329,12 +331,12 @@ import * as codedataUtil from "./codedataUtil";
                      this.latTimeReceiverDisconnected=currentTime;
 
                 }
-                this.socket.on(options.connectSession+"/leave",receveiverDisconnected);
-                var inputSender=this.buildInputSender(inputPermissionResultMessage,options);
+                this.socket.on(options.connectSession+"/leave",receiverDisconnected);
+                let inputSender=this.buildInputSender(inputPermissionResultMessage,options);
                 this.socket.on(options.connectSession+"/input",inputSender.onInput);
-                var that=this;
-                this.socket.on(options.connectSession+"/output",function(outputmessage){
-                  that.onOutputMessageReceived(outputmessage,options);
+                let that=this;
+                this.socket.on(options.connectSession+"/output",function(outputMessage){
+                  that.onOutputMessageReceived(outputMessage,options);
                 });
             }
             if(options.onInputPermissionResult){
@@ -342,10 +344,10 @@ import * as codedataUtil from "./codedataUtil";
             }
 
     }
-    onOutputMessageReceived(messagedata, options){
+    onOutputMessageReceived(messageData, options){
           if(options.onOutputMessageReceived){
-                var message=JSON.parse(messagedata);
-                var aes=this.aes;
+                let message=JSON.parse(messageData);
+                let aes=this.aes;
                 if(this.inputAES){
                     aes=this.inputAES;
                 }
@@ -363,32 +365,32 @@ import * as codedataUtil from "./codedataUtil";
            console.log("not connected yet");
            return;
       }
-      var encryptedMessagedata=encrypt(JSON.stringify(outputMessage), this.aes);
-      var outputMessage={
+      let encryptedMessageData=encrypt(JSON.stringify(outputMessage), this.aes);
+      let message={
           client:this.client,
-          data:encryptedMessagedata
+          data:encryptedMessageData
       }
-      var messageToSent=JSON.stringify(outputMessage)
+      let messageToSent=JSON.stringify(message)
       this.socket.emit(this.session+"/output",messageToSent);
     }
     buildInputSender(inputPermissionMessage,options){
-      var that=this;
-      var inputSender={
+      let that=this;
+      let inputSender={
         client:inputPermissionMessage.client,
         session:inputPermissionMessage.session,
         onInput:function(data){
 
             try{
-                const inputMessage=JSON.parse(data);
+                let inputMessage=JSON.parse(data);
                 if(inputMessage.client===that.client){
                     return;
                 }
-                var aes=that.aes;
+                let aes=that.aes;
                 if(that.inputAES){
                   aes=that.inputAES;
                 }
                 if(inputMessage.data){
-                      var dataDecrypted=null;
+                      let dataDecrypted=null;
                       try{
                         dataDecrypted=decrypt(inputMessage.data,aes);
                       }
@@ -410,7 +412,7 @@ import * as codedataUtil from "./codedataUtil";
                       }
                 }
                 else if(inputMessage.initData){
-                      var dataDecrypted=null;
+                      let dataDecrypted=null;
                       try{
                             dataDecrypted=decrypt(inputMessage.initData,aes);
                       }
@@ -447,10 +449,10 @@ import * as codedataUtil from "./codedataUtil";
 
          },
          onLeave:function(data){
-             const leaveMessage=JSON.parse(data);
-             const matchedSenders=that.connectedSenders.filter(s =>s.client===leaveMessage.client);
+             let leaveMessage=JSON.parse(data);
+             let matchedSenders=that.connectedSenders.filter(s =>s.client===leaveMessage.client);
              if(matchedSenders.length>0){
-               const inputSenderToLeave=matchedSenders[0];
+               let inputSenderToLeave=matchedSenders[0];
                that.disconnectSender(inputSenderToLeave);
 
                if(options.onSenderDisconnected){
@@ -487,7 +489,7 @@ import * as codedataUtil from "./codedataUtil";
                   console.log("data field is missing in the input message");
                   return;
                 }
-                var initData=options.initData
+                let initData=options.initData
                 if(this.activeInitData){
                   initData=this.activeInitData;
                 }
@@ -508,9 +510,9 @@ import * as codedataUtil from "./codedataUtil";
                         }
                 }
                 else if(typeof inputMessage.data.fieldId !='undefined'){
-                        var matchedFields=initData.form.fields.filter(f=>f.id===inputMessage.data.fieldId);
+                        const matchedFields=initData.form.fields.filter(f=>f.id===inputMessage.data.fieldId);
                         if(matchedFields.length){
-                          var matchedField=matchedFields[0];
+                          let matchedField=matchedFields[0];
                           if(matchedField.operations &&   matchedField.operations.onInput){
                               matchedField.operations.onInput(inputMessage.data.value);
                           }
@@ -519,11 +521,11 @@ import * as codedataUtil from "./codedataUtil";
                           }
                         }
                         else{
-                            console.log("reiceved input message is skipped:The field with the matching id does not exists:"+inputMessage.data.fieldId);
+                            console.log("received input message is skipped:The field with the matching id does not exists:"+inputMessage.data.fieldId);
                         }
                 }
                 else{
-                    console.log("reiceved input message is skipped because it does not have fieldId or index");
+                    console.log("received input message is skipped because it does not have fieldId or index");
                 }
 
     }
@@ -533,19 +535,19 @@ import * as codedataUtil from "./codedataUtil";
           console.log("not connected yet");
           return;
      }
-       var aes=this.aes;
+       let aes=this.aes;
        if(this.inputAES){
            aes=this.inputAES;
        }
        const contentToEncrypt=JSON.stringify(initData);
-       const contentEcrypted=encrypt(contentToEncrypt,aes);
+       const contentEncrypted=encrypt(contentToEncrypt,aes);
 
-       var message={
+       const message={
            client:this.client,
-           initData:contentEcrypted
+           initData:contentEncrypted
        }
       const content=JSON.stringify(message);
-      var session=this.session;
+      let session=this.session;
       if(this.connectSession){
         session=this.connectSession;
       }
@@ -558,7 +560,7 @@ import * as codedataUtil from "./codedataUtil";
            console.log("not connected yet");
            return;
       }
-      var data={
+      let data={
           id:generateRandomString(10),
           value
         };
@@ -568,19 +570,19 @@ import * as codedataUtil from "./codedataUtil";
     else{
         data.index=index;
     }
-        var aes=this.aes;
+        let aes=this.aes;
         if(this.inputAES){
             aes=this.inputAES;
         }
-        const contentToEncrypt=JSON.stringify(data);
-        const contentEcrypted=encrypt(contentToEncrypt,aes);
-        data=contentEcrypted;
-        var message={
+        let contentToEncrypt=JSON.stringify(data);
+        let contentEncrypted=encrypt(contentToEncrypt,aes);
+        data=contentEncrypted;
+        let message={
             client:this.client,
             data
         }
-       const content=JSON.stringify(message);
-       var session=this.session;
+       let content=JSON.stringify(message);
+       let session=this.session;
        if(this.connectSession){
          session=this.connectSession;
        }
@@ -600,11 +602,11 @@ import * as codedataUtil from "./codedataUtil";
             });
          }
          else if(typeof data.index !=='undefined' && data.index<globalInputdata.length){
-           var globalInputdata=globalInputdata.slice(0);
+           const globalInputdata=globalInputdata.slice(0);
            globalInputdata[data.index].value=data.value;
         }
         else{
-             console.warn("receied the data index is bigger that that of initData");
+             console.warn("received the data index is bigger that that of initData");
         }
         return globalInputdata;
    }
@@ -622,8 +624,8 @@ import * as codedataUtil from "./codedataUtil";
       return codedataUtil.buildPairingData(this,data);
   }
 
-  processCodeData(encryptedcodedata, options){
-      return codedataUtil.processCodeData(this,encryptedcodedata,options);
+  processCodeData(encryptedCodedata, options){
+      return codedataUtil.processCodeData(this,encryptedCodedata,options);
   }
 
 }

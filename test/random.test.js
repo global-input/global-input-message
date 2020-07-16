@@ -5,16 +5,16 @@ import {generateRandomString} from "../src";
 test("encrypt and decrypt should work", function(){
 
 
-  var uniquevalues=new Set();
-  var size=1000;
+  let uniqueValues=new Set();
+  let size=1000;
 
 
-  for(var i=0;i<size;i++){
-       var pass=generateRandomString(17);       
-       uniquevalues.add(pass);
+  for(let i=0;i<size;i++){
+       let pass=generateRandomString(17);       
+       uniqueValues.add(pass);
 
   };
-  expect(uniquevalues.size).toBe(size);
+  expect(uniqueValues.size).toBe(size);
 
 
 

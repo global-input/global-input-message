@@ -2,20 +2,21 @@ import {createMessageConnector} from "../src";
 
 test('receiver sender should pairing', (done) => {
 
+
   const receiver=createMessageConnector();
   const sender=createMessageConnector();
 
-  receiver.client="recever";
+  receiver.client="receiver";
   sender.client="sender";
 
 
 
-  var codedata=null;
+  let codedata=null;
   console.log("receiver session:"+receiver.session);
   console.log("receiver client:"+receiver.client);
   console.log("sender session:"+sender.session);
   console.log("sender client:"+sender.client);
-  var initData={
+  let initData={
     action:"input",
     form:{
            title:"Login",
@@ -31,9 +32,9 @@ test('receiver sender should pairing', (done) => {
            }]
       }
 };
-  var inputData={content:"dilshat"};
+  let inputData={content:"example content"};
 
-  var senderConnectOptions={
+  let senderConnectOptions={
     onInputPermissionResult: function(message){
       if(message.allow){
         console.log("***:"+JSON.stringify(message));
@@ -50,13 +51,13 @@ test('receiver sender should pairing', (done) => {
     }
   };
 
-  var senderCodeOptions={
+  let senderCodeOptions={
     onInputCodeData:function(codedata){
       console.log("********* onInputCodeData*****:"+JSON.stringify(codedata));
 
-      var options=sender.buildOptionsFromInputCodedata(codedata);
+      let options=sender.buildOptionsFromInputCodedata(codedata);
       options.securityGroup=this.securityGroup;
-      var opts=Object.assign(options,senderConnectOptions);
+      let opts=Object.assign(options,senderConnectOptions);
       console.log("********** sender connection options:"+JSON.stringify(opts));
       console.log("****sender securityGroup:"+sender.securityGroup);
       sender.connect(opts);
@@ -65,27 +66,28 @@ test('receiver sender should pairing', (done) => {
       console.log("Pairing data is received:"+JSON.stringify(codedata));
       senderCodeOptions.securityGroup=codedata.securityGroup;
       senderCodeOptions.codeAES=codedata.codeAES;
-      var codedata=receiver.buildInputCodeData();
+      let codedataReceived=receiver.buildInputCodeData();
 
-      console.log("code data*****:"+codedata);
-      sender.processCodeData(codedata,senderCodeOptions);
+      console.log("code data*****:"+codedataReceived);
+      sender.processCodeData(codedataReceived,senderCodeOptions);
     }
   };
 
 
 
-  var pairingSender = function(){
+  let pairingSender = function(){
 
-      var pairingData=receiver.buildPairingData();
+      let pairingData=receiver.buildPairingData();
 
 
       sender.processCodeData(pairingData,senderCodeOptions);
   };
-  var receiverOptions={
+  let receiverOptions={
       url:'https://globalinput.co.uk',
+      // cSpell:disable      
       securityGroup:"KqfMZzevq2jCbQUg+W8i750",
-
       codeAES:"YFd9o8glRNIvM0C2yU8p4",
+      // cSpell:enable
       onInput:function(message){
             console.log("receiver received input message:"+JSON.stringify(message));
             expect(message.data.value.content).toBe(inputData.content);
@@ -93,7 +95,9 @@ test('receiver sender should pairing', (done) => {
             receiver.disconnect();
             done();
       },
+      // cSpell:disable
       apikey:"k7jc3QcMPKEXGW5UC",
+      // cSpell:enable      
       onInputPermission:function(next){
           next();
       },

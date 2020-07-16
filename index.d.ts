@@ -1,39 +1,48 @@
 declare module 'global-input-message' {
     
-    declare function createMessageConnector():GlobalInputMessageConnector;
-    declare class GlobalInputMessageConnector {
+    function createMessageConnector():GlobalInputMessageConnector;
+    class GlobalInputMessageConnector {
         client:string;
         session:string;  
         constructor();
         isConnected():boolean;
         disconnect():void;
         setCodeAES(codeAES:string):void;
-        connect(opts:OPTS);
+        connect(opts:ConnectOptions);
         sendInputMessage(value:any,index?:number,fieldId?:string):void;
-        buildOptionsFromInputCodedata(codedata:GlobalInputCodeData, options?:OPTS):OPTS;
-        buildInputCodeData(data?:GlobalInputCodeData):string;
-        processCodeData(encryptedCodeData?:EncryptedCodeData, options?:ProcessCodeDataOpts):void;
+        buildOptionsFromInputCodedata(codedata:CodeData, options?:ConnectOptions):ConnectOptions;
+        buildInputCodeData(data?:CodeData):string;
+        buildPairingData(data?:CodeData):string;
+        processCodeData(encryptedCodeData?:string, options?:CodeDataCallbacks):void;
+        /*
+            encryptedCodeData=[Type][EncryptedContent]
+            switch(Type):
+                case 'C': use the static shared encryption key to decrypt. 
+                case 'A': use the dynamic encryption key to decrypt.
+                case 'N': the content is not encrypted
+       */    
+         
     }
-    interface OPTS {
+    interface ConnectOptions {
         url?:string;
         apikey?:string;
         codeAES?:string;
         securityGroup?:string;
         client?:string;
-        onInput?:(message:GlobalInputMessage)=>void;
-        onInputPermission?:(next:CallbackOnPermission)=>void;
-        onRegistered?:(next:CallbackOnRegistered) =>void;
-        onInputPermissionResult?:(message:GlobalInputPermissionMessage)=>void;
-        onInputCodeData?:(codedata:GlobalInputCodeData)=>void;
+        onInput?:(message:InputMessage)=>void;
+        onInputPermission?:(next:PermissionCallback)=>void;
+        onRegistered?:(next:RegisteredCallback) =>void;
+        onInputPermissionResult?:(message:PermissionMessage)=>void;
+        onInputCodeData?:(codedata:CodeData)=>void;
 
         initData?:InitData;        
     }
-    type CallbackOnPermission=()=>void;    
-    type CallbackOnRegistered=()=>void;
+    type PermissionCallback=()=>void;    
+    type RegisteredCallback=()=>void;
 
 
 
-    interface GlobalInputMessage {
+    interface InputMessage {
         client:string;
         data:{
             value:any
@@ -55,7 +64,7 @@ declare module 'global-input-message' {
         id?:string;        
         type?:string;
         label?:string;
-        value?:GlobalInputValue;        
+        value?:InputValue;        
         nLines?:number;
         icon?:string;
         viewId?:string;
@@ -70,25 +79,26 @@ declare module 'global-input-message' {
     interface FormOperation{
         onInput:(value:any) => void
     }
-    interface GlobalInputPermissionMessage{
+    interface PermissionMessage{
         allow:boolean;
         reason?:string;
         inputAES?:string;
         initData?:InitData;
     }
-    interface GlobalInputCodeData {
+    interface CodeData {
         session:string;
         url:string;
         aes:string;
         apikey:string;
         securityGroup:string; 
-        action?:string;       
+        action?:string; 
+        codeAES?:string;     
     }
 
-    declare function generateRandomString(length?:number):string;
-    declare function generatateRandomString(length?:number):string;
-    declare function encrypt(content:string, password:string):string;    
-    declare function decrypt(content:string, password:string):string;
+    function generateRandomString(length?:number):string;
+    function generatateRandomString(length?:number):string;
+    function encrypt(content:string, password:string):string;    
+    function decrypt(content:string, password:string):string;
   
     
     interface InitData {
@@ -107,7 +117,7 @@ declare module 'global-input-message' {
         id?:string;        
         type?:string;
         label?:string;
-        value?:GlobalInputValue;        
+        value?:InputValue;        
         nLines?:number;
         icon?:string;
         viewId?:string;
@@ -117,7 +127,7 @@ declare module 'global-input-message' {
         index?:number;
     }
 
-    type GlobalInputValue=any; //todo
+    type InputValue=any; //todo
     
     
 
@@ -125,30 +135,23 @@ declare module 'global-input-message' {
         onInput:(value:any) => void
     }
     
-    /*
-    EncryptedCodeData=[Type][EncryptedContent]
-    switch(Type):
-        case 'C': use the static shared encryption key to decrypt. 
-        case 'A': use the dynamic encryption key to decrypt.
-        case 'N': the content is not encrypted
-    */
-    type EncryptedCodeData=string; 
+    
 
 
 
 
-    interface ProcessCodeDataOpts {
-        onError?:(opts:ProcessCodeDataOpts, message:string, error:any)=>void;
-        onInputCodeData?:(codeData:GlobalInputCodeData)=>void;
-        onPairing?:(codeData:GlobalInputCodeData)=>void;       
+    interface CodeDataCallbacks {
+        onError?:(opts:CodeDataCallbacks, message:string, error:any)=>void;
+        onInputCodeData?:(codeData:CodeData)=>void;
+        onPairing?:(codeData:CodeData)=>void;       
     }
 
     
     
-    declare function generateRandomString(length?:number):string;
-    declare function encrypt(content:string, password:string):string;
+    function generateRandomString(length?:number):string;
+    function encrypt(content:string, password:string):string;
     
-    declare function decrypt(content:string, password:string):string;
+    function decrypt(content:string, password:string):string;
 
     
     

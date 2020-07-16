@@ -5,17 +5,17 @@ test('receiver sender should send input message', (done) => {
   const receiver=createMessageConnector();
   const sender=createMessageConnector();
 
-  receiver.client="recever";
+  receiver.client="receiver";
   sender.client="sender";
 
 
 
-  var codedata=null;
+  let codedata=null;
   console.log("receiver session:"+receiver.session);
   console.log("receiver client:"+receiver.client);
   console.log("sender session:"+sender.session);
   console.log("sender client:"+sender.client);
-  var initData={
+  let initData={
     action:"input",
     form:{
            title:"Login",
@@ -31,9 +31,9 @@ test('receiver sender should send input message', (done) => {
            }]
       }
 };
-  var inputData={content:"dilshat"};
+  let inputData={content:"dilshat"};
 
-  var senderConnectOptions={
+  let senderConnectOptions={
     onInputPermissionResult: function(message){
       if(message.allow){
         console.log("***:"+JSON.stringify(message));
@@ -50,24 +50,24 @@ test('receiver sender should send input message', (done) => {
     }
   };
 
-  var senderCodeOptions={
+  let senderCodeOptions={
     onInputCodeData:function(codedata){
       console.log("********* onInputCodeData*****:"+JSON.stringify(codedata));
 
-      var options=sender.buildOptionsFromInputCodedata(codedata);
-      var opts=Object.assign(options,senderConnectOptions);
+      let options=sender.buildOptionsFromInputCodedata(codedata);
+      let opts=Object.assign(options,senderConnectOptions);
       console.log("********** sender connection options:"+JSON.stringify(opts));
       sender.connect(opts);
     }
   };
 
-  var connectSender=function(){
-      var codedata=receiver.buildInputCodeData();
+  let connectSender=function(){
+      let codedata=receiver.buildInputCodeData();
       console.log("code data*****:"+codedata);
       sender.processCodeData(codedata,senderCodeOptions);
 
   };
-  var receiverOptions={
+  let receiverOptions={
       url:'https://globalinput.co.uk',
       onInput:function(message){
             console.log("receiver received input message:"+JSON.stringify(message));
@@ -76,7 +76,9 @@ test('receiver sender should send input message', (done) => {
             receiver.disconnect();
             done();
       },
+      // cSpell:disable
       apikey:"k7jc3QcMPKEXGW5UC",
+      // cSpell:enable      
       onInputPermission:function(next){
           next();
       },

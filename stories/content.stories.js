@@ -5,8 +5,8 @@ import QRCode from 'qrcode';
 
 
 
-var connector = null;
-const startGlobaInput = ({ onReceiveConnectionCode, onInput, onSenderConnected, onSenderDisconnected }) => {
+let connector = null;
+const startGlobalInput = ({ onReceiveConnectionCode, onInput, onSenderConnected, onSenderDisconnected }) => {
   if (connector) {
     return;
   }
@@ -30,10 +30,12 @@ const startGlobaInput = ({ onReceiveConnectionCode, onInput, onSenderConnected, 
     },
     onSenderConnected,
     onSenderDisconnected,
+    // cSpell:disable
     apikey: "k7jc3QcMPKEXGW5UC",
     securityGroup: "1CNbWCFpsbmRQuKdd",
     aes: "dfhrhahfhhfsdhlnnnlkfjlihjc3QcMPKEXGW5UC",
     client: "thisShouldBeUniqueId"
+    // cSpell:enable      
     //url:"http://localhost:1337"
   };
   connector.connect(mobileConfig);
@@ -92,8 +94,8 @@ storiesOf('global-input-message', module)
       textarea.value = content;
     };
 
-    var connected = false;
-    button.addEventListener('click', e => startGlobaInput({ onReceiveConnectionCode, onSenderConnected, onSenderDisconnected, onInput }));
+    let connected = false;
+    button.addEventListener('click', e => startGlobalInput({ onReceiveConnectionCode, onSenderConnected, onSenderDisconnected, onInput }));
 
     return container;
   }

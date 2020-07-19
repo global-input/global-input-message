@@ -34,7 +34,7 @@ declare module 'global-input-message' {
         onRegistered?:(next:RegisteredCallback) =>void;
         onInputPermissionResult?:(message:PermissionMessage)=>void;
         onInputCodeData?:(codedata:CodeData)=>void;
-
+        onError?:(message:string)=>void;
         initData?:InitData;        
     }
     type PermissionCallback=()=>void;    

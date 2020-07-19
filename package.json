@@ -3,7 +3,7 @@
   "version": "1.8.0",
   "description": "global input core js library",
   "main": "./distribution/index.js",
-  "types":"./index.d.ts",
+  "types": "./index.d.ts",
   "scripts": {
     "test": "jest ",
     "build": "./node_modules/.bin/babel src  --out-dir distribution",

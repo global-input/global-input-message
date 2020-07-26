@@ -49,8 +49,9 @@ declare module 'global-input-message' {
         }
     }
     interface InitData {
-        form:{
-            title?:string;
+        form:{  
+            id?:string;          
+            title?:string;            
             label?:string;
             fields:FormField[];
             views?:{
@@ -59,7 +60,7 @@ declare module 'global-input-message' {
                 }
             };
         }        
-    }
+    }    
     interface FormField{
         id?:string;        
         type?:string;
@@ -73,12 +74,14 @@ declare module 'global-input-message' {
         options?:object[];
         index?:number;
     }
-    
+
+    type InputValue=any; //todo
     
 
     interface FormOperation{
         onInput:(value:any) => void
     }
+    
     interface PermissionMessage{
         allow:boolean;
         reason?:string;
@@ -99,46 +102,7 @@ declare module 'global-input-message' {
     function generatateRandomString(length?:number):string;
     function encrypt(content:string, password:string):string;    
     function decrypt(content:string, password:string):string;
-  
     
-    interface InitData {
-        form:{
-            title?:string;
-            label?:string;
-            fields:FormField[];
-            views?:{
-                viewId:{
-                    [id:string]:object;
-                }
-            };
-        }        
-    }
-    interface FormField{
-        id?:string;        
-        type?:string;
-        label?:string;
-        value?:InputValue;        
-        nLines?:number;
-        icon?:string;
-        viewId?:string;
-        iconText?:string|object;
-        operations?:FormOperation;        
-        options?:object[];
-        index?:number;
-    }
-
-    type InputValue=any; //todo
-    
-    
-
-    interface FormOperation{
-        onInput:(value:any) => void
-    }
-    
-    
-
-
-
 
     interface CodeDataCallbacks {
         onError?:(opts:CodeDataCallbacks, message:string, error:any)=>void;

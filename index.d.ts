@@ -37,6 +37,7 @@ declare module 'global-input-message' {
         onError?:(message:string)=>void;
         initData?:InitData;        
     }
+    
     type PermissionCallback=()=>void;    
     type RegisteredCallback=()=>void;
 
@@ -45,7 +46,9 @@ declare module 'global-input-message' {
     interface InputMessage {
         client:string;
         data:{
-            value:any
+            value:any,
+            index?:number,
+            id?:number
         }
     }
     interface InitData {
@@ -79,8 +82,9 @@ declare module 'global-input-message' {
     
 
     interface FormOperation{
-        onInput:(value:any) => void
+        onInput:(value:any) => void;
     }
+    
     
     interface PermissionMessage{
         allow:boolean;
@@ -98,14 +102,13 @@ declare module 'global-input-message' {
         codeAES?:string;     
     }
 
-    function generateRandomString(length?:number):string;
-    function generatateRandomString(length?:number):string;
+    function generateRandomString(length?:number):string;    
     function encrypt(content:string, password:string):string;    
     function decrypt(content:string, password:string):string;
     
 
     interface CodeDataCallbacks {
-        onError?:(opts:CodeDataCallbacks, message:string, error:any)=>void;
+        onError?:(message:string)=>void;
         onInputCodeData?:(codeData:CodeData)=>void;
         onPairing?:(codeData:CodeData)=>void;       
     }
@@ -117,8 +120,29 @@ declare module 'global-input-message' {
     
     function decrypt(content:string, password:string):string;
 
+    function setCallbacksOnDeviceConnectOption(connectOption:ConnectOptions, messageReceivers:DeviceMessageReceivers):void;
+    function setCallbacksOnInitData (initData:InitData, messageReceivers:DeviceMessageReceivers):void;
+    function setCallbacksCodeDataProcessors(codeProcessors:CodeProcessors, codeDataReceiver:CodeDataReceiver):void;
+    function setCallbacksOnMobileConnectOption(connectionOptions:ConnectOptions,messageReceivers:MobileMessageReceivers):void
     
-    
-
+    interface DeviceMessageReceivers {
+        input:() => Promise<InputMessage>;
+        registered:() => Promise<void>;
+        fieldInputs:()=>Promise<any>;
+    }
+    interface CodeProcessors {
+        onInputCodeData: (codedata:CodeData)=>void;
+        onPairing:(codedata:CodeData)=>void;
+        onError:(message:string)=>void;
+    }
+    interface CodeDataReceiver {
+        inputCode:()=>Promise<CodeData>;
+        pairingCode:()=>Promise<CodeData>;
+        codeType: string;
+    }
+    interface MobileMessageReceivers {
+            permission:()=>Promise<PermissionMessage>;
+            input:()=>Promise<InputMessage>;
+    }
     
 }

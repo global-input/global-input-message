@@ -5,9 +5,8 @@ import * as codedataUtil from "./codedataUtil";
 
  export default class GlobalInputMessageConnector{
     logError(message, error){
-      if(error){
-          console.warn(this.client+":"+message+":"+error);
-          console.warn(error.stack);
+      if(error){              
+          console.warn("[[[["+this.client+":"+message+":"+error+":"+error.stack+"]");
       }
       else{
           console.warn(this.client+":"+message);
@@ -160,8 +159,9 @@ import * as codedataUtil from "./codedataUtil";
 
 
                     let data=JSON.stringify(requestInputPermissionMessage)
-
+                    // cSpell:disable  
                     this.socket.emit("inputPermision",data);
+                    // cSpell:enable
             }
 
     }
@@ -379,9 +379,8 @@ import * as codedataUtil from "./codedataUtil";
         client:inputPermissionMessage.client,
         session:inputPermissionMessage.session,
         onInput:function(data){
-
             try{
-                let inputMessage=JSON.parse(data);
+                let inputMessage=JSON.parse(data);                
                 if(inputMessage.client===that.client){
                     return;
                 }
@@ -443,7 +442,7 @@ import * as codedataUtil from "./codedataUtil";
                 }
 
             }
-            catch(error){
+            catch(error){              
               that.logError("error when processing the input message.",error);
             }
 

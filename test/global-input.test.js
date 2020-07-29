@@ -1,95 +1,89 @@
-import {createMessageConnector} from "../src";
+import { createMessageConnector, setCallbacksOnDeviceConnectOption, setCallbacksOnCodeDataProcessors, setCallbacksOnMobileConnectOption } from "../src";
 
-test('receiver sender should send input message', (done) => {
-
-  const receiver=createMessageConnector();
-  const sender=createMessageConnector();
-
-  receiver.client="receiver";
-  sender.client="sender";
+it('receiver sender should send input message', async () => {
 
 
-
-  let codedata=null;
-  console.log("receiver session:"+receiver.session);
-  console.log("receiver client:"+receiver.client);
-  console.log("sender session:"+sender.session);
-  console.log("sender client:"+sender.client);
-  let initData={
-    action:"input",
-    form:{
-           title:"Login",
-              fields:[{
-            name:"Email address",
-            value:"some value"
-            },{
-             name:"Password",
-             type:"secret"
-            },{
-             name:"Login",
-             type:"action"
-           }]
-      }
-};
-  let inputData={content:"dilshat"};
-
-  let senderConnectOptions={
-    onInputPermissionResult: function(message){
-      if(message.allow){
-        console.log("***:"+JSON.stringify(message));
-       expect(message.initData.form.fields[0].name).toBe(initData.form.fields[0].name);
-       expect(message.initData.form.fields[0].value).toBe(initData.form.fields[0].value);
-       expect(message.initData.form.fields[1].name).toBe(initData.form.fields[1].name);
-        console.log("sender sending the input message:"+JSON.stringify(inputData));
-        sender.sendInputMessage(inputData, 0);
-      }
-      else{
-        console.log(" permission denied:"+message.reason);
-      }
-
+  let initData = {
+    action: "input",
+    form: {
+      title: "Login",
+      fields: [{
+        label: "Email address",
+        value: "some value"
+      }, {
+        label: "Password",
+        type: "secret"
+      }, {
+        label: "Login",
+        type: "action"
+      }]
     }
   };
 
-  let senderCodeOptions={
-    onInputCodeData:function(codedata){
-      console.log("********* onInputCodeData*****:"+JSON.stringify(codedata));
 
-      let options=sender.buildOptionsFromInputCodedata(codedata);
-      let opts=Object.assign(options,senderConnectOptions);
-      console.log("********** sender connection options:"+JSON.stringify(opts));
-      sender.connect(opts);
-    }
+  let deviceConnectOption = {
+    url: 'http://localhost:1337',
+    // cSpell:disable
+    apikey: "k7jc3QcMPKEXGW5UC",
+    // cSpell:enable     
+    initData
   };
 
-  let connectSender=function(){
-      let codedata=receiver.buildInputCodeData();
-      console.log("code data*****:"+codedata);
-      sender.processCodeData(codedata,senderCodeOptions);
 
-  };
-  let receiverOptions={
-      url:'https://globalinput.co.uk',
-      onInput:function(message){
-            console.log("receiver received input message:"+JSON.stringify(message));
-            expect(message.data.value.content).toBe(inputData.content);
-            sender.disconnect();
-            receiver.disconnect();
-            done();
-      },
-      // cSpell:disable
-      apikey:"k7jc3QcMPKEXGW5UC",
-      // cSpell:enable      
-      onInputPermission:function(next){
-          next();
-      },
-      onRegistered:function(next){
-          console.log("receiver registered");
-          next();
-          connectSender();
-      },
-      initData
-  }
-  receiver.connect(receiverOptions);
+  const deviceMessageReceivers = {};
+  setCallbacksOnDeviceConnectOption(deviceConnectOption, deviceMessageReceivers);
+  const deviceConnector = createMessageConnector();
+  deviceConnector.connect(deviceConnectOption); //device connect
+  await deviceMessageReceivers.registered.message();    //device registered
+
+  let codedata = deviceConnector.buildInputCodeData(); //mobile obtains the connection code
+
+  const mobileConnector = createMessageConnector();
+
+  const codeProcessors = {};
+  const codeMessageReceivers = {};
+
+  setCallbacksOnCodeDataProcessors(codeProcessors, codeMessageReceivers);
+
+  mobileConnector.processCodeData(codedata, codeProcessors); //decrypt the connection code
+
+  const connectionCode = await codeMessageReceivers.input.code(); //obtains the decrypted connection code
+
+  let mobileConnectOption = mobileConnector.buildOptionsFromInputCodedata(connectionCode);
+  const mobileMessageReceivers = {};
+  setCallbacksOnMobileConnectOption(mobileConnectOption, mobileMessageReceivers);
+  mobileConnector.connect(mobileConnectOption); //mobile connect to device
+  const permissionMessage = await mobileMessageReceivers.permission.message(); //mobile receive permission 
+
+  expect(permissionMessage.allow).toBeTruthy();//should allow and should contain form information
+  expect(permissionMessage.initData.form.fields[0].label).toBe(initData.form.fields[0].label);
+  expect(permissionMessage.initData.form.fields[0].label).toBe(initData.form.fields[0].label);
+  expect(permissionMessage.initData.form.fields[1].label).toBe(initData.form.fields[1].label);
+
+  const messageSentByMobile1 = { content: "dilshat" };
+  mobileConnector.sendInputMessage(messageSentByMobile1, 0); //mobile  sends the first message, and the device receives it
+  const messageReceivedByDevice1 = await deviceMessageReceivers.fields[0].message();
+  expect(messageReceivedByDevice1).toEqual(messageSentByMobile1);
+
+  const messageSentByMobile2 = { content: "password111" };
+  mobileConnector.sendInputMessage(messageSentByMobile2, 1); //mobile  sends the second message, and the device receives it
+  const messageReceivedByDevice2 = await deviceMessageReceivers.fields[1].message();
+  expect(messageReceivedByDevice2).toEqual(messageSentByMobile2);
+
+  const messageSentByDevice1={content:"some value"};
+  deviceConnector.sendInputMessage(messageSentByDevice1,0); //device sends the first message, and the mobile receives it
+  const messageReceivedByMobile1=await mobileMessageReceivers.input.message();  
+  expect(messageReceivedByMobile1.data.index).toEqual(0);
+  expect(messageReceivedByMobile1.data.value).toEqual(messageSentByDevice1);
+  mobileMessageReceivers.input.reset();   
+  
+  const messageSentByDevice2={content:"some value 2"};
+  deviceConnector.sendInputMessage(messageSentByDevice2,1); //device sends the first message, and the mobile receives it
+  const messageReceivedByMobile2=await mobileMessageReceivers.input.message();   
+  expect(messageReceivedByMobile2.data.index).toEqual(1);
+  expect(messageReceivedByMobile2.data.value).toEqual(messageSentByDevice2);
+  
+
 
 
 });

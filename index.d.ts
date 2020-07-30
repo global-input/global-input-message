@@ -9,11 +9,12 @@ declare module 'global-input-message' {
         disconnect():void;
         setCodeAES(codeAES:string):void;
         connect(opts:ConnectOptions);
-        sendInputMessage(value:any,index?:number,fieldId?:string):void;
+        sendInputMessage(value:FieldValue,index?:number,fieldId?:string):void;
+        sendInitData(initData:InitData):void;
         buildOptionsFromInputCodedata(codedata:CodeData, options?:ConnectOptions):ConnectOptions;
         buildInputCodeData(data?:CodeData):string;
         buildPairingData(data?:CodeData):string;
-        processCodeData(encryptedCodeData?:string, options?:CodeDataCallbacks):void;
+        processCodeData(encryptedCodeData?:string, options?:CodeProcessors):void;
         /*
             encryptedCodeData=[Type][EncryptedContent]
             switch(Type):
@@ -23,6 +24,8 @@ declare module 'global-input-message' {
        */    
          
     }
+    type FieldValue=string|number|object|null|undefined;
+
     interface ConnectOptions {
         url?:string;
         apikey?:string;
@@ -46,12 +49,23 @@ declare module 'global-input-message' {
     interface InputMessage {
         client:string;
         data:{
-            value:any,
-            index?:number,
-            id?:number
-        }
+            value:FieldValue;
+            index?:number;
+            id?:number;
+        };
+        initData?:InitData;
     }
+
+    interface CodeProcessors {
+        onInputCodeData?: (codedata:CodeData)=>void;
+        onPairing?:(codedata:CodeData)=>void;
+        onError?:(message:string)=>void;
+    }
+
+
     interface InitData {
+        action?:string;
+        dataType?:string;    
         form:{  
             id?:string;          
             title?:string;            
@@ -68,7 +82,7 @@ declare module 'global-input-message' {
         id?:string;        
         type?:string;
         label?:string;
-        value?:InputValue;        
+        value?:FieldValue;        
         nLines?:number;
         icon?:string;
         viewId?:string;
@@ -78,11 +92,11 @@ declare module 'global-input-message' {
         index?:number;
     }
 
-    type InputValue=any; //todo
+    
     
 
     interface FormOperation{
-        onInput:(value:any) => void;
+        onInput:(value:FieldValue) => void;
     }
     
     
@@ -93,11 +107,11 @@ declare module 'global-input-message' {
         initData?:InitData;
     }
     interface CodeData {
-        session:string;
-        url:string;
-        aes:string;
-        apikey:string;
-        securityGroup:string; 
+        session?:string;
+        url?:string;
+        aes?:string;
+        apikey?:string;
+        securityGroup?:string; 
         action?:string; 
         codeAES?:string;     
     }
@@ -107,11 +121,7 @@ declare module 'global-input-message' {
     function decrypt(content:string, password:string):string;
     
 
-    interface CodeDataCallbacks {
-        onError?:(message:string)=>void;
-        onInputCodeData?:(codeData:CodeData)=>void;
-        onPairing?:(codeData:CodeData)=>void;       
-    }
+    
 
     
     
@@ -120,29 +130,41 @@ declare module 'global-input-message' {
     
     function decrypt(content:string, password:string):string;
 
-    function setCallbacksOnDeviceConnectOption(connectOption:ConnectOptions, messageReceivers:DeviceMessageReceivers):void;
-    function setCallbacksOnInitData (initData:InitData, messageReceivers:DeviceMessageReceivers):void;
-    function setCallbacksCodeDataProcessors(codeProcessors:CodeProcessors, codeDataReceiver:CodeDataReceiver):void;
-    function setCallbacksOnMobileConnectOption(connectionOptions:ConnectOptions,messageReceivers:MobileMessageReceivers):void
     
-    interface DeviceMessageReceivers {
-        input:() => Promise<InputMessage>;
-        registered:() => Promise<void>;
-        fieldInputs:()=>Promise<any>;
+    
+    function setCallbacksOnDeviceConnectOption(connectOption:ConnectOptions, receivers:DeviceMessageReceivers):void;
+    function setCallbacksOnInitData (initData:InitData, receivers:DeviceMessageReceivers):void;
+    interface DeviceMessageReceivers {        
+        registered?:{
+            message:() => Promise<void>;
+        }
+        fields?:FieldMessage[];        
     }
-    interface CodeProcessors {
-        onInputCodeData: (codedata:CodeData)=>void;
-        onPairing:(codedata:CodeData)=>void;
-        onError:(message:string)=>void;
-    }
+    interface FieldMessage {
+        message:() => Promise<FieldValue>;
+        reset:()=>void;
+    }    
+    
+    function setCallbacksOnCodeDataProcessors(codeProcessors:CodeProcessors, receivers:CodeDataReceiver):void;
+
+    
+    
+
     interface CodeDataReceiver {
-        inputCode:()=>Promise<CodeData>;
-        pairingCode:()=>Promise<CodeData>;
-        codeType: string;
+        codeType?:string;
+        input?:{code:()=>Promise<CodeData>};
+        pairing?:{code:()=>Promise<CodeData>};        
     }
+            
+    function setCallbacksOnMobileConnectOption(connectionOptions:ConnectOptions,receivers:MobileMessageReceivers):void
     interface MobileMessageReceivers {
-            permission:()=>Promise<PermissionMessage>;
-            input:()=>Promise<InputMessage>;
+            permission?:{
+                message:()=>Promise<PermissionMessage>;
+            }
+            input?:{
+                message:()=>Promise<InputMessage>;
+                reset:()=>void;
+            }
     }
     
 }

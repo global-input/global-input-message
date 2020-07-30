@@ -28,7 +28,7 @@ const createFieldMessageReceiver=(field)=>{
     const receiver={};    
     createPromiseOnReceiver(receiver);
     field.operations= {                
-        onInput: (message) => {
+        onInput: (message) => {            
             receiver.resolve(message);                        
         }
     };    
@@ -87,7 +87,7 @@ export const setCallbacksOnMobileConnectOption = (connectOption,receivers) => {
     receivers.input={};
     createPromiseOnReceiver(receivers.input);    
     
-    connectOption.onInput = (message) => {
+    connectOption.onInput = (message) => {            
             receivers.input.resolve(message);
     };        
     receivers.input.message = async () => receivers.input.promise;

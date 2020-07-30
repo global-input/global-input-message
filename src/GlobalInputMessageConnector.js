@@ -500,12 +500,12 @@ import * as codedataUtil from "./codedataUtil";
                         if(inputMessage.data.index<0 || initData.form.fields.length<=inputMessage.data.index){
                             console.log("index data is too big in the input message");
                             return;
-                        }
-                        if(initData.form.fields[inputMessage.data.index].operations &&   initData.form.fields[inputMessage.data.index].operations.onInput){
+                        }                        
+                        if(initData.form.fields[inputMessage.data.index] && initData.form.fields[inputMessage.data.index].operations &&   initData.form.fields[inputMessage.data.index].operations.onInput){                            
                             initData.form.fields[inputMessage.data.index].operations.onInput(inputMessage.data.value);
                         }
                         else{
-                          console.log("onInput operations is not defined in the initData index:"+inputMessage.data.index);
+                          console.warn("****onInput operations is not defined in the initData index****:"+JSON.stringify(inputMessage.data.index)+"***");
                         }
                 }
                 else if(typeof inputMessage.data.fieldId !='undefined'){

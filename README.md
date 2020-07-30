@@ -2,14 +2,13 @@
 
 ## global-input-message
 
-This is a JavaScript library for web and device applications to have mobile integration without developing a separate mobile app. If you already have a mobile app, you need to include the [Global Input App](https://globalinput.co.uk/) component. Then, this library allows your applications running on various devices to interoperate with user's mobile devices.
+This JavaScript library allows web and device applications to implement mobile integration. This mobile integration solution [Global Input App](https://globalinput.co.uk/) integrates mobile with other devices, enabling [Mobile Encryption ](https://globalinput.co.uk/global-input-app/mobile-content-encryption), [Mobile Authentication ](https://globalinput.co.uk/global-input-app/mobile-authentication), [Mobile Content Transfer ](https://globalinput.co.uk/global-input-app/mobile-content-transfer), [Mobile Input & Control ](https://globalinput.co.uk/global-input-app/mobile-input-control), [Second Screen Experience](https://globalinput.co.uk/global-input-app/second-screen-experience) and [Mobile Personal Storage](https://globalinput.co.uk/global-input-app/mobile-personal-storage) features. 
 
-The simple addition allows your applications instantly have [Mobile Encryption ](https://globalinput.co.uk/global-input-app/mobile-content-encryption), [Mobile Authentication ](https://globalinput.co.uk/global-input-app/mobile-authentication), [Mobile Content Transfer ](https://globalinput.co.uk/global-input-app/mobile-content-transfer), [Mobile Input & Control ](https://globalinput.co.uk/global-input-app/mobile-input-control), [Second Screen Experience](https://globalinput.co.uk/global-input-app/second-screen-experience) and [Mobile Personal Storage](https://globalinput.co.uk/global-input-app/mobile-personal-storage) features
  
 
 ## ReactJS or React Native Applications
 
-If you have React applications, you can include the [React extension library](https://github.com/global-input/global-input-react), which is much more intuitive to use.
+If you have React applications, you may use the [React extension library](https://github.com/global-input/global-input-react), which is much more intuitive to use.
 
 ## Setup
 
@@ -20,7 +19,7 @@ npm install --save global-input-message
 ```
 ### CDN
 ```JavaScript
-<script src="https://unpkg.com/global-input-message@1.7.7/distribution/globalinputmessage.min.js">
+<script src="https://unpkg.com/global-input-message@1.8.3/distribution/globalinputmessage.js">
 </script>
 ```
 
@@ -39,11 +38,9 @@ or use require:
 const globalInputMessage=require("global-input-message");
 const connector=globalInputMessage.createMessageConnector();
 ```
-Now you pass you can pass the configuration to the ```connector``` via  ```connect()```  function. The configuration contains a list of mobile user interface elements and the callback functions when the connected user interacted with them.
-
-For example following configuration specify a form containing a single field named ```Content```:
+Next invoke the  ```connect()```  function on the ```connector```, passing the configuration that specifies the mobile user interface elements and the callbacks for receiving the events. It is straightforward to understand The following example is 
 ```JavaScript
- const mobileConfig={        
+ const mobileConfig={
    initData:{                              
      form:{
         title:"Content Transfer",   
@@ -92,3 +89,5 @@ The following configuration specifies a login form:
 You can try out the sample code above on [JSFiddler](https://jsfiddle.net/dilshat/c5fvyxqa/)
 
 
+## TypeScript
+Typescript type definitions are bundled with the module.

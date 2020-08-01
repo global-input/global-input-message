@@ -42,6 +42,9 @@ import * as codedataUtil from "./codedataUtil";
     setCodeAES(codeAES){
       this.codeAES=codeAES;
     }
+    setSecurityGroup(securityGroup){
+      this.securityGroup=securityGroup;
+    }
     connect(options={}){
         this.disconnect();
 

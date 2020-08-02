@@ -1,6 +1,6 @@
 declare module 'global-input-message' {
     
-    function createMessageConnector():GlobalInputMessageConnector;
+    export function createMessageConnector():GlobalInputMessageConnector;
     class GlobalInputMessageConnector {
         client:string;
         session:string;        
@@ -116,14 +116,14 @@ declare module 'global-input-message' {
         codeAES?:string;     
     }
 
-    function generateRandomString(length?:number):string;    
-    function encrypt(content:string, password:string):string;    
-    function decrypt(content:string, password:string):string;
+    export function generateRandomString(length?:number):string;    
+    export function encrypt(content:string, password:string):string;    
+    export function decrypt(content:string, password:string):string;
     
 
     
 
-    function deviceConnect (connector:GlobalInputMessageConnector,connectOption:ConnectOptions):DeviceConnectMessageReceivers;
+    export function deviceConnect (connector:GlobalInputMessageConnector,connectOption:ConnectOptions):DeviceConnectMessageReceivers;
 
     interface DeviceConnectMessageReceivers {
         registered:()=>Promise<void>;
@@ -134,25 +134,25 @@ declare module 'global-input-message' {
             get:()=>Promise<T>;
             reset:()=>void;
     }
-    function createWaitForFieldMessages (fields:FormField[]):MessageReceiver<FieldValue>[];
+    export function createWaitForFieldMessages (fields:FormField[]):MessageReceiver<FieldValue>[];
 
 
 
-    function decryptCodeData (codedata:string,connector:GlobalInputMessageConnector):Promise<DecryptedCodeData>
+    export function decryptCodeData (codedata:string,connector:GlobalInputMessageConnector):Promise<DecryptedCodeData>
 
     interface DecryptedCodeData{
         codeType:string;
         codeData:CodeData;
     }
 
-    function mobileConnect(connector:GlobalInputMessageConnector,codedata:CodeData):MobileConnectMessageReceivers;
+    export function mobileConnect(connector:GlobalInputMessageConnector,codedata:CodeData):MobileConnectMessageReceivers;
     
    interface MobileConnectMessageReceivers{
     getPermission:()=>Promise<PermissionMessage>
     input: MessageReceiver<InputMessage>
    }
 
-   function deviceSendInitData(connector, initData):MessageReceiver<FieldValue>[];
+   export function deviceSendInitData(connector, initData):MessageReceiver<FieldValue>[];
     
     
     

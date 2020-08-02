@@ -30,8 +30,8 @@ declare module 'global-input-message' {
         url?:string;
         apikey?:string;        
         securityGroup?:string;
-        connectSession:string;
-        aes:string;
+        connectSession?:string;
+        aes?:string;
         onInput?:(message:InputMessage)=>void;        
         onRegistered?:(next:()=>void) =>void;
         onRegisterFailed?:(message:object)=>void;
@@ -120,17 +120,24 @@ declare module 'global-input-message' {
     function encrypt(content:string, password:string):string;    
     function decrypt(content:string, password:string):string;
     
+
+    
+
     function deviceConnect (connector:GlobalInputMessageConnector,connectOption:ConnectOptions):DeviceConnectMessageReceivers;
 
     interface DeviceConnectMessageReceivers {
         registered:()=>Promise<void>;
         fields:MessageReceiver<FieldValue>[];
     }
+    
     interface MessageReceiver <T> {
             get:()=>Promise<T>;
             reset:()=>void;
     }
-    
+    function createWaitForFieldMessages (fields:FormField[]):MessageReceiver<FieldValue>[];
+
+
+
     function decryptCodeData (codedata:string,connector:GlobalInputMessageConnector):Promise<DecryptedCodeData>
 
     interface DecryptedCodeData{

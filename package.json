@@ -43,11 +43,8 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.5.5",
-    "@storybook/html": "^5.3.19",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
-    "core-js": "^2.6.9",
-    "jest": "^26.1.0",
-    "qrcode": "^1.4.4"
+    "jest": "^26.1.0"
   }
 }

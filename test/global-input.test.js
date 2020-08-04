@@ -52,9 +52,9 @@ import {createMessageConnector,deviceConnect,decryptCodeData,mobileConnect,devic
       
           
       const deviceConnectOption = {
-        url: 'http://localhost:1337',
+        //url: 'http://localhost:1337',
         // cSpell:disable
-        apikey: "k7jc3QcMPKEXGW5UC",
+        //apikey: "k7jc3QcMPKEXGW5UC",
         // cSpell:enable     
         initData
       };

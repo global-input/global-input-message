@@ -19,7 +19,7 @@ npm install --save global-input-message
 ```
 ### CDN
 ```JavaScript
-<script src="https://unpkg.com/global-input-message@1.8.5/distribution/globalinputmessage.js">
+<script src="https://unpkg.com/global-input-message@1.8.6/distribution/globalinputmessage.js">
 </script>
 ```
 
@@ -90,4 +90,5 @@ You can try out the sample code above on [JSFiddler](https://jsfiddle.net/dilsha
 
 
 ## TypeScript
-Typescript type definitions are bundled with the module.
+Typescript [type definitions](https://github.com/global-input/global-input-message/blob/master/index.d.ts) are bundled with the module.
+An end-to-end Typescript test that demonstrates how you can achieve the interoperability between your mobile app and and your device application is available [here](https://github.com/global-input/test-global-input-app-libs/blob/master/src/test-global-input-message/global-input.test.ts).

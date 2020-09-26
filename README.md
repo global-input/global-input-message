@@ -2,7 +2,7 @@
 
 ## global-input-message
 
-This JavaScript library allows web and device applications to implement mobile integration. This mobile integration solution [Global Input App](https://globalinput.co.uk/) integrates mobile with other devices, enabling [Mobile Encryption ](https://globalinput.co.uk/global-input-app/mobile-content-encryption), [Mobile Authentication ](https://globalinput.co.uk/global-input-app/mobile-authentication), [Mobile Content Transfer ](https://globalinput.co.uk/global-input-app/mobile-content-transfer), [Mobile Input & Control ](https://globalinput.co.uk/global-input-app/mobile-input-control), [Second Screen Experience](https://globalinput.co.uk/global-input-app/second-screen-experience) and [Mobile Personal Storage](https://globalinput.co.uk/global-input-app/mobile-personal-storage) features. 
+This JavaScript library allows you to [introduce mobile app interoperability](https://globalinput.co.uk/) into your device and web applications, so you users can user their mobiles to operate on your applications and enjoy many mobile related features like [Mobile Encryption ](https://globalinput.co.uk/global-input-app/mobile-content-encryption), [Mobile Authentication ](https://globalinput.co.uk/global-input-app/mobile-authentication), [Mobile Content Transfer ](https://globalinput.co.uk/global-input-app/mobile-content-transfer), [Mobile Input & Control ](https://globalinput.co.uk/global-input-app/mobile-input-control), [Second Screen Experience](https://globalinput.co.uk/global-input-app/second-screen-experience) and [Mobile Personal Storage](https://globalinput.co.uk/global-input-app/mobile-personal-storage). 
 
  
 
@@ -19,7 +19,7 @@ npm install --save global-input-message
 ```
 ### CDN
 ```JavaScript
-<script src="https://unpkg.com/global-input-message@1.8.3/distribution/globalinputmessage.js">
+<script src="https://unpkg.com/global-input-message@1.8.5/distribution/globalinputmessage.js">
 </script>
 ```
 

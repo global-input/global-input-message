@@ -34,17 +34,17 @@
   },
   "homepage": "https://github.com/global-input/global-input-message#readme",
   "dependencies": {
-    "crypto-js": "^3.1.9-1",
-    "socket.io-client": "^2.2.0"
+    "crypto-js": "^4.0.0",
+    "socket.io-client": "^2.3.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.5",
-    "@babel/core": "^7.5.5",
-    "@babel/preset-env": "^7.5.5",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/register": "^7.5.5",
-    "babel-jest": "^24.9.0",
-    "babel-loader": "^8.0.6",
-    "jest": "^26.4.0"
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.10.4",
+    "@babel/register": "^7.11.5",
+    "babel-jest": "^26.3.0",
+    "babel-loader": "^8.1.0",
+    "jest": "^26.4.2"
   }
 }

@@ -64,6 +64,7 @@ declare module 'global-input-message' {
 
 
     interface InitData {
+        id?:string;
         action?:string;
         dataType?:string;    
         form:{  

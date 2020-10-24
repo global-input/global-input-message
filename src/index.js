@@ -5,11 +5,24 @@ import {generateRandomString,encrypt,decrypt} from "./util";
  const createMessageConnector=function(){
    return new GlobalInputMessageConnector();
  }
- const generatateRandomString=generateRandomString; //will be removed in the future
-
- export {generateRandomString,generatateRandomString,encrypt,decrypt,createMessageConnector};
-
  
+
+ export {generateRandomString,encrypt,decrypt,createMessageConnector};
+
+export const createInputReceivers = (config={})=>{    
+    let inputs=null;
+    let input=null;
+    if(config.initData && config.initData.form && config.initData.form.fields){
+        inputs=config.initData.form.fields.map(field => {
+            field.operations={};
+            return createWaitForInputMessage(field.operations)}
+        );
+    }
+    else {
+        input=createWaitForInputMessage(config);
+    }    
+    return {config,input,inputs};
+}
 
  const createPromise=target=>{
   target.promise=new Promise((resolve, reject)=>{
@@ -18,7 +31,7 @@ import {generateRandomString,encrypt,decrypt} from "./util";
   });
 };
 
-export const createWaitForInputMessage = (target) => {    
+const createWaitForInputMessage = (target) => {    
   const input={};                
   createPromise(input);    
   target.onInput = (message) => {            
@@ -32,9 +45,4 @@ export const createWaitForInputMessage = (target) => {
 
 
 
-export const createWaitForFieldMessage = (fields) => {    
-  return fields.map(field => {
-      field.operations={};
-      return createWaitForInputMessage(field.operations)}
-      );    
-};
+

@@ -1,6 +1,18 @@
 declare module 'global-input-message' {
     
     export function createMessageConnector():GlobalInputMessageConnector;
+    
+    
+    
+    interface ConnectResult{
+        type:"device"|"mobile"|"pair";        
+        connectionCode?:string;
+        codeData?:CodeData;
+        initData?:InitData;
+        permission?:PermissionResultMessage;
+        
+    }
+
     class GlobalInputMessageConnector {
         client:string;
         session:string;        
@@ -8,7 +20,7 @@ declare module 'global-input-message' {
         disconnect():void;
         setCodeAES(codeAES:string):void;
         setSecurityGroup(securityGroup:string):void;
-        connect(opts:ConnectOptions);
+        connect(opts:ConnectOptions,encryptedCode?:string):Promise<ConnectResult>;
         sendInputMessage(value:FieldValue,index?:number,fieldId?:string):void;
         sendInitData(initData:InitData):void;
         buildOptionsFromInputCodedata(codedata:CodeData, options?:ConnectOptions):ConnectOptions;
@@ -26,25 +38,22 @@ declare module 'global-input-message' {
     }
     type FieldValue=string|number|object|null|undefined;
 
+    
     interface ConnectOptions {
+        initData?:InitData;
         url?:string;
         apikey?:string;        
         securityGroup?:string;
         connectSession?:string;
         aes?:string;
         onInput?:(message:InputMessage)=>void;        
-        onRegistered?:(next:()=>void) =>void;
-        onRegisterFailed?:(message:object)=>void;
-        onInputPermissionResult?:(message:PermissionMessage)=>void;
+        onRegistered?:() =>void;
+        onRegisterFailed?:  () =>void;
+        onInputPermission?: (permissionMessage:PermissionRequestMessage,allow:()=>void,deny:()=>void) => void;
+        onInputPermissionResult?:(message:PermissionResultMessage)=>void;
         onInputCodeData?:(codedata:CodeData)=>void;
-        onError?:(message:string)=>void;
-        initData?:InitData;        
+        onError?:(message:string)=>void;        
     }
-    
-    
-    
-
-
 
     interface InputMessage {
         client:string;
@@ -102,12 +111,25 @@ declare module 'global-input-message' {
     }
     
     
-    interface PermissionMessage{
+    interface PermissionResultMessage{
         allow:boolean;
-        reason?:string;
-        inputAES?:string;
+        client?:string;
+        connectSession?:string;
         initData?:InitData;
+        securityGroup?:string;
+        session?:string;        
+        reason?:string;        
     }
+    interface PermissionRequestMessage{
+        client?:string;        
+        connectSession?:string;
+        data?:object;
+        client?:string;
+        time?:number;        
+        securityGroup?:string;
+        session?:string;        
+    }    
+
     interface CodeData {
         session?:string;
         url?:string;
@@ -121,5 +143,16 @@ declare module 'global-input-message' {
     export function generateRandomString(length?:number):string;    
     export function encrypt(content:string, password:string):string;    
     export function decrypt(content:string, password:string):string;
-    
+
+
+
+    interface MessageReceiver <T> {
+        get:()=>Promise<T>;    
+    }
+    interface CreateMessageReceiver{
+        config:ConnectOptions;
+        input:MessageReceiver<InputMessage>|null;
+        inputs:MessageReceiver<FieldValue>[]|null;
+    }
+    export function createInputReceivers(config?:ConnectOptions):CreateMessageReceiver;
 }

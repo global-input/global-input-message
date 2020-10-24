@@ -52,33 +52,30 @@ import * as codedataUtil from "./codedataUtil";
           codeProcessors.onInputCodeData = (codeData) => {                    
               let mobileConnectOption = this.buildOptionsFromInputCodedata(codeData,options);
               mobileConnectOption.onInputPermissionResult=(permissionMessage)=>{
-                if(options.onInputPermissionResult){
-                  options.onInputPermissionResult(permissionMessage);
-                }
-                if(permissionMessage.allow){
-                     resolve({initData:permissionMessage.initData});                                                                     
-                }
-                else{
-                    resolve({permission:permissionMessage});
-                }              
+                  options.onInputPermissionResult && options.onInputPermissionResult(permissionMessage);                
+                  if(permissionMessage.allow){
+                      resolve({type:"mobile",initData:permissionMessage.initData, permission:permissionMessage});                                                                                        
+                  }
+                  else{
+                      resolve({type:"mobile",permission:permissionMessage});                      
+                  }              
               }
               mobileConnectOption.onError=(errorMessage)=>{
-                  if(options.onError){
-                    options.onError(errorMessage);
-                  }
+                  options.onError && options.onError(errorMessage);                  
                   reject(errorMessage);
               }              
               that._connectWithCallback(mobileConnectOption);     
           };    
           codeProcessors.onPairing = (codeData) => {
-              resolve({codeData});                
-          };          
+              resolve({type:"pair",codeData});              
+          };
           codeProcessors.onError = (message) => {
               reject(message);                
           };
           that.processCodeData(encryptedCode,codeProcessors);
         });
     }
+    
     async connect(options={},encryptedCode){
       if(encryptedCode){
         return this._connectWithCode(options,encryptedCode);
@@ -93,19 +90,15 @@ import * as codedataUtil from "./codedataUtil";
                 reject(message);
             }
             const onRegistered=options.onRegistered;            
-            options.onRegistered=(next,registeredMessage,options)=>{
-                if(onRegistered){
-                  onRegistered(next,registeredMessage,options);          
-                }
-                const codeData=this.buildInputCodeData();
-                resolve(codeData);                
+            options.onRegistered=()=>{
+                onRegistered && onRegistered();                
+                const codeData=this.buildInputCodeData();                
+                resolve({type:"device",connectionCode:codeData});
             }
             const onRegisterFailed=options.onRegisterFailed;
-            options.onRegisterFailed=registeredMessage=>{
-                if(onRegisterFailed){
-                    onRegisterFailed(registeredMessage);
-                    reject(registeredMessage);
-                }
+            options.onRegisterFailed=()=>{
+                onRegisterFailed && onRegisterFailed();                
+                reject("registration failed");
             }
             that._connectWithCallback(options)
        });
@@ -164,16 +157,14 @@ import * as codedataUtil from "./codedataUtil";
                  this.socket.on("registered", function(data){
                          let registeredMessage=JSON.parse(data);
                          if(registeredMessage.result==="ok"){
-                               that.onRegistered(registeredMessage,options);
+                               that.onRegistered(options);                               
                                if(options.onRegistered){
-                                  options.onRegistered(function(){                                      
-                                  },registeredMessage,options);
-                                  
+                                  options.onRegistered();
                                }                               
                          }
                          else{
                            if(options.onRegisterFailed){
-                             options.onRegisterFailed(registeredMessage);
+                             options.onRegisterFailed();
                            }
                          }
 
@@ -195,7 +186,7 @@ import * as codedataUtil from "./codedataUtil";
     }
 
 
-    onRegistered(registeredMessage, options){
+    onRegistered(options){
             let that=this;
             this.socket.on(this.session+"/inputPermission", function(data){
                 that.processInputPermission(JSON.parse(data), options);
@@ -261,14 +252,14 @@ import * as codedataUtil from "./codedataUtil";
             return;
           }
           let that=this;
-
+          
           if(options.onInputPermission){
-              options.onInputPermission(function(){
+              options.onInputPermission(inputPermissionMessage,function(){
                   delete inputPermissionMessage.data;
                   that.grantInputPermission(inputPermissionMessage,options);
               },function(){
                 that.sendInputPermissionDeniedMessage(inputPermissionMessage,"application denied to give permission");
-              },inputPermissionMessage,options);
+              });
           }
           else{
               delete inputPermissionMessage.data;

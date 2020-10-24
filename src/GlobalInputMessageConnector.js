@@ -45,7 +45,73 @@ import * as codedataUtil from "./codedataUtil";
     setSecurityGroup(securityGroup){
       this.securityGroup=securityGroup;
     }
-    connect(options={}){
+    async _connectWithCode(options={},encryptedCode){      
+      const that=this;
+      return new Promise ((resolve, reject)=>{
+          const codeProcessors={};
+          codeProcessors.onInputCodeData = (codeData) => {                    
+              let mobileConnectOption = this.buildOptionsFromInputCodedata(codeData,options);
+              mobileConnectOption.onInputPermissionResult=(permissionMessage)=>{
+                if(options.onInputPermissionResult){
+                  options.onInputPermissionResult(permissionMessage);
+                }
+                if(permissionMessage.allow){
+                     resolve({initData:permissionMessage.initData});                                                                     
+                }
+                else{
+                    resolve({permission:permissionMessage});
+                }              
+              }
+              mobileConnectOption.onError=(errorMessage)=>{
+                  if(options.onError){
+                    options.onError(errorMessage);
+                  }
+                  reject(errorMessage);
+              }              
+              that._connectWithCallback(mobileConnectOption);     
+          };    
+          codeProcessors.onPairing = (codeData) => {
+              resolve({codeData});                
+          };          
+          codeProcessors.onError = (message) => {
+              reject(message);                
+          };
+          that.processCodeData(encryptedCode,codeProcessors);
+        });
+    }
+    async connect(options={},encryptedCode){
+      if(encryptedCode){
+        return this._connectWithCode(options,encryptedCode);
+      }
+      const that=this;
+       return new Promise((resolve, reject)=>{
+            const onError=options.onError;            
+            options.onError=message=>{
+                if(onError){
+                  onError(message);                  
+                }
+                reject(message);
+            }
+            const onRegistered=options.onRegistered;            
+            options.onRegistered=(next,registeredMessage,options)=>{
+                if(onRegistered){
+                  onRegistered(next,registeredMessage,options);          
+                }
+                const codeData=this.buildInputCodeData();
+                resolve(codeData);                
+            }
+            const onRegisterFailed=options.onRegisterFailed;
+            options.onRegisterFailed=registeredMessage=>{
+                if(onRegisterFailed){
+                    onRegisterFailed(registeredMessage);
+                    reject(registeredMessage);
+                }
+            }
+            that._connectWithCallback(options)
+       });
+    }
+    
+    _connectWithCallback(options={}){
         this.disconnect();
 
          if(options.apikey){
@@ -98,14 +164,12 @@ import * as codedataUtil from "./codedataUtil";
                  this.socket.on("registered", function(data){
                          let registeredMessage=JSON.parse(data);
                          if(registeredMessage.result==="ok"){
+                               that.onRegistered(registeredMessage,options);
                                if(options.onRegistered){
-                                  options.onRegistered(function(){
-                                      that.onRegistered(registeredMessage,options);
+                                  options.onRegistered(function(){                                      
                                   },registeredMessage,options);
-                               }
-                               else{
-                                    that.onRegistered(registeredMessage,options);
-                               }
+                                  
+                               }                               
                          }
                          else{
                            if(options.onRegisterFailed){
@@ -134,8 +198,6 @@ import * as codedataUtil from "./codedataUtil";
     onRegistered(registeredMessage, options){
             let that=this;
             this.socket.on(this.session+"/inputPermission", function(data){
-
-
                 that.processInputPermission(JSON.parse(data), options);
             });
             if(options.connectSession){
@@ -304,48 +366,56 @@ import * as codedataUtil from "./codedataUtil";
             this.inputAES=options.aes;
             if(this.inputAES && inputPermissionResultMessage.initData && typeof inputPermissionResultMessage.initData ==="string"){
                    let decryptedInitData=decrypt(inputPermissionResultMessage.initData,this.inputAES);
-                  if(decryptedInitData){
-                      try{
-                        inputPermissionResultMessage.initData=JSON.parse(decryptedInitData);
-                      }
-                      catch(error){
-                        console.warn("the service applications responded with invalid data");
-                        inputPermissionResultMessage.initData=null;
-                      }
+                   if(decryptedInitData){
+                          try{
+                            inputPermissionResultMessage.initData=JSON.parse(decryptedInitData);
+                            if(this.socket){
+                              let receiverDisconnected=function(){
+                                  let currentTime=(new Date()).getTime();
+                                  if((!this.latTimeReceiverDisconnected) || ((currentTime-this.latTimeReceiverDisconnected)<200)){
+                                    if(options.onReceiverDisconnected){
+                                      options.onReceiverDisconnected();
+                                    }
+                                  }
+                                  this.latTimeReceiverDisconnected=currentTime;
+              
+                              }
+                              this.socket.on(options.connectSession+"/leave",receiverDisconnected);
+                              let inputSender=this.buildInputSender(inputPermissionResultMessage,options);
+                              this.socket.on(options.connectSession+"/input",inputSender.onInput);
+                              let that=this;
+                              this.socket.on(options.connectSession+"/output",function(outputMessage){
+                                that.onOutputMessageReceived(outputMessage,options);
+                              });
+                          }
+                          if(options.onInputPermissionResult){
+                            options.onInputPermissionResult(inputPermissionResultMessage);
+                          }                          
+                        }
+                        catch(error){
+                            inputPermissionResultMessage.initData=null;
+                            console.warn("the service applications responded with invalid data");
+                            if(options.onError){
+                                    options.onError("the service applications responded with invalid permission data");                            
+                            }
+                           
+                        }
                   }
                   else{
-                    console.warn("decryption of decryptedInitData  skipped because it is empty");
+                    console.warn("decrypted InitData is empty");
+                    if(options.onError){
+                      options.onError("decrypted InitData is empty");                            
+                    }
                   }
 
             }
-            else{
-                  console.log("the permission may not be granted by the other party");
+            else{                  
                   inputPermissionResultMessage.initData=null;
+                  console.log("Permission is granted by the other party");
+                  if(options.onError){
+                    options.onError("Permission is granted by the other party");                            
+                  }
             }
-
-            if(this.socket){
-                let receiverDisconnected=function(){
-                     let currentTime=(new Date()).getTime();
-                     if((!this.latTimeReceiverDisconnected) || ((currentTime-this.latTimeReceiverDisconnected)<200)){
-                       if(options.onReceiverDisconnected){
-                         options.onReceiverDisconnected();
-                       }
-                     }
-                     this.latTimeReceiverDisconnected=currentTime;
-
-                }
-                this.socket.on(options.connectSession+"/leave",receiverDisconnected);
-                let inputSender=this.buildInputSender(inputPermissionResultMessage,options);
-                this.socket.on(options.connectSession+"/input",inputSender.onInput);
-                let that=this;
-                this.socket.on(options.connectSession+"/output",function(outputMessage){
-                  that.onOutputMessageReceived(outputMessage,options);
-                });
-            }
-            if(options.onInputPermissionResult){
-              options.onInputPermissionResult(inputPermissionResultMessage);
-            }
-
     }
     onOutputMessageReceived(messageData, options){
           if(options.onOutputMessageReceived){

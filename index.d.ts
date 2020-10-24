@@ -71,6 +71,7 @@ declare module 'global-input-message' {
             id?:string;          
             title?:string;            
             label?:string;
+            domain?:string;
             fields:FormField[];
             views?:{
                 viewId:{
@@ -120,41 +121,5 @@ declare module 'global-input-message' {
     export function generateRandomString(length?:number):string;    
     export function encrypt(content:string, password:string):string;    
     export function decrypt(content:string, password:string):string;
-    
-
-    
-
-    export function deviceConnect (connector:GlobalInputMessageConnector,connectOption:ConnectOptions):DeviceConnectMessageReceivers;
-
-    interface DeviceConnectMessageReceivers {
-        registered:()=>Promise<void>;
-        fields:MessageReceiver<FieldValue>[];
-    }
-    
-    interface MessageReceiver <T> {
-            get:()=>Promise<T>;
-            reset:()=>void;
-    }
-    export function createWaitForFieldMessages (fields:FormField[]):MessageReceiver<FieldValue>[];
-
-
-
-    export function decryptCodeData (codedata:string,connector:GlobalInputMessageConnector):Promise<DecryptedCodeData>
-
-    interface DecryptedCodeData{
-        codeType:string;
-        codeData:CodeData;
-    }
-
-    export function mobileConnect(connector:GlobalInputMessageConnector,codedata:CodeData):MobileConnectMessageReceivers;
-    
-   interface MobileConnectMessageReceivers{
-    getPermission:()=>Promise<PermissionMessage>
-    input: MessageReceiver<InputMessage>
-   }
-
-   export function deviceSendInitData(connector, initData):MessageReceiver<FieldValue>[];
-    
-    
     
 }

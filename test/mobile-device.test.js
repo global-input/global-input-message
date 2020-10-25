@@ -42,12 +42,15 @@ describe("Mobile and Device Communication",()=>{
           id:"someForm",
           label:"someFolder",
           fields: [{
+            id:"username",
             label: "Email address",
             value: "some value"
           }, {
+            id:"password",
             label: "Password",
             type: "secret"
           }, {
+            id:"login",
             label: "Login",
             type: "action"
           }]
@@ -78,8 +81,9 @@ describe("Mobile and Device Communication",()=>{
 
     expect(messageReceivedByDevice).toEqual(messageSentByMobile); //received message should match what is sent by the mobile
 
-    const message2SentByMobile = { content: "password111" };
-    mobileConnector.sendInputMessage(message2SentByMobile, 1); //mobile  sends the second message
+    const message2SentByMobile = { content: "password111"};
+    //mobileConnector.sendInputMessage(message2SentByMobile, 1); //mobile  sends the second message
+    mobileConnector.sendValue(message2SentByMobile, deviceConfig.initData.form.fields[1].id); //mobile  sends the second message
 
     const message2ReceivedByDevice = await deviceData.inputs[1].get() //device receives the message
     expect(message2ReceivedByDevice).toEqual(message2SentByMobile);
@@ -91,10 +95,10 @@ describe("Mobile and Device Communication",()=>{
     expect(messageReceivedByMobile.data.index).toEqual(0);   //index should match
     expect(messageReceivedByMobile.data.value).toEqual(messageSentByDevice); //value should match the message sent by the device
 
-    const message2SentByDevice={content:"some value 2"};
-    deviceConnector.sendInputMessage(message2SentByDevice,1); //device sends another message
+    const message2SentByDevice={content:"some value 2",id:"content-field"};
+    deviceConnector.sendValue(message2SentByDevice,message2SentByDevice.id); //device sends another message
     const message2ReceivedByMobile=await mobileData.input.get();      
-    expect(message2ReceivedByMobile.data.index).toEqual(1);
+    expect(message2ReceivedByMobile.data.fieldId).toEqual(message2SentByDevice.id);
     expect(message2ReceivedByMobile.data.value).toEqual(message2SentByDevice);      
     
 

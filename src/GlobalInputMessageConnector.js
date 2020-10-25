@@ -617,7 +617,9 @@ import * as codedataUtil from "./codedataUtil";
       this.socket.emit(session+'/input', content);
       this.activeInitData=initData;
    }
-
+   sendValue(value,fieldId,index){
+     this.sendInputMessage(value, index,fieldId);
+   }
    sendInputMessage(value, index,fieldId){
       if(!this.isConnected()){
            console.log("not connected yet");

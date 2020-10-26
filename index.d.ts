@@ -5,12 +5,12 @@ declare module 'global-input-message' {
     
     
     interface ConnectResult{
-        type:"device"|"mobile"|"pair";        
+        type:"device"|"mobile"|"pair"|"error";
         connectionCode?:string;
         codeData?:CodeData;
         initData?:InitData;
         permission?:PermissionResultMessage;
-        
+        error?:string;
     }
 
     class GlobalInputMessageConnector {
@@ -48,7 +48,7 @@ declare module 'global-input-message' {
         connectSession?:string;
         aes?:string;
         onInput?:(message:InputMessage)=>void;        
-        onRegistered?:() =>void;
+        onRegistered?:(connectionCode:string) =>void;
         onRegisterFailed?:  () =>void;
         onInputPermission?: (permissionMessage:PermissionRequestMessage,allow:()=>void,deny:()=>void) => void;
         onInputPermissionResult?:(message:PermissionResultMessage)=>void;

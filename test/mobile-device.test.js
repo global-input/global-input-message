@@ -8,7 +8,7 @@ import {createMessageConnector,createInputReceivers} from "../src";
  * @param {*} expectedInitData 
  */
 const assertInitData = (initData, expectedInitData)=>{
-
+ //just want to assert specific values ignoring the rest  
   expect(initData.action).toBe(expectedInitData.action);
   expect(initData.dataType).toBe(expectedInitData.dataType);
   expect(initData.form.id).toBe(expectedInitData.form.id);

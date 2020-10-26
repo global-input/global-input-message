@@ -1,11 +1,11 @@
 import CryptoJS from "crypto-js";
 
 
-export const generateRandomString = (length=10) => {
-      const randPassword = Array(length).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@£$&*:;").map(function(x) {
-        const indexString = CryptoJS.enc.Hex.stringify(CryptoJS.lib.WordArray.random(1));
-        const indexValue=parseInt(indexString,16);
-        return x[indexValue % x.length]
+export const generateRandomString = (length = 10) => {
+      const randPassword = Array(length).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@£$&*:;").map(function (x) {
+            const indexString = CryptoJS.enc.Hex.stringify(CryptoJS.lib.WordArray.random(1));
+            const indexValue = parseInt(indexString, 16);
+            return x[indexValue % x.length]
       }).join('');
       return randPassword;
 };
@@ -20,30 +20,30 @@ export const basicGetURL = (url, onSuccess, onError) => {
             onError();
       };
       request.onreadystatechange = (e) => {
-            if(e){
-              let cache=[];
-              console.log(JSON.stringify(e, (key,value)=>{
-                      if(typeof value === 'object' && value!=null){
-                            if(cache.indexOf(value)!=-1){
-                                return;
-                            }
-                            cache.push(value);
-                      }
-                      return value;
-              }));
+            if (e) {
+                  let cache = [];
+                  console.log(JSON.stringify(e, (key, value) => {
+                        if (typeof value === 'object' && value != null) {
+                              if (cache.indexOf(value) != -1) {
+                                    return;
+                              }
+                              cache.push(value);
+                        }
+                        return value;
+                  }));
             }
             if (request.readyState !== 4) {
-              return;
+                  return;
             }
             if (request.status === 200) {
                   onSuccess(JSON.parse(request.responseText));
 
             } else {
-                      onError();
+                  onError();
             }
-    };
+      };
 
-    request.open('GET', url,true);
+      request.open('GET', url, true);
 
-    request.send();
+      request.send();
 };

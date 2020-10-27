@@ -122,25 +122,23 @@ describe("Communications between a Mobile App and a Device App", () => {
          **/
 
         const mobileApp = {
-            con: createMessageConnector(), //Mobile App starts up
+            con: createMessageConnector(), //creates a connector
             receiver: createInputReceivers(), //create promise objects inside callbacks to make testing more intuitive.
             ui: null,
             message: null
         }
         //mobile app obtains the connectionCode from the device app by scanning the QR code displayed
-        const { initData: initDataReceivedByMobile } = await mobileApp.con.connect(mobileApp.receiver.config, connectionCode) //Mobile App connects to the device using the connectionCode that is obtained from the QR Code
+        const { initData: initDataReceivedByMobile } = await mobileApp.con.connect(mobileApp.receiver.config, connectionCode) //mobile app connects to the device using the connectionCode that is obtained from the QR Code
         mobileApp.ui = initDataReceivedByMobile;   //mobile app display user interface from the initData obtained
-
-
         expect(mobileApp.ui).toBeSameInitData(deviceApp.ui);//initData received by the mobile should match the one sent by the device    
 
         mobileApp.message = "user1";
-        mobileApp.con.sendValue(mobileApp.ui.form.fields[0].id, mobileApp.message); //mobile  sends the first message
-        deviceApp.message = await deviceApp.receiver.inputs[0].get(); //device receives the message
+        mobileApp.con.sendValue(mobileApp.ui.form.fields[0].id, mobileApp.message); //mobile app sends a message
+        deviceApp.message = await deviceApp.receiver.inputs[0].get(); //device app receives the message
         expect(deviceApp.message).toEqual(mobileApp.message); //received message should match the one sent
 
         mobileApp.message = "password1";
-        mobileApp.con.sendValue(mobileApp.ui.form.fields[1].id, mobileApp.message); //mobile  sends the second message
+        mobileApp.con.sendValue(mobileApp.ui.form.fields[1].id, mobileApp.message); //mobile  sends a message
         deviceApp.message = await deviceApp.receiver.inputs[1].get(); //device receives the message        
         expect(deviceApp.message).toEqual(mobileApp.message); //received message should match the one sent
 
@@ -185,12 +183,11 @@ describe("Communications between a Mobile App and a Device App", () => {
                 }
             }
         };
-        deviceApp.receiver = createInputReceivers(deviceConfig2); //create a message receiver for each field in the form
+        deviceApp.receiver = createInputReceivers(deviceConfig2); //create promise objects inside callbacks to make testing more intuitive.
         deviceApp.ui = deviceConfig2.initData;
-        deviceApp.con.sendInitData(deviceApp.ui); //device instruct mobile to display a different form
+        deviceApp.con.sendInitData(deviceApp.ui); //device sent an initData
         const { initData: initDataReceivedByMobile2 } = await mobileApp.receiver.input.get();   //mobile receives the initData
         mobileApp.ui = initDataReceivedByMobile2; //mobile app display user interface from the initData obtained
-
         expect(mobileApp.ui).toBeSameInitData(deviceApp.ui);//initData received by the mobile should match the one sent by the device    
 
         mobileApp.message = "firstName1";

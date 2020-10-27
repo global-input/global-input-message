@@ -4,7 +4,7 @@ This JavaScript module allows you to introduce a mobile interoperability into Ja
 This module is particularly useful in the current new normal established by the COVID-19 pandemic, where businesses require visiting customers to communicate accurately with customer representatives while enforcing the rules of wearing masks and social distancing. Thanks to this library, you will be able to establish an instant and secure communication right within the business software you are using, allowing your customers to collaborate effectively, securely and safely. For example, you may provide one-click subscriptions through user mobiles by leveraging the [mobile secure storage](https://globalinput.co.uk/global-input-app/mobile-authentication). Alternative, you do not even have to collect users' personal data thanks to the ability to request data on-demand from the mobile app at the point of service, freeing yourself from the pains of privacy regulations. You may also choose to allow your customers to encrypt their own data using their mobiles, giving users full control over the security and privacy of their personal data.
 
 ## React Applications
-We recommend to use the [global-input-react](https://github.com/global-input/global-input-react) for React applications.
+We recommend using the [global-input-react](https://github.com/global-input/global-input-react) for React applications.
 
 ## Setup
 
@@ -236,4 +236,4 @@ const informationField={
 
 ````
 
-Finally, the examples in the [website](https://globalinput.co.uk/), tests in [this](https://github.com/global-input/global-input-message/blob/master/test/communication-mobile-app-device-app.test) module and the [test project](https://github.com/global-input/test-global-input-app-libs) contain more information on various use cases that you can implement in your Typescript/JavaScript applications. 
+Finally, the examples in the [website](https://globalinput.co.uk/), [tests](https://github.com/global-input/global-input-message/blob/master/test/communication-mobile-app-device-app.test.js) including those in the [test project](https://github.com/global-input/test-global-input-app-libs) contain more information on various use cases that you can implement in your Typescript/JavaScript applications. 

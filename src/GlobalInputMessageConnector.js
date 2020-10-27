@@ -67,7 +67,7 @@ export default class GlobalInputMessageConnector {
         that._connectWithCallback(mobileConnectOption);
       };
       codeProcessors.onPairing = (codeData) => {
-        resolve({ type: "pair", codeData });
+        resolve({ type: "pairing", codeData });
       };
       codeProcessors.onError = (message) => {
         resolve({ type: "error", error: "code error:" + message });

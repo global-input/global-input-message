@@ -5,7 +5,7 @@ declare module 'global-input-message' {
     
     
     interface ConnectResult{
-        type:"device"|"mobile"|"pair"|"error";
+        type:"device"|"mobile"|"pairing"|"error";
         connectionCode?:string;
         codeData?:CodeData;
         initData?:InitData;

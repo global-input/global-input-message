@@ -22,7 +22,7 @@ declare module 'global-input-message' {
         setSecurityGroup(securityGroup:string):void;
         connect(opts:ConnectOptions,encryptedCode?:string):Promise<ConnectResult>;
         sendInputMessage(value:FieldValue,index?:number,fieldId?:string):void;
-        sendValue(value:FieldValue,fieldId?:string,index?:number):void;
+        sendValue(fieldId:string|null|undefined,value:FieldValue,index?:number):void;
         sendInitData(initData:InitData):void;
         buildOptionsFromInputCodedata(codedata:CodeData, options?:ConnectOptions):ConnectOptions;
         buildInputCodeData(data?:CodeData):string;

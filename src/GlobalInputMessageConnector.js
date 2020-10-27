@@ -614,10 +614,7 @@ export default class GlobalInputMessageConnector {
     this.socket.emit(session + '/input', content);
     this.activeInitData = initData;
   }
-  sendValue(value, fieldId, index) {
-    this.sendInputMessage(value, index, fieldId);
-  }
-  sendInputMessage(value, index, fieldId) {
+  sendValue(fieldId, value, index) {    
     if (!this.isConnected()) {
       console.log("not connected yet");
       return;
@@ -649,6 +646,9 @@ export default class GlobalInputMessageConnector {
       session = this.connectSession;
     }
     this.socket.emit(session + '/input', content);
+  }
+  sendInputMessage(value, index, fieldId) {
+    this.sendValue(fieldId,value,index);
   }
   changeGlobalInputFieldData(globalInputdata, data) {
     if (!globalInputdata) {

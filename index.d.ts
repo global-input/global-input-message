@@ -143,15 +143,4 @@ declare module 'global-input-message' {
     export function encrypt(content: string, password: string): string;
     export function decrypt(content: string, password: string): string;
 
-
-
-    interface MessageReceiver<T> {
-        get: () => Promise<T>;
-    }
-    interface PromiseMessageReceiver {
-        config: ConnectOptions;
-        input: MessageReceiver<InputMessage> | null;
-        inputs: MessageReceiver<FieldValue>[] | null;
-    }
-    export function createInputReceivers(config?: ConnectOptions): PromiseMessageReceiver;
 }

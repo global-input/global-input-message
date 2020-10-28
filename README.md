@@ -58,8 +58,7 @@ The ```initData``` contains a ```form``` with a set of fields: ```usernameField`
 
  The ```connectionCode``` data  returned by ```await connector.connect()``` holds an encrypted string value.  When decrypted, it provides information on how to connect to your application, including a one-time-use encryption key for initiating an end-to-end encryption process between your application and a mobile app. The next step is to make the value of ```connectionCode``` available to mobile apps through a QR Code or any other close-range communication technologies like NFC. 
   
-  When connected to your application, the mobile app displays a ```form``` specified in ```initData```. Also, when the user interacts with elements in the ```form```, your application can receive mobile events through respective ```onInput()``` functions, passing the current value that the user has entered. In the above example code, you can  implement ```setUsername()``` , ```setPassword()``` and ```login()``` functions to store user entries and calling a authentication mechanism. You can also send values to the connected mobile app by using ```deviceConnector.sendValue()``` function:
-
+  When connected to your application, the mobile app displays a ```form``` specified in ```initData```. Also, when the user interacts with elements in the ```form```, your application can receive mobile events through respective ```onInput()``` functions, being called with the value that the user has entered. In the above example code, you can  implement ```setUsername()``` , ```setPassword()``` and ```login()``` functions to store user entries and calling a authentication mechanism. When your application needs to send send values to the connected mobile app, you can call ```deviceConnector.sendValue()``` function with the first parameter providing the id of the target element and the second parameter providing the value itself:
 ```JavaScript
 const  sendUsername = (username) => {
   deviceConnector.sendValue( usernameField.id, username );
@@ -68,9 +67,8 @@ const  sendPassword = (password) => {
   deviceConnector.sendValue( usernameField.id, password );
 }
 ```
- You can use ```deviceConnector.sendValue()``` to send values to the connected mobile app. It accepts two parameters: the first parameter is for providing the id of the target element in the form, and the second parameter is for providing value to be sent.
-
-You can tie those function to elements that are being displayed locally on the device where your application is running:
+ 
+You can now tie the above two function to the respective input elements being displayed locally on the device:
 
 ```JavaScript
 Username:

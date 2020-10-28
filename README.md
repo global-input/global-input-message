@@ -1,15 +1,15 @@
 ### Global Input Message
-This JavaScript module allows you to introduce a mobile interoperability into JavaScript applications on smart devices like smart TVs, set-top boxes, game consoles, and devices in IoT, so that users can use their mobiles to operate on them. It allows you to define mobile interfaces and receive mobile events from within your device applications, while keeping the mobile app as a general and universal mobile app that works across all types of device applications with different business logic: meaning that there is no need to switch to different mobile app for operating on different devices and no need to develop different mobile apps for different business or device applications. It also allows you to enrich your device applications with a set of mobile functionalities like [mobile encryption](https://globalinput.co.uk/global-input-app/mobile-content-encryption), [mobile authentication](https://globalinput.co.uk/global-input-app/mobile-authentication), [mobile input & control](https://globalinput.co.uk/global-input-app/mobile-input-control), [second screen experience](https://globalinput.co.uk/global-input-app/second-screen-experience), [mobile secure storage](https://globalinput.co.uk/global-input-app/mobile-personal-storage), [mobile encryption & signing](https://globalinput.co.uk/global-input-app/mobile-content-encryption), and [mobile content transfer](https://globalinput.co.uk/global-input-app/mobile-content-transfer). The communication between a mobile app and a device application is often established through scanning an Encrypted QR Code that contains a set of communication parameters that includes one-time-use encryption key for starting an end-to-end encryption process.
+This JavaScript module allows you to introduce a mobile interoperability into JavaScript/TypeScript applications on smart devices like smart TVs, set-top boxes, game consoles, and devices in IoT, so that users can use their mobiles to operate on them. It allows you to define mobile interfaces and receive mobile events from within your device applications, while keeping the mobile app as a general and universal mobile app that works across all types of device applications with different business logic: meaning that there is no need to switch to different mobile app for operating on different devices and no need to develop different mobile apps for different business or device applications. It also allows you to enrich your device applications with a set of mobile functionalities like [mobile encryption](https://globalinput.co.uk/global-input-app/mobile-content-encryption), [mobile authentication](https://globalinput.co.uk/global-input-app/mobile-authentication), [mobile input & control](https://globalinput.co.uk/global-input-app/mobile-input-control), [second screen experience](https://globalinput.co.uk/global-input-app/second-screen-experience), [mobile secure storage](https://globalinput.co.uk/global-input-app/mobile-personal-storage), [mobile encryption & signing](https://globalinput.co.uk/global-input-app/mobile-content-encryption), and [mobile content transfer](https://globalinput.co.uk/global-input-app/mobile-content-transfer). The communication between a mobile app and a device application is often established through scanning an Encrypted QR Code that contains a set of communication parameters that includes one-time-use encryption key for starting an end-to-end encryption process.
 
 This module is particularly useful in the current new normal established by the COVID-19 pandemic, where businesses require visiting customers to communicate accurately with customer representatives while enforcing the rules of wearing masks and social distancing. Thanks to this library, you will be able to establish an instant and secure communication right within the business software you are using, allowing your customers to collaborate effectively, securely and safely. For example, you may provide one-click subscriptions through user mobiles by leveraging the [mobile secure storage](https://globalinput.co.uk/global-input-app/mobile-authentication). Alternative, you do not even have to collect users' personal data thanks to the ability to request data on-demand from the mobile app at the point of service, freeing yourself from the pains of privacy regulations. You may also choose to allow your customers to encrypt their own data using their mobiles, giving users full control over the security and privacy of their personal data.
 
 ## React Applications
-We recommend using the [global-input-react](https://github.com/global-input/global-input-react) for React applications.
+We recommend using [global-input-react](https://github.com/global-input/global-input-react) for React applications.
 
 ## Setup
 
 ```shell
-  npm install --save global-input-message
+  npm install global-input-message
 ```
 
 (CDN: https://unpkg.com/global-input-message@2.0.0/distribution/globalinputmessage.js)
@@ -21,7 +21,7 @@ We recommend using the [global-input-react](https://github.com/global-input/glob
   const  deviceConnector=createMessageConnector();
 ```
 
-Then, you can call the ```deviceConnector.connect()``` function, passing the data, defining a mobile interface that mobile app presents to the user when having connected to your application. For example, when you require a connected mobile app to display a login screen on the the user's mobile screen:
+Then, ```deviceConnector.connect()``` function can be called with a parameter, defining a mobile user interface. For example, the following code displays a login screen on the user's mobile screen when connected to your application:
 
 ```JavaScript
 const  usernameField={
@@ -54,24 +54,23 @@ const  {connectionCode} = await  deviceConnector.connect({
 
 ```
 
-The ```initData``` item holds data describing a mobile user interface, in this case it is a ```form``` with a set of fields that are ```usernameField```,```passwordField```, and ```loginButton```.
+The ```initData``` contains a ```form``` with a set of fields: ```usernameField```,```passwordField```, and ```loginButton```.
 
-
-The ```connectionCode``` variable holds an encrypted string value returned by the ```await connector.connect()``` expression. It contains the encrypted information on how to connect to your application that contains a one-time-use encryption key for initiating an end-to-end encryption process between your application and the user's mobile app. Your application can display a QR Code using the value of ```connectionCode```. 
+ The ```connectionCode``` data  returned by ```await connector.connect()``` holds an encrypted string value.  When decrypted, it provides information on how to connect to your application, including a one-time-use encryption key for initiating an end-to-end encryption process between your application and a mobile app. The next step is to make the value of ```connectionCode``` available to mobile apps through a QR Code or any other close-range communication technologies like NFC. 
   
-When a mobile app has connected to your application, the connected mobile app presents the user with the form specified in the ```initData```. And, when the user interacts with any of the elements on the mobile screen, the ```onInput()``` function in the corresponding item will be called passing the current value that the user has entered. In the above example code, the callback functions are calling ```setUsername()``` , ```setPassword()``` or ```login()``` that you need implement. Using this approach, you can turn a simple password-based authentication into a one-click mobile authentication.  
-
-You can also send a value to the connected mobile app by using the ```deviceConnector.sendValue()``` function:
+  When connected to your application, the mobile app displays a ```form``` specified in ```initData```. Also, when the user interacts with elements in the ```form```, your application can receive mobile events through respective ```onInput()``` functions, passing the current value that the user has entered. In the above example code, you can  implement ```setUsername()``` , ```setPassword()``` and ```login()``` functions to store user entries and calling a authentication mechanism. You can also send values to the connected mobile app by using ```deviceConnector.sendValue()``` function:
 
 ```JavaScript
   const  sendUsername=(username)=>{
-      deviceConnector.sendValue(username,usernameField.id);
+      deviceConnector.sendValue(usernameField.id,username);
   }
   const  sendPassword=(password)=>{
-       deviceConnector.sendValue(password,passwordField.id);
+       deviceConnector.sendValue(usernameField.id, password);
   }
 ```
-If the device where your application is running provides a mean of input, you may bind the functions defined above to the text fields being displayed on your device, so that local and remote values can be sync on both directions:
+ You can use ```deviceConnector.sendValue()``` to send values to the connected mobile app. It accepts two parameters: the first parameter is for providing the id of the target element in the form, and the second parameter is for providing value to be sent.
+
+You can tie those function to elements that are being displayed locally on the device where your application is running:
 
 ```JavaScript
   Username:
@@ -80,8 +79,10 @@ If the device where your application is running provides a mean of input, you ma
   Password:
   <input  type="password"  value=""  onchange="sendPassword(this.value)"/>
 ```
+Using this approach, you can turn a simple password-based authentication into a one-click mobile authentication or you can implement any other password-less authentication or add an extra security layer without affecting the usability of your application.
 
-You may require to switch to a different mobile user interface responding to some events. You can can pass a new user interface data to the ```deviceConnector.sendInitData()``` function:
+
+When ```deviceConnector.sendInitData()``` function is called with a ```InitData``` parameter, the connected mobile app will switch to the user interface specified:
 
 ```JavaScript
   const infoField={
@@ -99,33 +100,8 @@ You may require to switch to a different mobile user interface responding to som
       });
   }
 ```
-  
-## On Mobile App Side
-This module is also used by the mobile app -- for any JavaScript-based cross-platform frameworks like [React Native](https://reactnative.dev/) -- for operating on device applications. Hence, you can include the features of [Global Input App](https://globalinput.co.uk/) into your onw mobile app.
 
-In your mobile app, after obtaining the value of the ```connectionCode ``` by scanning a QR CODE being displayed by your device application, you can pass it to the ```connect()``` function to connect to your device application:
-
-```JavaScript
-      const  mobileConnector=createMessageConnector();
-      const {initData} = await  mobileConnector.connect({
-          onInput:(inputMessage)=>{
-          ....
-          }
-      },connectionCode);
-```
-The  ```initData``` that were returned as the result of the execution of ```await mobileConnector.connect() ```, contains a user interface specified by the connected device application. 
-
-The ```onInput()``` function is for receiving the messages send by the the device application.
-
-You can send messages to your device application using the ```mobileConnector.sendValue()``` function, responding to the events generated when the user interacts with the form elements:
-
-```JavaScript
-  const username="some username";
-  mobileConnector.sendValue(initData.form.fields[0].id,username);
-```
-
-## More about Form Elements
-The ```type``` attribute of a form item defines what component the mobile app uses to process/display the data contained in it. For example, if it is set to ```button```, the mobile app display a ```Button```:
+For an element in a ```form```, ```type``` attribute defines how to process/display the data contained in it. For example, if it is set to ```button```, the mobile app display a ```Button```:
 
 ```JavaScript
   const  loginButton={
@@ -135,7 +111,7 @@ The ```type``` attribute of a form item defines what component the mobile app us
   };
 ```
 
-The default value of the ```type``` attribute is "text". In this case, it display either a text field or text box (textarea) depending the values of another attribute ```nLines```, which takes ```1``` as its the default value. The ```nLines``` specifies the number of lines visible in the text field/box:  
+The default value of the ```type``` attribute is "text". In this case, it display either a text input or a text area, depending on the value of ```nLines```, which represents how many number of lines is visible:  
 
 ```JavaScript
   const  contentField={
@@ -146,14 +122,12 @@ The default value of the ```type``` attribute is "text". In this case, it displa
       value:"This is a content in the text box"
   };
 ```
-If the ```value``` is set, it will be sent along with it to set its value when it is displayed on the mobile screen.
+If the ```value``` attribute is set, it will be sent along with the form to pre-populate the the field when being displayed on the mobile screen.
   
-
 ## Mobile Encryption
-You can set the value of the ```type``` attribute to "encrypt" to to tell the mobile app to encrypt the content and send the result back to your application, 
+If you set the value of ```type``` of element in a ```form``` to ```"encrypt"```, the connected mobile app encrypts the ```value``` of the element and send back the result to your application:
 
 ```JavaScript
-
 const  contentToEncrypt="...";
 const  encryptField={
     id:  'content',
@@ -163,9 +137,7 @@ const  encryptField={
 };
 ```
 
-When you pass it as part of the ```fields``` of the ```form``` contained in the ```initData```, the mobile app prompts the user to encrypt the content in the value attribute, and the result will be sent back to your application bt the ```onInput()``` function.
-
-In a similar way, setting the type to ```decrypt``` will results in mobile app to decrypt the content: 
+In a similar way, setting ```type``` to ```"decrypt"``` will lead to decryption:
 
 ```JavaScript
 const  contentToDecrypt="...";
@@ -176,12 +148,11 @@ const  decryptField={
     value:contentToDecrypt
 };
 
-```
-
+```  
 
 ## Customizing Form Elements & Styled Values.
 
-The value attribute can be an object containing some styling information:
+The value attribute in an element can also be an object containing some styling information:
 
 ```JavaScript
 const infoField={
@@ -197,12 +168,9 @@ const infoField={
     }
 }
 ```
-You can display a multi-line text using array as the value of the ````content``` attribute:
+You can display a multi-line text using an array for ```content```:
 
-The following example demonstrate the flexibility that you can have when you setting the value of a form element for the connected mobile app:
-
-```JavaScript]
-
+```JavaScript
 const informationField={
         id: "informationText",
         type: "info",
@@ -235,5 +203,30 @@ const informationField={
   }
 
 ````
+Finally, the examples in the [website](https://globalinput.co.uk/), and tests in the [test project](https://github.com/global-input/test-global-input-app-libs) contain more information about various use cases that you can implement in your Typescript/JavaScript applications. 
 
-Finally, the examples in the [website](https://globalinput.co.uk/), [tests](https://github.com/global-input/global-input-message/blob/master/test/communication-mobile-app-device-app.test.js) including those in the [test project](https://github.com/global-input/test-global-input-app-libs) contain more information on various use cases that you can implement in your Typescript/JavaScript applications. 
+
+## On Mobile App Side
+ Although you can use [Global Input App](https://globalinput.co.uk/) to operate on your applications, You can certainly use this module to enable your own mobile app to have the ability to operate on various device applications that are powered with this module, assuming your mobile app is  implemented using one of the JavaScript-based frameworks like [React Native](https://reactnative.dev/).
+
+As discussed previously, in order to connect to a device application, your mobile app needs to obtain the value of ```connectionCode``` through scanning a QR Code. Then, you can pass it to the ```connect()``` function to connect to your device application as its second parameter:
+
+```JavaScript
+      const  mobileConnector=createMessageConnector();
+      const {initData} = await  mobileConnector.connect({
+          onInput:(inputMessage)=>{
+          ....
+          }
+      },connectionCode);
+```
+In the above code, ```initData``` contains a ```form``` provided by the connected device application, while ```onInput()``` function is called whenever a message is received from the device application.
+
+You can also send messages to the device application, responding to the events generated when the user interacts with form elements:
+
+```JavaScript
+ const sendUsername=(username) => {
+	mobileConnector.sendValue(initData.form.fields[0].id,username);
+ }    
+```
+There are two input parameters required for calling  ```mobileConnector.sendValue()``` function: the first one identifies the target element that the value is being sent to, while the second parameter holds the value needs to be sent across.
+

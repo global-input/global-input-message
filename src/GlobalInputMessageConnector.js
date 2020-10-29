@@ -89,14 +89,13 @@ export default class GlobalInputMessageConnector {
         onError && onError(message);
       }
       const onRegistered = options.onRegistered;
-      options.onRegistered = () => {
-        const codeData = this.buildInputCodeData();
-        resolve({ type: "device", connectionCode: codeData });
-        onRegistered && onRegistered(codeData);
+      options.onRegistered = (connectionCode) => {        
+        resolve({ type: "device", connectionCode});        
+        onRegistered && onRegistered(connectionCode);
       }
       const onRegisterFailed = options.onRegisterFailed;
-      options.onRegisterFailed = () => {
-        resolve({ type: "error", error: "failed to register" });
+      options.onRegisterFailed = (error) => {
+        resolve({ type: "error", error});
         onRegisterFailed && onRegisterFailed();
       }
       that._connectWithCallback(options)
@@ -158,12 +157,13 @@ export default class GlobalInputMessageConnector {
         if (registeredMessage.result === "ok") {
           that.onRegistered(options);
           if (options.onRegistered) {
-            options.onRegistered();
+            const connectionCode=that.buildInputCodeData();
+            options.onRegistered(connectionCode);
           }
         }
         else {
           if (options.onRegisterFailed) {
-            options.onRegisterFailed();
+            options.onRegisterFailed(registeredMessage.reason?registeredMessage.reason:"onRegisterPermission:registration failed!");
           }
         }
 
@@ -179,6 +179,10 @@ export default class GlobalInputMessageConnector {
     }
     else {
       this.logError("failed to get register permission");
+      if(options.onRegisterFailed){
+        options.onRegisterFailed("failed to get register permission");
+      }
+      
     }
 
 

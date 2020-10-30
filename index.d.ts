@@ -100,6 +100,12 @@ declare module 'global-input-message' {
         operations?: FormOperation;
         options?: object[];
         index?: number;
+        minimumValue?:number;
+        maximumValue?:number;
+        step?:number;
+        items?:object[];
+        selectType?:string;
+        style:object;
     }
 
 

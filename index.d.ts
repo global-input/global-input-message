@@ -105,7 +105,7 @@ declare module 'global-input-message' {
         step?:number;
         items?:object[];
         selectType?:string;
-        style:object;
+        style?:object;
     }
 
 

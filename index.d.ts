@@ -75,6 +75,7 @@ declare module 'global-input-message' {
         id?: string;
         action?: string;
         dataType?: string;
+        key?:string;
         form: {
             id?: string;
             title?: string;

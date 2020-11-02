@@ -1,4 +1,4 @@
-declare module 'global-input-message' {
+
 
     export function createMessageConnector(): GlobalInputMessageConnector;
     interface ConnectResult {
@@ -10,7 +10,7 @@ declare module 'global-input-message' {
         error?: string;
     }
 
-    class GlobalInputMessageConnector {
+    declare class GlobalInputMessageConnector {
         client: string;
         session: string;
         isConnected(): boolean;
@@ -28,7 +28,7 @@ declare module 'global-input-message' {
         /*
             encryptedCodeData=[Type][EncryptedContent]
             switch(Type):
-                case 'C': use the static shared encryption key to decrypt. 
+                case 'C': use the static shared encryption key to decrypt.
                 case 'A': use the dynamic encryption key to decrypt.
                 case 'N': the content is not encrypted
        */
@@ -130,7 +130,6 @@ declare module 'global-input-message' {
         client?: string;
         connectSession?: string;
         data?: object;
-        client?: string;
         time?: number;
         securityGroup?: string;
         session?: string;
@@ -149,5 +148,3 @@ declare module 'global-input-message' {
     export function generateRandomString(length?: number): string;
     export function encrypt(content: string, password: string): string;
     export function decrypt(content: string, password: string): string;
-
-}

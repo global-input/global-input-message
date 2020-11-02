@@ -252,7 +252,7 @@ Please make sure to update tests as appropriate.
 
 - [Form Data Transfer Example][form-source] shows shows how to transfer form data between applications and a mobile app. It can be used in sign-in and sign-up operations to achieve one-click sign-up or one-click logins. Its online [online demo][form-demo] is available.
 
--[Send Message Example][message-source] show you can leverage the mobile secure storage to request data on-demand from the connected mobile app.
+- [Send Message Example][message-source] show you can leverage the mobile secure storage to request data on-demand from the connected mobile app. Its online [online demo][message-demo] is available.
 
 
 ## 📄 License

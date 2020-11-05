@@ -97,12 +97,12 @@ export const processCodeData = (connector, encryptedCodedata, options) => {
     onError(options, "unrecognized format decrypted");
     return;
   }
-  if (codedata.action == 'input') {
+  if (codedata.action === 'input') {
     if (options.onInputCodeData) {
       options.onInputCodeData(codedata);
     }
   }
-  else if (codedata.action == 'pairing') {
+  else if (codedata.action === 'pairing') {
     if (options.onPairing) {
       options.onPairing(codedata);
     }

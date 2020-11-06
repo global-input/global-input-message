@@ -6,10 +6,10 @@ import * as codedataUtil from "./codedataUtil";
 export default class GlobalInputMessageConnector {
   logError(message, error) {
     if (error) {
-      console.warn("[[[[" + this.client + ":" + message + ":" + error + ":" + error.stack + "]");
+      console.warn(' '+this.client + "-" + message + "-" + error + "-" + error.stack + " ");
     }
     else {
-      console.warn(this.client + ":" + message);
+      console.warn(' '+this.client + "-" + message+' ');
     }
   }
   constructor() {
@@ -89,8 +89,8 @@ export default class GlobalInputMessageConnector {
         onError && onError(message);
       }
       const onRegistered = options.onRegistered;
-      options.onRegistered = (connectionCode) => {        
-        resolve({ type: "device", connectionCode});        
+      options.onRegistered = (connectionCode) => {
+        resolve({ type: "device", connectionCode});
         onRegistered && onRegistered(connectionCode);
       }
       const onRegisterFailed = options.onRegisterFailed;
@@ -131,9 +131,9 @@ export default class GlobalInputMessageConnector {
         }
         that._connectToSocket(options);
       }, function () {
-        console.warn("failed to get the socket server url");
+        console.warn(" failed-socket-server-url ");
         if (options.onError) {
-          options.onError("failed to get the socket server url");
+          options.onError(" failed-socket-server-url ");
         }
       });
     }
@@ -182,7 +182,7 @@ export default class GlobalInputMessageConnector {
       if(options.onRegisterFailed){
         options.onRegisterFailed("failed to get register permission");
       }
-      
+
     }
 
 
@@ -218,7 +218,7 @@ export default class GlobalInputMessageConnector {
 
 
       let data = JSON.stringify(requestInputPermissionMessage)
-      // cSpell:disable  
+      // cSpell:disable
       this.socket.emit("inputPermision", data);
       // cSpell:enable
     }
@@ -276,12 +276,12 @@ export default class GlobalInputMessageConnector {
     }
     try {
       sendersToDisconnect.forEach(s => {
-        console.log("Disconnect from the same client");
+        console.log(" disconnected-same-client ");
         this.disconnectSender(s);
       });
     }
     catch (error) {
-      console.warn("error while disconnecting senders:" + error);
+      console.warn(" disconnecting-" + error+' ');
     }
 
   }
@@ -295,7 +295,7 @@ export default class GlobalInputMessageConnector {
     let existingSameSenders = this.connectedSenders.filter(s => s.client === inputPermissionMessage.client);
     if (existingSameSenders.length > 0) {
       this.disconnectSenders(existingSameSenders);
-      console.log("the client is  connected previously");
+      console.log(" client-connected-again ");
       this.grantPermissionQueue = [];
       this.grantPermissionQueue.push({ inputPermissionMessage, options });
       this.grantPermissionQueueLastModified = new Date();
@@ -325,7 +325,7 @@ export default class GlobalInputMessageConnector {
     this.socket.on(this.session + "/input", inputSender.onInput);
     this.socket.on(this.session + "/leave", inputSender.onLeave);
     this.sendInputPermissionGrantedMessage(inputPermissionMessage, options);
-    console.log("connectedSenders:" + this.connectedSenders.length);
+    console.log(" allow-to-connect-" + this.connectedSenders && this.connectedSenders.length+" ");
     options.onSenderConnected && options.onSenderConnected(inputSender, this.connectedSenders);
   }
   sendInputPermissionGrantedMessage(inputPermissionMessage, options) {
@@ -386,26 +386,26 @@ export default class GlobalInputMessageConnector {
         }
         catch (error) {
           inputPermissionResultMessage.initData = null;
-          console.warn("the service applications responded with invalid data");
+          console.warn(" invalid-response-received ");
           if (options.onError) {
-            options.onError("the service applications responded with invalid permission data");
+            options.onError(" invalid-response-received ");
           }
 
         }
       }
       else {
-        console.warn("decrypted InitData is empty");
+        console.warn(" empty-InitData-decrypted ");
         if (options.onError) {
-          options.onError("decrypted InitData is empty");
+          options.onError(" empty-InitData-decrypted ");
         }
       }
 
     }
     else {
       inputPermissionResultMessage.initData = null;
-      console.log("Permission is granted by the other party");
+      console.log(" refused-to-connect ");
       if (options.onError) {
-        options.onError("Permission is granted by the other party");
+        options.onError(" refused-to-connect ");
       }
     }
   }
@@ -422,12 +422,12 @@ export default class GlobalInputMessageConnector {
       options.onOutputMessageReceived(message);
     }
     else {
-      console.log("output message is ignored");
+      console.log(" output-message-discarded-not-listener ");
     }
   }
   sendOutputMessage(outputMessage) {
     if (!this.isConnected()) {
-      console.log("not connected yet");
+      console.log(" not-connected-output-message ");
       return;
     }
     let encryptedMessageData = encrypt(JSON.stringify(outputMessage), this.aes);
@@ -538,11 +538,10 @@ export default class GlobalInputMessageConnector {
       console.error(error);
     }
     this.connectedSenders = this.connectedSenders.filter(s => s.client !== inputSender.client);
-    console.log("client disconnected:" + inputSender.client);
+    console.log(" client-disconnected ");
   }
   _onInput(inputMessage, options) {
     if (inputMessage.initData) {
-      console.log("initData is received");
       if (options.initData && options.initData.operations && options.initData.operations.onInitData) {
         options.initData.operations.onInitData(inputMessage);
       }
@@ -550,7 +549,7 @@ export default class GlobalInputMessageConnector {
     }
 
     if (typeof inputMessage.data == "undefined") {
-      console.log("data field is missing in the input message");
+      console.log(" data-missing-input-message ");
       return;
     }
     let initData = options.initData
@@ -558,19 +557,19 @@ export default class GlobalInputMessageConnector {
       initData = this.activeInitData;
     }
     if ((!initData.form) || (!initData.form.fields)) {
-      console.log("field is missing in the initData");
+      console.log(" form-field-missing-initData ");
       return;
     }
     if (typeof inputMessage.data.index != 'undefined') {
       if (inputMessage.data.index < 0 || initData.form.fields.length <= inputMessage.data.index) {
-        console.log("index data is too big in the input message");
+        console.log(" index-too-big-input-message ");
         return;
       }
       if (initData.form.fields[inputMessage.data.index] && initData.form.fields[inputMessage.data.index].operations && initData.form.fields[inputMessage.data.index].operations.onInput) {
         initData.form.fields[inputMessage.data.index].operations.onInput(inputMessage.data.value);
       }
       else {
-        console.warn("****onInput operations is not defined in the initData index****:" + JSON.stringify(inputMessage.data.index) + "***");
+        console.warn(" field-index-onInput-not-present ");
       }
     }
     else if (typeof inputMessage.data.fieldId != 'undefined') {
@@ -581,22 +580,22 @@ export default class GlobalInputMessageConnector {
           matchedField.operations.onInput(inputMessage.data.value);
         }
         else {
-          console.log("onInput operations is not defined in the initData fieldId:" + inputMessage.data.fieldId);
+          console.log(" field-id-onInput-not-present ");
         }
       }
       else {
-        console.log("received input message is skipped:The field with the matching id does not exists:" + inputMessage.data.fieldId);
+        console.log(" input-message-discarded-no-matching-id ");
       }
     }
     else {
-      console.log("received input message is skipped because it does not have fieldId or index");
+      console.log(" input-message-discarded-index-id-missing ");
     }
 
   }
 
   sendInitData(initData) {
     if (!this.isConnected()) {
-      console.log("not connected yet");
+      console.log(" not-connected-send-init-data ");
       return;
     }
     let aes = this.aes;
@@ -620,7 +619,7 @@ export default class GlobalInputMessageConnector {
   }
   sendValue(fieldId, value, index) {
     if (!this.isConnected()) {
-      console.log("not connected yet");
+      console.log(" not-connected-send-value ");
       return;
     }
     let data = {
@@ -656,7 +655,7 @@ export default class GlobalInputMessageConnector {
   }
   changeGlobalInputFieldData(globalInputdata, data) {
     if (!globalInputdata) {
-      console.log(" because globalInputdata is empty");
+      console.log(" fields-empty-discarded-changes ");
       return globalInputdata;
     }
     if (data.fieldId) {
@@ -672,7 +671,7 @@ export default class GlobalInputMessageConnector {
       globalInputdata[data.index].value = data.value;
     }
     else {
-      console.warn("received the data index is bigger that that of initData");
+      console.warn(" data-index-out-of-range-initData ");
     }
     return globalInputdata;
   }

@@ -16,21 +16,22 @@ export const decrypt = (content, password) => CryptoJS.AES.decrypt(unescape(cont
 export const basicGetURL = (url, onSuccess, onError) => {
       let request = new XMLHttpRequest();
       request.ontimeout = (e) => {
-            console.warn("requesting socket server url timeout");
+            console.warn(" socket-server-url-timeout ");
             onError();
       };
       request.onreadystatechange = (e) => {
             if (e) {
                   let cache = [];
-                  console.log(JSON.stringify(e, (key, value) => {
-                        if (typeof value === 'object' && value != null) {
-                              if (cache.indexOf(value) != -1) {
-                                    return;
-                              }
-                              cache.push(value);
-                        }
-                        return value;
-                  }));
+                  console.log(' onreadystatechange-error-'+e+' ');
+                  // console.log(JSON.stringify(e, (key, value) => {
+                  //       if (typeof value === 'object' && value != null) {
+                  //             if (cache.indexOf(value) != -1) {
+                  //                   return;
+                  //             }
+                  //             cache.push(value);
+                  //       }
+                  //       return value;
+                  // }));
             }
             if (request.readyState !== 4) {
                   return;

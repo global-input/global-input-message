@@ -44,7 +44,7 @@ const onError = (options, message, error) => {
 
 export const processCodeData = (connector, encryptedCodedata, options) => {
   if (!encryptedCodedata) {
-    console.log("empty codedata");
+    console.log(" codedata-empty ");
     return;
   }
   const encryptionType = encryptedCodedata.substring(0, 1);

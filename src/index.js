@@ -1,5 +1,5 @@
 import GlobalInputMessageConnector from "./GlobalInputMessageConnector";
-import { generateRandomString, encrypt, decrypt } from "./util";
+import { generateRandomString, encrypt, decrypt } from "./codedataUtil";
 
 
 const createMessageConnector = function () {
@@ -8,8 +8,3 @@ const createMessageConnector = function () {
 
 
 export { generateRandomString, encrypt, decrypt, createMessageConnector };
-
-
-
-
-

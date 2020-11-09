@@ -1,15 +1,14 @@
 import SocketIOClient from "socket.io-client";
-import { encrypt, decrypt, generateRandomString, basicGetURL } from "./util";
 import * as codedataUtil from "./codedataUtil";
 
 
 export default class GlobalInputMessageConnector {
   logError(message, error) {
     if (error) {
-      console.warn(' '+this.client + "-" + message + "-" + error + "-" + error.stack + " ");
+      console.log(' ' + this.client + "-" + message + "-" + error + "-" + error.stack + " ");
     }
     else {
-      console.warn(' '+this.client + "-" + message+' ');
+      console.log(' ' + this.client + "-" + message + ' ');
     }
   }
   constructor() {
@@ -18,9 +17,9 @@ export default class GlobalInputMessageConnector {
     this.securityGroup = "1CNbWCFpsbmRQuKdd";
     // cSpell:enable
     this.codeAES = "LNJGw0x5lqnXpnVY8";
-    this.session = generateRandomString(17);
-    this.client = generateRandomString(17);
-    this.aes = generateRandomString(17);
+    this.session = codedataUtil.generateRandomString(17);
+    this.client = codedataUtil.generateRandomString(17);
+    this.aes = codedataUtil.generateRandomString(17);
     this.socket = null;
     this.connectedSenders = [];
     this.url = "https://globalinput.co.uk";
@@ -90,12 +89,12 @@ export default class GlobalInputMessageConnector {
       }
       const onRegistered = options.onRegistered;
       options.onRegistered = (connectionCode) => {
-        resolve({ type: "device", connectionCode});
+        resolve({ type: "device", connectionCode });
         onRegistered && onRegistered(connectionCode);
       }
       const onRegisterFailed = options.onRegisterFailed;
       options.onRegisterFailed = (error) => {
-        resolve({ type: "error", error});
+        resolve({ type: "error", error });
         onRegisterFailed && onRegisterFailed();
       }
       that._connectWithCallback(options)
@@ -124,16 +123,16 @@ export default class GlobalInputMessageConnector {
     else {
       let url = this.url + "/global-input/request-socket-url?apikey=" + this.apikey;
       let that = this;
-      basicGetURL(url, function (application) {
+      codedataUtil.basicGetURL(url, function (application) {
         that.url = application.url;
         if (application.apikey) {
           that.apikey = application.apikey;
         }
         that._connectToSocket(options);
-      }, function () {
-        console.warn(" failed-socket-server-url ");
+      }, function (message) {
+        console.warn(" failed-socket-server-url "+message);
         if (options.onError) {
-          options.onError(" failed-socket-server-url ");
+          options.onError(" failed-socket-server-url "+message);
         }
       });
     }
@@ -157,13 +156,13 @@ export default class GlobalInputMessageConnector {
         if (registeredMessage.result === "ok") {
           that.onRegistered(options);
           if (options.onRegistered) {
-            const connectionCode=that.buildInputCodeData();
+            const connectionCode = that.buildInputCodeData();
             options.onRegistered(connectionCode);
           }
         }
         else {
           if (options.onRegisterFailed) {
-            options.onRegisterFailed(registeredMessage.reason?registeredMessage.reason:"onRegisterPermission:registration failed!");
+            options.onRegisterFailed(registeredMessage.reason ? registeredMessage.reason : "onRegisterPermission:registration failed!");
           }
         }
 
@@ -179,7 +178,7 @@ export default class GlobalInputMessageConnector {
     }
     else {
       this.logError("failed to get register permission");
-      if(options.onRegisterFailed){
+      if (options.onRegisterFailed) {
         options.onRegisterFailed("failed to get register permission");
       }
 
@@ -210,7 +209,7 @@ export default class GlobalInputMessageConnector {
       };
       requestInputPermissionMessage.data = JSON.stringify(requestInputPermissionMessage.data);
       if (options.aes) {
-        requestInputPermissionMessage.data = encrypt(requestInputPermissionMessage.data, options.aes);
+        requestInputPermissionMessage.data = codedataUtil.encrypt(requestInputPermissionMessage.data, options.aes);
       }
       else {
         throw new Error("AES encryption key is missing, key is required");
@@ -230,7 +229,7 @@ export default class GlobalInputMessageConnector {
       return;
     }
     try {
-      inputPermissionMessage.data = decrypt(inputPermissionMessage.data, this.aes);
+      inputPermissionMessage.data = codedataUtil.decrypt(inputPermissionMessage.data, this.aes);
     }
     catch (error) {
       this.sendInputPermissionDeniedMessage(inputPermissionMessage, "failed to decrypt");
@@ -281,7 +280,7 @@ export default class GlobalInputMessageConnector {
       });
     }
     catch (error) {
-      console.warn(" disconnecting-" + error+' ');
+      console.log(" disconnecting-" + error + ' ');
     }
 
   }
@@ -325,7 +324,7 @@ export default class GlobalInputMessageConnector {
     this.socket.on(this.session + "/input", inputSender.onInput);
     this.socket.on(this.session + "/leave", inputSender.onLeave);
     this.sendInputPermissionGrantedMessage(inputPermissionMessage, options);
-    console.log(" allow-to-connect-" + this.connectedSenders && this.connectedSenders.length+" ");
+    console.log(" allow-to-connect-" + this.connectedSenders && this.connectedSenders.length + " ");
     options.onSenderConnected && options.onSenderConnected(inputSender, this.connectedSenders);
   }
   sendInputPermissionGrantedMessage(inputPermissionMessage, options) {
@@ -334,7 +333,7 @@ export default class GlobalInputMessageConnector {
       inputPermissionResult.initData = options.initData;
       let inputPermissionResultInString = JSON.stringify(inputPermissionResult.initData);
       if (this.aes) {
-        inputPermissionResult.initData = encrypt(inputPermissionResultInString, this.aes);
+        inputPermissionResult.initData = codedataUtil.encrypt(inputPermissionResultInString, this.aes);
       }
       else {
         throw new Error("AES encryption key is missing in grant");
@@ -357,7 +356,7 @@ export default class GlobalInputMessageConnector {
     this.connectSession = options.connectSession;
     this.inputAES = options.aes;
     if (this.inputAES && inputPermissionResultMessage.initData && typeof inputPermissionResultMessage.initData === "string") {
-      let decryptedInitData = decrypt(inputPermissionResultMessage.initData, this.inputAES);
+      let decryptedInitData = codedataUtil.decrypt(inputPermissionResultMessage.initData, this.inputAES);
       if (decryptedInitData) {
         try {
           inputPermissionResultMessage.initData = JSON.parse(decryptedInitData);
@@ -386,7 +385,7 @@ export default class GlobalInputMessageConnector {
         }
         catch (error) {
           inputPermissionResultMessage.initData = null;
-          console.warn(" invalid-response-received ");
+          console.log(" invalid-response-received ");
           if (options.onError) {
             options.onError(" invalid-response-received ");
           }
@@ -417,7 +416,7 @@ export default class GlobalInputMessageConnector {
         aes = this.inputAES;
       }
       if (aes && message.data) {
-        message.data = decrypt(message.data, aes);
+        message.data = codedataUtil.decrypt(message.data, aes);
       }
       options.onOutputMessageReceived(message);
     }
@@ -430,7 +429,7 @@ export default class GlobalInputMessageConnector {
       console.log(" not-connected-output-message ");
       return;
     }
-    let encryptedMessageData = encrypt(JSON.stringify(outputMessage), this.aes);
+    let encryptedMessageData = codedataUtil.encrypt(JSON.stringify(outputMessage), this.aes);
     let message = {
       client: this.client,
       data: encryptedMessageData
@@ -456,7 +455,7 @@ export default class GlobalInputMessageConnector {
           if (inputMessage.data) {
             let dataDecrypted = null;
             try {
-              dataDecrypted = decrypt(inputMessage.data, aes);
+              dataDecrypted = codedataUtil.decrypt(inputMessage.data, aes);
             }
             catch (error) {
               that.logError(error + ", failed to decrypt the input content");
@@ -478,7 +477,7 @@ export default class GlobalInputMessageConnector {
           else if (inputMessage.initData) {
             let dataDecrypted = null;
             try {
-              dataDecrypted = decrypt(inputMessage.initData, aes);
+              dataDecrypted = codedataUtil.decrypt(inputMessage.initData, aes);
             }
             catch (error) {
               that.logError(error + ", failed to decrypt the initData content");
@@ -535,7 +534,7 @@ export default class GlobalInputMessageConnector {
       this.socket.removeListener(this.session + "/leave", inputSender.onLeave);
     }
     catch (error) {
-      console.error(error);
+      console.log(error);
     }
     this.connectedSenders = this.connectedSenders.filter(s => s.client !== inputSender.client);
     console.log(" client-disconnected ");
@@ -603,7 +602,7 @@ export default class GlobalInputMessageConnector {
       aes = this.inputAES;
     }
     const contentToEncrypt = JSON.stringify(initData);
-    const contentEncrypted = encrypt(contentToEncrypt, aes);
+    const contentEncrypted = codedataUtil.encrypt(contentToEncrypt, aes);
 
     const message = {
       client: this.client,
@@ -623,7 +622,7 @@ export default class GlobalInputMessageConnector {
       return;
     }
     let data = {
-      id: generateRandomString(10),
+      id: codedataUtil.generateRandomString(10),
       value
     };
     if (fieldId) {
@@ -637,7 +636,7 @@ export default class GlobalInputMessageConnector {
       aes = this.inputAES;
     }
     let contentToEncrypt = JSON.stringify(data);
-    let contentEncrypted = encrypt(contentToEncrypt, aes);
+    let contentEncrypted = codedataUtil.encrypt(contentToEncrypt, aes);
     data = contentEncrypted;
     let message = {
       client: this.client,

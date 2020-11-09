@@ -1,7 +1,42 @@
 
-import { encrypt, decrypt } from "./util";
+import CryptoJS from "crypto-js";
 
 const sharedKey = "50SUB39ctEKzd6Uv2a84lFK";
+
+
+export const generateRandomString = (length = 10) => {
+  const randPassword = Array(length).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@£$&*:;").map(function (x) {
+    const indexString = CryptoJS.enc.Hex.stringify(CryptoJS.lib.WordArray.random(1));
+    const indexValue = parseInt(indexString, 16);
+    return x[indexValue % x.length]
+  }).join('');
+  return randPassword;
+};
+export const encrypt = (content, password) => escape(CryptoJS.AES.encrypt(content, password).toString());
+
+export const decrypt = (content, password) => CryptoJS.AES.decrypt(unescape(content), password).toString(CryptoJS.enc.Utf8);
+
+export const basicGetURL = (url, onSuccess, onError) => {
+  let request = new XMLHttpRequest();
+  request.ontimeout = (e) => {
+    console.warn(" socket-server-url-timeout ");
+    onError('socket-server-url-timeout');
+  };
+  request.onreadystatechange = (e) => {
+    if (request.readyState !== 4) {
+      return;
+    }
+    if ( request.status === 200 ) {
+        onSuccess(JSON.parse(request.responseText));
+    } else {
+        onError('socket-server-url-status:'+request.status);
+    }
+  };
+
+  request.open('GET', url, true);
+
+  request.send();
+};
 
 export const buildOptionsFromInputCodedata = (connector, codedata, options) => {
   const { session, url, aes, apikey, securityGroup } = codedata;

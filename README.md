@@ -18,7 +18,7 @@ We recommend using [global-input-react][r] for React applications.
 npm install global-input-message
 ```
 
-(CDN: https://unpkg.com/global-input-message@2.0.0/distribution/globalinputmessage.js)
+(CDN: https://unpkg.com/global-input-message@2.0.8/distribution/globalinputmessage.js)
 
 
 ## 📚 Usage

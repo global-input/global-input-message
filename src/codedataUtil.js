@@ -35,10 +35,10 @@ const onError = (options, message, error) => {
     options.onError(message);
   }
   else {
-    console.warn(message);
+    console.log(message);
   }
   if (error) {
-    console.warn(error);
+    console.log(error);
   }
 };
 

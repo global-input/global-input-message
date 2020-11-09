@@ -142,7 +142,7 @@ export default class GlobalInputMessageConnector {
 
   }
   _connectToSocket(options) {
-    console.log("Copyright © 2017-2022 by Dilshat Hewzulla");
+    console.log("Copyright © 2017-2022 Iterative Solution Limited, visit: https://github.com/global-input/global-input-message#readme");
     this.socket = SocketIOClient(this.url);
     let that = this;
     this.socket.on("registerPermission", function (data) {

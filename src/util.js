@@ -22,7 +22,7 @@ export const basicGetURL = (url, onSuccess, onError) => {
       request.onreadystatechange = (e) => {
             if (e) {
                   let cache = [];
-                  console.log(' onreadystatechange-error-'+e+' ');
+                  //console.log(' onreadystatechange-error-'+e+' ');
                   // console.log(JSON.stringify(e, (key, value) => {
                   //       if (typeof value === 'object' && value != null) {
                   //             if (cache.indexOf(value) != -1) {

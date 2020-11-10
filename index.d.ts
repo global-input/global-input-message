@@ -50,8 +50,8 @@ interface ConnectOptions {
     onInput?: (message: InputMessage) => void;
     onRegistered?: (connectionCode: string) => void;
     onRegisterFailed?: () => void;
-    onSenderConnected: (sender: Sender, senders: Sender[]) => void;
-    onSenderDisconnected: (sender: Sender, senders: Sender[]) => void;
+    onSenderConnected?: (sender: Sender, senders: Sender[]) => void;
+    onSenderDisconnected?: (sender: Sender, senders: Sender[]) => void;
     onInputPermission?: (permissionMessage: PermissionRequestMessage, allow: () => void, deny: () => void) => void;
     onInputPermissionResult?: (message: PermissionResultMessage) => void;
     onInputCodeData?: (codedata: CodeData) => void;

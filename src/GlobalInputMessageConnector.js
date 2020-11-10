@@ -666,7 +666,7 @@ export default class GlobalInputMessageConnector {
       });
     }
     else if (typeof data.index !== 'undefined' && data.index < globalInputdata.length) {
-      const globalInputdata = globalInputdata.slice(0);
+      globalInputdata = globalInputdata.slice(0);
       globalInputdata[data.index].value = data.value;
     }
     else {

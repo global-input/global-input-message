@@ -26,10 +26,10 @@ export const basicGetURL = (url, onSuccess, onError) => {
     if (request.readyState !== 4) {
       return;
     }
-    if ( request.status === 200 ) {
-        onSuccess(JSON.parse(request.responseText));
+    if (request.status === 200) {
+      onSuccess(JSON.parse(request.responseText));
     } else {
-        onError('socket-server-url-status:'+request.status);
+      onError('socket-server-url-status:' + request.status);
     }
   };
 

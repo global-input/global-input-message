@@ -130,9 +130,9 @@ export default class GlobalInputMessageConnector {
         }
         that._connectToSocket(options);
       }, function (message) {
-        console.warn(" failed-socket-server-url "+message);
+        console.warn(" failed-socket-server-url " + message);
         if (options.onError) {
-          options.onError(" failed-socket-server-url "+message);
+          options.onError(" failed-socket-server-url " + message);
         }
       });
     }

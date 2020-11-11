@@ -36,7 +36,7 @@ declare class GlobalInputMessageConnector {
 }
 type FieldValue = string | number | object | null | undefined;
 
-interface Sender {
+export interface Sender {
     client: string;
     session: string;
 }

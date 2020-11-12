@@ -59,8 +59,7 @@ export const buildInputCodeData = (connector, data = {}) => {
 };
 
 
-export const buildPairingData = (connector, data = {}) => {
-  const { securityGroup, codeAES } = connector;
+export const buildPairingData = (securityGroup, codeAES, data) => {
   const codedata = { securityGroup, codeAES, action: 'pairing', ...data };
   return "C" + encrypt("J" + JSON.stringify(codedata), sharedKey);
 };

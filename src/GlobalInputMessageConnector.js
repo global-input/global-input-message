@@ -253,21 +253,18 @@ export default class GlobalInputMessageConnector {
       this.sendInputPermissionDeniedMessage(inputPermissionMessage, "client id mismatch");
       return;
     }
-    let that = this;
-
+    let errorMessage = null;
+    const deny = (message = "application denied permission to connect") => errorMessage = message;
+    delete inputPermissionMessage.data;
     if (options.onInputPermission) {
-      options.onInputPermission(inputPermissionMessage, function () {
-        delete inputPermissionMessage.data;
-        that.grantInputPermission(inputPermissionMessage, options);
-      }, function () {
-        that.sendInputPermissionDeniedMessage(inputPermissionMessage, "application denied to give permission");
-      });
+      options.onInputPermission(inputPermissionMessage, this.connectedSenders, deny);
+    }
+    if (errorMessage) {
+      this.sendInputPermissionDeniedMessage(inputPermissionMessage, errorMessage);
     }
     else {
-      delete inputPermissionMessage.data;
       this.grantInputPermission(inputPermissionMessage, options);
     }
-
   }
   disconnectSenders(sendersToDisconnect) {
     if (!sendersToDisconnect || !sendersToDisconnect.length) {
@@ -685,7 +682,7 @@ export default class GlobalInputMessageConnector {
   }
 
   buildPairingData(data = {}) {
-    return codedataUtil.buildPairingData(this, data);
+    return codedataUtil.buildPairingData(this.securityGroup, this.codeAES, data);
   }
 
   processCodeData(encryptedCodedata, options) {

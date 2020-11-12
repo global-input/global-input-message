@@ -52,7 +52,7 @@ interface ConnectOptions {
     onRegisterFailed?: () => void;
     onSenderConnected?: (sender: Sender, senders: Sender[]) => void;
     onSenderDisconnected?: (sender: Sender, senders: Sender[]) => void;
-    onInputPermission?: (permissionMessage: PermissionRequestMessage, senders: Sender[], deny: (reason?: string) => void) => void;
+    onInputPermission?: (permissionMessage: PermissionRequestMessage, senders: Sender[], allow: () => void, deny: (reason?: string) => void) => void;
     onInputPermissionResult?: (message: PermissionResultMessage) => void;
     onInputCodeData?: (codedata: CodeData) => void;
     onError?: (message: string) => void;

@@ -253,17 +253,19 @@ export default class GlobalInputMessageConnector {
       this.sendInputPermissionDeniedMessage(inputPermissionMessage, "client id mismatch");
       return;
     }
-    let errorMessage = null;
-    const deny = (message = "application denied permission to connect") => errorMessage = message;
+
+    const deny = (errorMessage = " the application has denied the request to connect") => {
+      this.sendInputPermissionDeniedMessage(inputPermissionMessage, errorMessage);
+    };
+    const allow = () => {
+      this.grantInputPermission(inputPermissionMessage, options);
+    }
     delete inputPermissionMessage.data;
     if (options.onInputPermission) {
-      options.onInputPermission(inputPermissionMessage, this.connectedSenders, deny);
-    }
-    if (errorMessage) {
-      this.sendInputPermissionDeniedMessage(inputPermissionMessage, errorMessage);
+      options.onInputPermission(inputPermissionMessage, this.connectedSenders, allow, deny);
     }
     else {
-      this.grantInputPermission(inputPermissionMessage, options);
+      allow();
     }
   }
   disconnectSenders(sendersToDisconnect) {

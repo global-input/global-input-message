@@ -27,7 +27,13 @@ export const basicGetURL = (url, onSuccess, onError) => {
       return;
     }
     if (request.status === 200) {
-      onSuccess(JSON.parse(request.responseText));
+      try{
+        onSuccess(JSON.parse(request.responseText));
+      }
+      catch (error) {
+        onError("invalid processing the server response:"+error);
+        console.log("server response:"+request.responseText);
+      }
     } else {
       onError('socket-server-url-status:' + request.status);
     }

@@ -88,7 +88,7 @@ interface InitData {
         domain?: string;
         fields: FormField[];
         views?: {
-            viewId: {
+            viewIds: {
                 [id: string]: object;
             }
         };

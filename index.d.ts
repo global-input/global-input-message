@@ -56,6 +56,7 @@ interface ConnectOptions {
     onInputPermissionResult?: (message: PermissionResultMessage) => void;
     onInputCodeData?: (codedata: CodeData) => void;
     onError?: (message: string) => void;
+    onSocket?:(socket: any) => void;
 }
 
 interface InputMessage {

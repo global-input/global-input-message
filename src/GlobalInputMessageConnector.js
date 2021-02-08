@@ -159,6 +159,9 @@ export default class GlobalInputMessageConnector {
             const connectionCode = that.buildInputCodeData();
             options.onRegistered(connectionCode);
           }
+          if (options.onSocket) {
+            options.onSocket(that.socket);
+          }
         }
         else {
           if (options.onRegisterFailed) {

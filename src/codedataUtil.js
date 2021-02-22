@@ -1,7 +1,7 @@
 
 import CryptoJS from "crypto-js";
 
-const sharedKey = "50SUB39ctEKzd6Uv2a84lFK";
+
 
 
 export const generateRandomString = (length = 10) => {
@@ -27,12 +27,12 @@ export const basicGetURL = (url, onSuccess, onError) => {
       return;
     }
     if (request.status === 200) {
-      try{
+      try {
         onSuccess(JSON.parse(request.responseText));
       }
       catch (error) {
-        onError("invalid processing the server response:"+error);
-        console.log("server response:"+request.responseText);
+        onError("invalid processing the server response:" + error);
+        console.log("server response:" + request.responseText);
       }
     } else {
       onError('socket-server-url-status:' + request.status);
@@ -64,7 +64,7 @@ export const buildInputCodeData = (connector, data = {}) => {
   }
 };
 
-
+const sharedKey = "50SUB39ctEKzd6Uv2a84lFK";
 export const buildPairingData = (securityGroup, codeAES, data) => {
   const codedata = { securityGroup, codeAES, action: 'pairing', ...data };
   return "C" + encrypt("J" + JSON.stringify(codedata), sharedKey);

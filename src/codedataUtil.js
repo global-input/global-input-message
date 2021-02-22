@@ -3,14 +3,33 @@ import CryptoJS from "crypto-js";
 
 
 
-
+const shuffleCharacterAt = (content, rNumber) => {
+  if (rNumber < 1) {
+    return content.slice(1) + content.charAt(0);
+  }
+  const rIndex = rNumber % content.length;
+  if ((rIndex + 1) >= content.length) {
+    return content.charAt(content.length - 1) + content.slice(0, content.length - 1);
+  }
+  return content.slice(0, rIndex) + content.slice(rIndex + 1) + content.charAt(rIndex);
+}
+const randomNumberGenerator = () => {
+  const indexString = CryptoJS.enc.Hex.stringify(CryptoJS.lib.WordArray.random(1));
+  return parseInt(indexString, 16);
+}
+let possibleCharactersSeed = "Abm6fixYq;rMh9sSkjaGvl@*$tOVDZRyQF:8WzonIT41K0wL3PHp7XCEecB&Jgu£2dUN5";
+const startUpTime = new Date().getMilliseconds();
 export const generateRandomString = (length = 10) => {
-  const randPassword = Array(length).fill("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@£$&*:;").map(function (x) {
-    const indexString = CryptoJS.enc.Hex.stringify(CryptoJS.lib.WordArray.random(1));
-    const indexValue = parseInt(indexString, 16);
-    return x[indexValue % x.length]
-  }).join('');
-  return randPassword;
+  let result = '';
+  for (let loop = 0; loop < length; loop++) {
+    possibleCharactersSeed = shuffleCharacterAt(possibleCharactersSeed, Math.random() * possibleCharactersSeed.length); //reshuffle with browser random
+    possibleCharactersSeed = shuffleCharacterAt(possibleCharactersSeed, new Date().getMilliseconds());//reshuffle with time
+    possibleCharactersSeed = shuffleCharacterAt(possibleCharactersSeed, startUpTime);//reshuffle with application start time
+    const indexValue = randomNumberGenerator();                                     //generate random using the crypto
+    result += possibleCharactersSeed.charAt(indexValue % possibleCharactersSeed.length); //get the character from the seed using the crypto random
+    possibleCharactersSeed = shuffleCharacterAt(possibleCharactersSeed, indexValue + new Date().getMilliseconds());     //reshuffle using the crypto random and time
+  }
+  return result;
 };
 export const encrypt = (content, password) => escape(CryptoJS.AES.encrypt(content, password).toString());
 

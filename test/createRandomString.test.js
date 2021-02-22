@@ -11,10 +11,10 @@ describe("Communications between a Mobile App and a Device App", () => {
         const generatedStrings = [];
         for (let i = 0; i < 1000; i++) {
             const randomString1 = generateRandomString(stringLength);
-            console.log(randomString1);
+
             expect(randomString1.length).toBe(stringLength);
             const duplicates = generatedStrings.filter(f => f === randomString1);
-            //expect(duplicates.length).toBe(0);
+            expect(duplicates.length).toBe(0);
             generatedStrings.push(randomString1);
         }
 

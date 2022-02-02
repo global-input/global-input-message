@@ -1,6 +1,6 @@
 {
   "name": "global-input-message",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "global input core js library",
   "main": "./distribution/index.js",
   "types": "./index.d.ts",
@@ -34,6 +34,7 @@
   },
   "homepage": "https://github.com/global-input/global-input-message#readme",
   "dependencies": {
+    "axios": "^0.25.0",
     "crypto-js": "^4.0.0",
     "socket.io-client": "^2.3.1"
   },

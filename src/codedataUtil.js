@@ -1,6 +1,7 @@
 
 import CryptoJS from 'crypto-js';
 
+import axios from 'axios';
 
 
 const shuffleCharacterAt = (content, rNumber) => {
@@ -36,31 +37,14 @@ export const encrypt = (content, password) => escape(CryptoJS.AES.encrypt(conten
 export const decrypt = (content, password) => CryptoJS.AES.decrypt(unescape(content), password).toString(CryptoJS.enc.Utf8);
 
 export const basicGetURL = (url, onSuccess, onError) => {
-  let request = new XMLHttpRequest();
-  request.ontimeout = (e) => {
-    console.warn(" socket-server-url-timeout ");
-    onError('socket-server-url-timeout');
-  };
-  request.onreadystatechange = (e) => {
-    if (request.readyState !== 4) {
-      return;
-    }
-    if (request.status === 200) {
-      try {
-        onSuccess(JSON.parse(request.responseText));
-      }
-      catch (error) {
-        onError("invalid processing the server response:" + error);
-        console.log("server response:" + request.responseText);
-      }
-    } else {
-      onError('socket-server-url-status:' + request.status);
-    }
-  };
+  axios.get(url).then(response=>{
+    
+    onSuccess(response.data);
+  }).catch(error =>{
+      onError('socket-server-url-timeout');
+  });
 
-  request.open('GET', url, true);
-
-  request.send();
+  
 };
 
 export const buildOptionsFromInputCodedata = (connector, codedata, options) => {

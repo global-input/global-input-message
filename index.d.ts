@@ -74,6 +74,7 @@ interface CodeProcessors {
     onInputCodeData?: (codedata: CodeData) => void;
     onPairing?: (codedata: CodeData) => void;
     onError?: (message: string) => void;
+    codeAES?: string;
 }
 
 

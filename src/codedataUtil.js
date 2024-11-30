@@ -3,6 +3,24 @@ import CryptoJS from 'crypto-js';
 
 import axios from 'axios';
 
+function isWebCryptoAvailable() {
+  return typeof window !== 'undefined' && window.crypto && window.crypto.subtle;
+}
+
+function generateRandomStringWebCrypto(length = 10) {
+  const array = new Uint8Array(length);
+  window.crypto.getRandomValues(array);
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    // Map the random byte to a character index
+    const randomIndex = array[i] % charactersLength;
+    result += characters.charAt(randomIndex);
+  }
+  return result;
+}
+
 
 const shuffleCharacterAt = (content, rNumber) => {
   if (rNumber < 1) {
@@ -20,7 +38,7 @@ const randomNumberGenerator = () => {
 }
 let possibleCharactersSeed = "Abm6fixYq;rMh9sSkjaGvl@*$tOVDZRyQF:8WzonIT41K0wL3PHp7XCEecB&Jgu£2dUN5";
 const startUpTime = new Date().getMilliseconds();
-export const generateRandomString = (length = 10) => {
+export const generateRandomStringCryptoJS = (length = 10) => {
   let result = '';
   for (let loop = 0; loop < length; loop++) {
     possibleCharactersSeed = shuffleCharacterAt(possibleCharactersSeed, Math.random() * possibleCharactersSeed.length); //reshuffle with browser random
@@ -32,6 +50,14 @@ export const generateRandomString = (length = 10) => {
   }
   return result;
 };
+export function generateRandomString(length = 10) {
+  if (isWebCryptoAvailable()) {
+    return generateRandomStringWebCrypto(length);
+  } else {
+    return generateRandomStringCryptoJS(length);
+  }
+}
+
 export const encrypt = (content, password) => escape(CryptoJS.AES.encrypt(content, password).toString());
 
 export const decrypt = (content, password) => CryptoJS.AES.decrypt(unescape(content), password).toString(CryptoJS.enc.Utf8);

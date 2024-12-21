@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/global-input/global-input-message#readme",
   "dependencies": {
-    "axios": "^0.25.0",
+    "axios": "^0.28.0",
     "crypto-js": "^4.2.0",
     "socket.io-client": "^2.3.1"
   },

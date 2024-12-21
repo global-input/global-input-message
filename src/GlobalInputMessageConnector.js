@@ -88,9 +88,12 @@ export default class GlobalInputMessageConnector {
         onError && onError(message);
       }
       const onRegistered = options.onRegistered;
-      options.onRegistered = (connectionCode) => {
-        resolve({ type: "device", connectionCode });
-        onRegistered && onRegistered(connectionCode);
+      options.onRegistered = (connectionCode, registeredInfo) => {        
+        resolve({ type: "device", connectionCode, registeredInfo });
+        if(registeredInfo){
+          registeredInfo.url=this.url;
+        }
+        onRegistered && onRegistered(connectionCode,registeredInfo);
       }
       const onRegisterFailed = options.onRegisterFailed;
       options.onRegisterFailed = (error) => {
@@ -157,7 +160,26 @@ export default class GlobalInputMessageConnector {
           that.onRegistered(options);
           if (options.onRegistered) {
             const connectionCode = that.buildInputCodeData();
-            options.onRegistered(connectionCode);
+            options.onRegistered(connectionCode, registeredMessage.registeredInfo);
+            if(options.onClientAppLaunched){
+              that.socket.on("app/launched", function (data) {
+                if(options.onClientAppLaunched){
+                  if(!data){
+                    console.log("onClientAppLaunched data received empty data");
+                    return;
+                  }                  
+                  try{
+                    data=JSON.parse(data);
+                  }
+                  catch(error){
+                    console.log("failed-to-parse-launched-data:"+data);
+                    return;
+                  }
+                  options.onClientAppLaunched(data);
+                }                
+              });
+            }
+
           }
           if (options.onSocket) {
             options.onSocket(that.socket);
